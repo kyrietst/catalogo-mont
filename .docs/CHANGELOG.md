@@ -4,6 +4,45 @@
 
 ---
 
+## Sessão 6 — Painel Admin, Auth & Imagens (2026-02-09)
+
+### O que foi feito
+
+**Implementação:**
+1. ✅ **Imagens de Produtos:**
+   - Populada tabela `cat_imagens_produto` com SVGs placeholders.
+   - 100% dos produtos ativos agora possuem imagem.
+
+2. ✅ **Autenticação (Supabase Auth):**
+   - Middleware protegendo rotas `/admin/*`.
+   - Página de Login Mobile-first.
+   - Layout Admin com Header e Logout.
+
+3. ✅ **Painel Admin Mobile:**
+   - **Dashboard:** KPIs de faturamento, pedidos pendentes e estoque.
+   - **Gestão de Produtos:** Lista com toggle ativo/inativo e edição inline (descrição, categoria).
+   - **Gestão de Pedidos:** Kanban-style list com atualização de status.
+
+**Arquivos Criados:**
+- `src/app/admin/layout.tsx`
+- `src/app/admin/page.tsx`
+- `src/app/admin/login/page.tsx`
+- `src/app/admin/produtos/page.tsx`
+- `src/app/admin/pedidos/page.tsx`
+- `src/app/api/admin/produtos/route.ts`
+- `src/app/api/admin/pedidos/route.ts`
+- `src/components/admin/` (7 componentes)
+- `src/middleware.ts`
+
+**Decisões Técnicas:**
+- **Mobile-First Admin:** Design focado em uso pelo celular.
+- **Service Role:** API Routes do admin usam chave de serviço para bypass de RLS.
+- **Relative Imports:** Correção de imports para evitar erros de resolução na IDE.
+
+**Build Status:** ✅ Passou
+
+---
+
 ## Sessão 5 — Migration Híbrida & Documentação (2026-02-09)
 
 ### O que foi feito
