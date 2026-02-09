@@ -12,17 +12,18 @@ async function getAllProducts(): Promise<Product[]> {
         const supabase = createClient()
 
         const { data, error } = await supabase
-            .from('produtos')
+            .from('vw_catalogo_produtos')
             .select('*')
-            .eq('ativo', true)
-            .order('id')
+            .eq('is_active', true)
+            // .order('sort_order', { ascending: true }) // Se a view tiver sort_order
+            .order('name', { ascending: true }) // Fallback seguro
 
         if (error || !data || data.length === 0) {
             console.log('Usando produtos mockados (fallback)')
             return MOCK_PRODUCTS
         }
 
-        return data.map(mapProdutoToProduct)
+        return data as Product[]
 
     } catch (error) {
         console.error('Erro ao buscar produtos:', error)

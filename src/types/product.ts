@@ -14,7 +14,10 @@ export interface Product {
     sort_order: number
     created_at: string
     updated_at: string
-    image_url?: string | null // Opcional para compatibilidade
+    image_url?: string | null // Deprecated: use primary_image_url
+    primary_image_url: string | null
+    images: any[] | null
+    stock_status: string
 }
 
 export interface ProductImage {

@@ -16,17 +16,17 @@ async function getProduct(slug: string): Promise<Product | null> {
         const supabase = createClient()
 
         const { data, error } = await supabase
-            .from('produtos')
+            .from('vw_catalogo_produtos')
             .select('*')
-            .eq('ativo', true)
+            .eq('slug', slug)
+            .single()
 
         if (error || !data) {
             const mockProduct = MOCK_PRODUCTS.find(p => p.slug === slug)
             return mockProduct || null
         }
 
-        const products = data.map(mapProdutoToProduct)
-        return products.find(p => p.slug === slug) || null
+        return data as Product
 
     } catch (error) {
         console.error('Erro ao buscar produto:', error)
@@ -35,14 +35,19 @@ async function getProduct(slug: string): Promise<Product | null> {
     }
 }
 
+
+
 async function getRelatedProducts(category: string, currentId: string): Promise<Product[]> {
     try {
         const supabase = createClient()
 
         const { data, error } = await supabase
-            .from('produtos')
+            .from('vw_catalogo_produtos')
             .select('*')
-            .eq('ativo', true)
+            .eq('is_active', true)
+            .eq('category', category)
+            .neq('id', currentId)
+            .limit(3)
 
         if (error || !data) {
             return MOCK_PRODUCTS
@@ -50,10 +55,7 @@ async function getRelatedProducts(category: string, currentId: string): Promise<
                 .slice(0, 3)
         }
 
-        const products = data.map(mapProdutoToProduct)
-        return products
-            .filter(p => p.category === category && p.id !== currentId)
-            .slice(0, 3)
+        return data as Product[]
 
     } catch (error) {
         console.error('Erro ao buscar produtos relacionados:', error)

@@ -118,22 +118,32 @@ npm run lint         # ESLint
 npm run type-check   # TypeScript check
 ```
 
-## 🔐 Supabase
+## 🔐 Supabase (Hybrid Schema)
 
-### Tabelas Principais
+O projeto utiliza uma arquitetura híbrida para proteger o sistema legado:
 
-- `products` — Produtos do catálogo
-- `product_images` — Imagens dos produtos
-- `orders` — Pedidos via site
-- `order_items` — Itens dos pedidos
-- `direct_sales` — Vendas diretas (admin)
-- `customers` — CRM básico
+### 1. Sistema Interno (Legado - PT)
+Tabelas existentes que não foram alteradas. Acessadas apenas via *Service Role*.
+- `produtos` (Master data)
+- `vendas` (Balcão/Direta)
+- `contatos` (CRM)
+
+### 2. Catálogo Online (Novo - `cat_`)
+Tabelas exclusivas para o e-commerce.
+- `cat_pedidos` — Pedidos do site
+- `cat_itens_pedido` — Itens do pedido
+- `cat_imagens_produto` — Imagens gerenciadas pelo site
+
+### 3. Views (Integração)
+Camada de abstração para o frontend.
+- `vw_catalogo_produtos` — API de produtos
+- `vw_marketing_pedidos` — KPIs unificados
+- `vw_admin_dashboard` — Dados do admin
 
 ### RLS (Row Level Security)
-
-- Produtos ativos: leitura pública
-- Pedidos: criação pública, gestão apenas autenticado
-- Admin: apenas autenticado
+- **Leitura Pública:** `vw_catalogo_produtos`, `cat_imagens_produto`
+- **Escrita Pública:** `cat_pedidos` (Insert only)
+- **Admin:** `produtos`, `vendas`, `vw_admin_dashboard` (Apenas autenticado)
 
 ## 🛒 Checkout WhatsApp
 

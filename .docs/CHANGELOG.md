@@ -4,6 +4,40 @@
 
 ---
 
+## Sessão 5 — Migration Híbrida & Documentação (2026-02-09)
+
+### O que foi feito
+
+**Implementação:**
+1. ✅ **Migration 003 (Schema Híbrido):**
+   - Criação de `cat_pedidos`, `cat_itens_pedido`, `cat_imagens_produto`.
+   - Extensão da tabela `produtos` (`slug`, `descricao`, `destaque`).
+   - Política de segurança: `cat_` prefix para isolar o e-commerce.
+
+2. ✅ **Views de Integração (ACL):**
+   - `vw_catalogo_produtos`: API pública padronizada (EN).
+   - `vw_marketing_pedidos`: Unificação de vendas online e físicas.
+   - `vw_admin_dashboard`: KPIs globais.
+
+3. ✅ **Documentação Revisada (.docs/):**
+   - `README.md`: Atualizado com arquitetura híbrida.
+   - `ARCHITECTURE.md`: Decisão de views e RLS detalhada.
+   - `DATABASE.md`: Schema completo com novas tabelas.
+   - `API.md`: Documentação dos endpoints e views.
+
+**Arquivos Criados:**
+- `supabase/migrations/003_safe_catalog_tables.sql`
+- `.docs/API.md`
+
+**Decisões Técnicas:**
+- **Views como ACL:** O frontend nunca acessa tabelas legadas diretamente.
+- **Prefix `cat_`:** Separação clara entre legado e novo.
+- **Backup Manual:** Realizado antes da migração (`vendas`, `produtos`).
+
+**Status:** ✅ Migration aplicada e validada em produção/dev.
+
+---
+
 ## Sessão 4 — Páginas Públicas + Correção de Build (2026-02-08)
 
 ### O que foi feito

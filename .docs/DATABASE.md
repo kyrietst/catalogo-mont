@@ -25,6 +25,11 @@ Produtos disponíveis para venda.
 | `estoque_atual` | `integer` | NULLABLE | `0` | Estoque atual |
 | `estoque_minimo` | `integer` | NULLABLE | `10` | Estoque mínimo |
 | `apelido` | `text` | NULLABLE | - | Apelido do produto |
+| `slug` | `text` | UNIQUE | - | URL amigável (Novo) |
+| `descricao` | `text` | NULLABLE | - | Descrição detalhada (Novo) |
+| `categoria` | `text` | NULLABLE | - | Categoria do produto (Novo) |
+| `destaque` | `boolean` | NULLABLE | `false` | Exibir na home? (Novo) |
+| `peso_kg` | `numeric` | NULLABLE | - | Peso em kg (Novo) |
 | `criado_em` | `timestamptz` | NOT NULL | `now()` | Data de criação |
 | `atualizado_em` | `timestamptz` | NOT NULL | `now()` | Última atualização |
 
@@ -445,3 +450,78 @@ Planejado para Fase 2:
 2. **Triggers:** 10 triggers automáticos para atualizar timestamps e cálculos.
 3. **Indexes:** 20 indexes para otimizar queries (principalmente em FKs e campos de busca).
 4. **Enums:** 2 enums customizados para status de pedidos de compra.
+
+---
+
+## 🗂️ Módulo Catálogo Online (`cat_*`)
+Tabelas exclusivas para o e-commerce, geridas pelo frontend.
+
+### 10. `cat_pedidos`
+
+Pedidos realizados via site.
+
+| Coluna | Tipo | Constraints | Default | Descrição |
+|--------|------|-------------|---------|-----------|
+| `id` | `uuid` | PK | `gen_random_uuid()` | ID único |
+| `numero_pedido` | `serial` | UNIQUE | - | Número sequencial |
+| `nome_cliente` | `text` | NOT NULL | - | Nome do cliente |
+| `telefone_cliente` | `text` | NOT NULL | - | WhatsApp |
+| `endereco_entrega` | `jsonb` | NULLABLE | - | Dados de endereço |
+| `metodo_entrega` | `text` | CHECK | - | `'entrega'`, `'retirada'` |
+| `status` | `text` | CHECK | `'pendente'` | `'pendente'`, `'confirmado'`, `'cancelado'` |
+| `total_centavos` | `integer` | CHECK > 0 | - | Total em centavos |
+| `frete_centavos` | `integer` | DEFAULT 0 | `0` | Frete em centavos |
+| `observacoes` | `text` | NULLABLE | - | Observações do cliente |
+| `indicado_por` | `text` | NULLABLE | - | Nome/ID de quem indicou |
+| `criado_em` | `timestamptz` | NOT NULL | `now()` | Data de criação |
+
+**Indexes:**
+- `cat_pedidos_pkey` (PK)
+- `idx_cat_pedidos_status`
+
+---
+
+### 11. `cat_itens_pedido`
+
+Itens de cada pedido online.
+
+| Coluna | Tipo | Constraints | Default | Descrição |
+|--------|------|-------------|---------|-----------|
+| `id` | `uuid` | PK | `gen_random_uuid()` | ID único |
+| `pedido_id` | `uuid` | FK → `cat_pedidos` | - | Pedido |
+| `produto_id` | `uuid` | FK → `produtos` | - | Produto |
+| `nome_produto` | `text` | NOT NULL | - | Nome snapshot na venda |
+| `quantidade` | `integer` | CHECK > 0 | - | Quantidade |
+| `preco_unitario_centavos` | `integer` | NOT NULL | - | Preço no momento da compra |
+| `total_centavos` | `integer` | NOT NULL | - | Subtotal |
+
+---
+
+### 12. `cat_imagens_produto`
+
+Galeria de imagens.
+
+| Coluna | Tipo | Constraints | Default | Descrição |
+|--------|------|-------------|---------|-----------|
+| `id` | `uuid` | PK | `gen_random_uuid()` | ID único |
+| `produto_id` | `uuid` | FK → `produtos` | - | Produto |
+| `url` | `text` | NOT NULL | - | URL da imagem |
+| `ordem` | `integer` | DEFAULT 0 | `0` | Ordem de exibição |
+| `principal` | `boolean` | DEFAULT false | `false` | Foto de capa? |
+
+---
+
+## 👁️ Views (Camada de Integração)
+
+### 1. `vw_catalogo_produtos`
+Exposta para a API pública.
+- Mapeia `produtos` (PT) -> JSON em Inglês (`price_cents`, `name`).
+- Filtra apenas produtos `ativo = true`.
+- Inclui imagens via subquery.
+
+### 2. `vw_marketing_pedidos`
+- Unifica `cat_pedidos` (Online) e `vendas` (Direta).
+- Granularidade diária para gráficos.
+
+### 3. `vw_admin_dashboard`
+- Consolida KPIs financeiros e operacionais de ambos os sistemas.

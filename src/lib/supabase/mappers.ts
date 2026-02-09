@@ -55,6 +55,9 @@ export function mapProdutoToProduct(produto: ProdutoDatabase): Product {
         sort_order: 0, // Não existe no schema real
         created_at: produto.criado_em,
         updated_at: produto.atualizado_em,
+        primary_image_url: null,
+        images: [],
+        stock_status: 'em_estoque',
     }
 }
 
@@ -78,6 +81,9 @@ export const MOCK_PRODUCTS: Product[] = [
         sort_order: 1,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
+        primary_image_url: null,
+        images: [],
+        stock_status: 'em_estoque',
     },
     {
         id: '2',
@@ -95,6 +101,9 @@ export const MOCK_PRODUCTS: Product[] = [
         sort_order: 2,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
+        primary_image_url: null,
+        images: [],
+        stock_status: 'em_estoque',
     },
     {
         id: '3',
@@ -112,6 +121,9 @@ export const MOCK_PRODUCTS: Product[] = [
         sort_order: 3,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
+        primary_image_url: null,
+        images: [],
+        stock_status: 'em_estoque',
     },
     {
         id: '4',
@@ -129,6 +141,9 @@ export const MOCK_PRODUCTS: Product[] = [
         sort_order: 4,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
+        primary_image_url: null,
+        images: [],
+        stock_status: 'em_estoque',
     },
     {
         id: '5',
@@ -146,6 +161,9 @@ export const MOCK_PRODUCTS: Product[] = [
         sort_order: 5,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
+        primary_image_url: null,
+        images: [],
+        stock_status: 'em_estoque',
     },
     {
         id: '6',
@@ -163,5 +181,8 @@ export const MOCK_PRODUCTS: Product[] = [
         sort_order: 6,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
+        primary_image_url: null,
+        images: [],
+        stock_status: 'em_estoque',
     },
 ]

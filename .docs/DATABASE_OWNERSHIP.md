@@ -1,317 +1,67 @@
-# DATABASE_OWNERSHIP.md
+# Database Ownership & Structure
+> **Last Updated:** 2026-02-09
 
-## 🎯 Mapa de Propriedade de Tabelas
+## 1. Visão Geral
+O banco de dados do Supabase atende a dois sistemas distintos que compartilham a mesma base:
+1.  **Sistema Interno (Legado/Admin):** Gestão de vendas balcão, estoque, financeiro.
+2.  **Catálogo Online (Novo):** E-commerce B2C/B2B via WhatsApp.
 
-Este documento define **QUEM** pode fazer **O QUÊ** em cada tabela do Supabase.
-
----
-
-## 📋 REGRAS DE OURO
-
-### Catálogo (App Público)
-
-**NUNCA PODE:**
-- ❌ `DROP`, `ALTER`, `TRUNCATE` em **NENHUMA** tabela
-- ❌ `CREATE TABLE`, `CREATE INDEX`, `CREATE TRIGGER`
-- ❌ Modificar schema do banco
-
-**PODE:**
-- ✅ `SELECT` em: `produtos`
-- ✅ `INSERT` em: (nenhuma tabela diretamente — usa API `/api/pedidos`)
-
-**OBSERVAÇÃO:** O catálogo **NÃO** escreve diretamente no Supabase. Todos os pedidos são enviados via WhatsApp e registrados manualmente no Sistema Interno.
-
-### Sistema Interno (App Admin)
-
-**OWNER de TODAS as tabelas:**
-- ✅ CRUD completo em todas as tabelas
-- ✅ Pode executar migrations
-- ✅ Pode criar/modificar schema
+Para evitar conflitos de nomenclatura e responsabilidade, adotamos uma estratégia de **Extensão e Prefixos**.
 
 ---
 
-## 📊 Tabelas e Permissões
+## 2. Convenções de Nomenclatura
 
-### `produtos`
-- **OWNER:** Sistema Interno
-- **CATÁLOGO:** `SELECT` (read-only)
-- **SISTEMA INTERNO:** `CRUD` completo
-- **NUNCA:** Catálogo nunca faz `INSERT`, `UPDATE`, `DELETE`
-- **RLS:** Desabilitado (tabela pública)
+| Módulo | Prefixo | Idioma | Exemplo |
+| :--- | :--- | :--- | :--- |
+| **Sistema Interno** | (Nenhum) | Português | `produtos`, `vendas`, `contatos` |
+| **Catálogo Online** | `cat_` | Português | `cat_pedidos`, `cat_itens_pedido` |
+| **Compartilhado** | (Nenhum) | Português | `produtos`, `configuracoes` |
 
-**Justificativa:** Produtos são gerenciados apenas pelo admin. Catálogo apenas exibe.
-
----
-
-### `contatos`
-- **OWNER:** Sistema Interno
-- **CATÁLOGO:** `NENHUM` (não acessa)
-- **SISTEMA INTERNO:** `CRUD` completo
-- **NUNCA:** Catálogo nunca acessa esta tabela
-- **RLS:** Desabilitado
-
-**Justificativa:** CRM interno. Catálogo não gerencia clientes.
+### Regras de Colunas
+*   **Snake Case:** Sempre use `snake_case` (ex: `nome_cliente`, `data_criacao`).
+*   **IDs:** Sempre UUID (`gen_random_uuid()`).
+*   **Moeda:** Sempre armazenar como INTEGER (centavos) nas tabelas novas. Tabela legado `produtos` usa NUMERIC (reais).
 
 ---
 
-### `vendas`
-- **OWNER:** Sistema Interno
-- **CATÁLOGO:** `NENHUM` (não acessa)
-- **SISTEMA INTERNO:** `CRUD` completo
-- **NUNCA:** Catálogo nunca acessa esta tabela
-- **RLS:** Desabilitado
+## 3. Estrutura das Tabelas
 
-**Justificativa:** Vendas são registradas manualmente no Sistema Interno após confirmação via WhatsApp.
+### A. Módulo Compartilhado (Core)
+Pertence ao Sistema Interno, mas é consumido pelo Catálogo.
 
----
+*   `produtos`: Cadastro mestre.
+    *   *Extendido pelo Catálogo com:* `slug`, `descricao`, `categoria`, `destaque`, `peso_kg`.
 
-### `itens_venda`
-- **OWNER:** Sistema Interno
-- **CATÁLOGO:** `NENHUM` (não acessa)
-- **SISTEMA INTERNO:** `CRUD` completo
-- **NUNCA:** Catálogo nunca acessa esta tabela
-- **RLS:** Desabilitado
+### B. Módulo Catálogo (`cat_*`)
+Tabelas exclusivas para o funcionamento da loja online.
 
-**Justificativa:** Itens de venda são gerenciados pelo Sistema Interno.
+*   `cat_pedidos`: Pedidos realizados via site.
+    *   Status: `pendente` -> `confirmado` -> `entregue`.
+*   `cat_itens_pedido`: Itens de cada pedido online.
+*   `cat_imagens_produto`: Galeria de fotos (url, ordem, principal).
 
----
+### C. Módulo Sistema Interno (Legado)
+Tabelas que o Catálogo NÃO toca (apenas leitura via views de BI).
 
-### `configuracoes`
-- **OWNER:** Sistema Interno
-- **CATÁLOGO:** `NENHUM` (não acessa)
-- **SISTEMA INTERNO:** `CRUD` completo
-- **NUNCA:** Catálogo nunca acessa esta tabela
-- **RLS:** Desabilitado
-
-**Justificativa:** Configurações internas do sistema.
+*   `vendas`: Vendas diretas (balcão, telefone, ifood).
+*   `itens_venda`: Itens das vendas diretas.
+*   `contatos`: CRM básico.
+*   `contas_receber`: Financeiro.
 
 ---
 
-### `purchase_orders`
-- **OWNER:** Sistema Interno
-- **CATÁLOGO:** `NENHUM` (não acessa)
-- **SISTEMA INTERNO:** `CRUD` completo
-- **NUNCA:** Catálogo nunca acessa esta tabela
-- **RLS:** Habilitado (policy: "Enable all access")
+## 4. Views de Integração
+As Views atuam como uma camada de abstração (Anti-Corruption Layer) para o Frontend do Catálogo, que espera uma estrutura em Inglês.
 
-**Justificativa:** Gestão de compras do Sistema Interno.
-
----
-
-### `purchase_order_items`
-- **OWNER:** Sistema Interno
-- **CATÁLOGO:** `NENHUM` (não acessa)
-- **SISTEMA INTERNO:** `CRUD` completo
-- **NUNCA:** Catálogo nunca acessa esta tabela
-- **RLS:** Habilitado (policy: "Enable all access")
-
-**Justificativa:** Itens de pedidos de compra do Sistema Interno.
+*   `vw_catalogo_produtos`: Traduz `produtos` (PT) -> API (EN).
+    *   Ex: `nome` -> `name`, `preco` (Numeric) -> `price_cents` (Int).
+*   `vw_marketing_pedidos`: Unifica `cat_pedidos` + `vendas` para KPIs.
+*   `vw_admin_dashboard`: Consolida métricas de ambos os sistemas.
 
 ---
 
-### `purchase_order_payments`
-- **OWNER:** Sistema Interno
-- **CATÁLOGO:** `NENHUM` (não acessa)
-- **SISTEMA INTERNO:** `CRUD` completo
-- **NUNCA:** Catálogo nunca acessa esta tabela
-- **RLS:** Habilitado (policy: "Enable all access for all users")
-
-**Justificativa:** Pagamentos de pedidos de compra do Sistema Interno.
-
----
-
-### `pagamentos_venda`
-- **OWNER:** Sistema Interno
-- **CATÁLOGO:** `NENHUM` (não acessa)
-- **SISTEMA INTERNO:** `CRUD` completo
-- **NUNCA:** Catálogo nunca acessa esta tabela
-- **RLS:** Desabilitado
-
-**Justificativa:** Pagamentos de vendas gerenciados pelo Sistema Interno.
-
----
-
-## 🔧 Functions (RPCs)
-
-### `receive_purchase_order(p_order_id uuid)`
-- **OWNER:** Sistema Interno
-- **CATÁLOGO:** Não usa
-- **SISTEMA INTERNO:** Executa ao receber pedido de compra
-
-### `update_atualizado_em()`
-- **OWNER:** Sistema Interno (trigger function)
-- **CATÁLOGO:** Não usa
-- **SISTEMA INTERNO:** Trigger automático em UPDATE
-
-### `handle_stock_on_status_change()`
-- **OWNER:** Sistema Interno (trigger function)
-- **CATÁLOGO:** Não usa
-- **SISTEMA INTERNO:** Trigger automático ao mudar status de venda
-
-### `update_purchase_order_payment_status()`
-- **OWNER:** Sistema Interno (trigger function)
-- **CATÁLOGO:** Não usa
-- **SISTEMA INTERNO:** Trigger automático em pagamentos
-
-### `update_venda_pagamento_summary()`
-- **OWNER:** Sistema Interno (trigger function)
-- **CATÁLOGO:** Não usa
-- **SISTEMA INTERNO:** Trigger automático em pagamentos de venda
-
----
-
-## 🛡️ RLS Policies
-
-### `purchase_orders`
-- **Policy:** "Enable all access"
-- **Operação:** `ALL`
-- **Condição:** `true` (acesso público)
-
-### `purchase_order_items`
-- **Policy:** "Enable all access"
-- **Operação:** `ALL`
-- **Condição:** `true` (acesso público)
-
-### `purchase_order_payments`
-- **Policy:** "Enable all access for all users"
-- **Operação:** `ALL`
-- **Condição:** `true` (acesso público)
-
-**OBSERVAÇÃO:** Estas policies permitem acesso público, mas o Catálogo **NÃO** acessa estas tabelas por design.
-
----
-
-## 📝 Resumo por App
-
-### Catálogo (Público)
-**Acesso READ:**
-- `produtos` (via `createClient()` com `force-dynamic`)
-
-**Acesso WRITE:**
-- Nenhum (pedidos via WhatsApp)
-
-**Proibido:**
-- DDL operations
-- Qualquer escrita direta no banco
-
-### Sistema Interno (Admin)
-**Acesso CRUD:**
-- Todas as tabelas
-- Todas as functions
-- Pode executar migrations
-
-**Responsabilidades:**
-- Gerenciar produtos
-- Registrar vendas (após WhatsApp)
-- Gerenciar clientes
-- Gerenciar estoque
-- Gerenciar compras
-
----
-
-## 🔄 MAPEAMENTO DE NOMES (Schema → Types)
-
-### Função `mapProdutoToProduct()`
-
-**Localização:** `src/lib/supabase/mappers.ts`
-
-**Descrição:** Converte dados da tabela `produtos` (schema do banco) para o type `Product` (frontend).
-
-### Tabela de Mapeamento Completo
-
-| Coluna DB (`produtos`) | Type TS (`Product`) | Transformação | Observações |
-|------------------------|---------------------|---------------|-------------|
-| `id` | `id` | Direto | UUID |
-| `nome` | `name` | Direto | - |
-| `codigo` | `slug` | `codigo.replace(/_/g, '-')` | Converte `_` para `-` |
-| `preco` | `price_cents` | `parseFloat(preco) * 100` | Decimal → Centavos |
-| `custo` | `cost_cents` | `parseFloat(custo) * 100` | Decimal → Centavos |
-| `unidade` | - | **NÃO MAPEADO** | Não usado no frontend |
-| `ativo` | `is_active` | Direto | Boolean |
-| `criado_em` | `created_at` | Direto | ISO timestamp |
-| `atualizado_em` | `updated_at` | Direto | ISO timestamp |
-| `estoque_atual` | `stock_quantity` | `estoque_atual \|\| 0` | Null → 0 |
-| `apelido` | - | **USADO PARA `category`** | Heurística: `C/X/P` → `congelado` |
-| `estoque_minimo` | `stock_min_alert` | `estoque_minimo \|\| 5` | Null → 5 |
-| - | `description` | **GERADO** | `null` (não existe no DB) |
-| - | `category` | **GERADO** | Heurística: `apelido` ou `codigo` |
-| - | `weight_kg` | **GERADO** | Regex: `nome.match(/(\d+)kg/)` |
-| - | `is_featured` | **GERADO** | Hardcoded: 3 produtos principais |
-| - | `sort_order` | **GERADO** | `0` (não existe no DB) |
-
-### Heurísticas Aplicadas
-
-#### 1. Categoria (`category`)
-```typescript
-const isCongelado = produto.codigo.includes('congelado') 
-                 || produto.apelido === 'C' 
-                 || produto.apelido === 'X' 
-                 || produto.apelido === 'P'
-
-category: isCongelado ? 'congelado' : 'refrigerado'
-```
-
-#### 2. Peso (`weight_kg`)
-```typescript
-const weightMatch = produto.nome.match(/(\d+)kg/i)
-const weight_kg = weightMatch ? parseFloat(weightMatch[1]) : 1.0
-```
-
-#### 3. Produtos em Destaque (`is_featured`)
-```typescript
-const is_featured = [
-  'chipa_congelada_2kg',
-  'palito_queijo_congelado_2kg',
-  'pao_queijo_congelado_1kg'
-].includes(produto.codigo)
-```
-
-### Campos Não Mapeados
-
-**Do DB → Frontend:**
-- `unidade` — Não usado no catálogo (sempre "kg" implícito)
-
-**Do Frontend → DB:**
-- `description` — Não existe no schema (sempre `null`)
-- `sort_order` — Não existe no schema (sempre `0`)
-
-### Exemplo de Mapeamento
-
-**Entrada (DB):**
-```json
-{
-  "id": "uuid-123",
-  "nome": "Chipa Congelada 2kg",
-  "codigo": "chipa_congelada_2kg",
-  "preco": "60.00",
-  "custo": "33.00",
-  "unidade": "kg",
-  "ativo": true,
-  "estoque_atual": 20,
-  "apelido": "C",
-  "estoque_minimo": 5,
-  "criado_em": "2024-01-01T00:00:00Z",
-  "atualizado_em": "2024-01-01T00:00:00Z"
-}
-```
-
-**Saída (Frontend):**
-```json
-{
-  "id": "uuid-123",
-  "name": "Chipa Congelada 2kg",
-  "slug": "chipa-congelada-2kg",
-  "description": null,
-  "category": "congelado",
-  "weight_kg": 2.0,
-  "price_cents": 6000,
-  "cost_cents": 3300,
-  "stock_quantity": 20,
-  "stock_min_alert": 5,
-  "is_active": true,
-  "is_featured": true,
-  "sort_order": 0,
-  "created_at": "2024-01-01T00:00:00Z",
-  "updated_at": "2024-01-01T00:00:00Z"
-}
-```
+## 5. Política de Migrations
+*   **Nunca** alterar nomes de colunas do Sistema Interno.
+*   **Sempre** usar `IF NOT EXISTS` para criar tabelas/colunas novas.
+*   **Sempre** prefixar novas tabelas com `cat_`.

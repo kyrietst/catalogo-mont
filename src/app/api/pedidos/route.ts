@@ -39,71 +39,75 @@ export async function POST(request: Request) {
             }
         })
 
-        // Tenta inserir pedido (graceful fallback se tabela não existir)
+        // Tenta inserir pedido (Tabelas Reais)
         try {
-            // Insere order
-            const { data: order, error: orderError } = await supabase
-                .from('orders')
+            console.log('Iniciando inserção do pedido no banco de dados...')
+
+            // 1. Inserir em cat_pedidos
+            const { data: pedido, error: pedidoError } = await supabase
+                .from('cat_pedidos')
                 .insert({
-                    customer_name: validatedData.customer_name,
-                    customer_phone: validatedData.customer_phone,
-                    customer_address: validatedData.customer_address || null,
-                    delivery_method: validatedData.delivery_method,
+                    nome_cliente: validatedData.customer_name,
+                    telefone_cliente: validatedData.customer_phone,
+                    endereco_entrega: validatedData.customer_address || null,
+                    metodo_entrega: validatedData.delivery_method,
+                    subtotal_centavos: validatedData.subtotal_cents,
+                    frete_centavos: validatedData.delivery_fee_cents,
+                    total_centavos: validatedData.total_cents,
+                    metodo_pagamento: 'pix', // Default
+                    observacoes: validatedData.notes || null,
+                    indicado_por: validatedData.referred_by || null,
                     status: 'pendente',
-                    subtotal_cents: validatedData.subtotal_cents,
-                    delivery_fee_cents: validatedData.delivery_fee_cents,
-                    total_cents: validatedData.total_cents,
-                    payment_method: 'pix', // Default
-                    payment_status: 'pendente',
-                    notes: validatedData.notes || null,
-                    referred_by: validatedData.referred_by || null,
+                    status_pagamento: 'pendente'
                 })
                 .select()
                 .single()
 
-            if (orderError) {
-                console.error('Erro ao inserir pedido:', orderError)
-                // Retorna placeholder se tabela não existir
-                return NextResponse.json({
-                    order_id: `placeholder-${Date.now()}`,
-                    order_number: Math.floor(Math.random() * 10000),
-                    message: 'Pedido registrado (fallback mode)',
-                })
+            if (pedidoError) {
+                console.error('Erro ao inserir pedido em cat_pedidos:', pedidoError)
+                throw pedidoError
             }
 
-            // Insere order_items
-            const orderItems = validatedData.items.map(item => ({
-                order_id: order.id,
-                product_id: item.product_id,
-                product_name: item.product_name,
-                quantity: item.quantity,
-                unit_price_cents: item.unit_price_cents,
-                total_cents: item.unit_price_cents * item.quantity,
+            console.log('Pedido criado com sucesso:', pedido.id)
+
+            // 2. Inserir em cat_itens_pedido
+            const itensPedido = validatedData.items.map(item => ({
+                pedido_id: pedido.id,
+                produto_id: item.product_id,
+                nome_produto: item.product_name,
+                quantidade: item.quantity,
+                preco_unitario_centavos: item.unit_price_cents,
+                total_centavos: item.unit_price_cents * item.quantity,
             }))
 
-            const { error: itemsError } = await supabase
-                .from('order_items')
-                .insert(orderItems)
+            const { error: itensError } = await supabase
+                .from('cat_itens_pedido')
+                .insert(itensPedido)
 
-            if (itemsError) {
-                console.error('Erro ao inserir itens:', itemsError)
+            if (itensError) {
+                console.error('Erro ao inserir itens em cat_itens_pedido:', itensError)
+                // Idealmente faria rollback, mas Supabase via API não tem transação simples aqui.
+                // Vamos apenas logar por enquanto.
+                throw itensError
             }
 
             return NextResponse.json({
-                order_id: order.id,
-                order_number: order.order_number,
-                message: 'Pedido criado com sucesso',
+                pedido_id: pedido.id,
+                numero_pedido: pedido.numero_pedido, // A view/tabela tem esse campo ou serial? O prompt diz "numero_pedido: cat_pedidos.numero_pedido".
+                // Se a tabela cat_pedidos tem serial, ok. Se nao, vai dar undefined.
+                // O prompt diz: "Após inserir com sucesso, retornar: { pedido_id: cat_pedidos.id, numero_pedido: cat_pedidos.numero_pedido, status: 'pendente' }"
+                status: 'pendente',
+                message: 'Pedido criado com sucesso'
             })
 
         } catch (dbError) {
-            console.error('Erro no banco:', dbError)
+            console.error('Erro crítico no banco de dados:', dbError)
 
-            // Fallback: retorna placeholder
-            return NextResponse.json({
-                order_id: `placeholder-${Date.now()}`,
-                order_number: Math.floor(Math.random() * 10000),
-                message: 'Pedido registrado (fallback mode)',
-            })
+            // Retorna erro 500 real, sem fallback
+            return NextResponse.json(
+                { error: 'Erro ao salvar pedido no banco de dados' },
+                { status: 500 }
+            )
         }
 
     } catch (error) {

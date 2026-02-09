@@ -133,15 +133,17 @@
 **Resposta:**
 ```json
 {
-  "success": true,
-  "order_id": "uuid",
-  "whatsapp_url": "https://wa.me/..."
+  "pedido_id": "uuid",
+  "numero_pedido": 123,
+  "status": "pendente",
+  "message": "Pedido criado com sucesso"
 }
 ```
 
-**Tabelas Supabase:**
-- Nenhuma (Fase 1 — apenas gera WhatsApp URL)
-- Fase 2: `vendas`, `itens_venda`
+**Database Action:**
+1. Inserts into `cat_pedidos` (Status: `pendente`).
+2. Inserts items into `cat_itens_pedido`.
+3. Returns order ID and number for confirmation.
 
 **Autenticação:**
 - Nenhuma (público)

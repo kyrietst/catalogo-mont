@@ -16,10 +16,10 @@ async function getFeaturedProducts(): Promise<Product[]> {
         const supabase = createClient()
 
         const { data, error } = await supabase
-            .from('produtos')
+            .from('vw_catalogo_produtos')
             .select('*')
-            .eq('ativo', true)
-            .order('id')
+            .eq('is_active', true)
+            .eq('is_featured', true)
             .limit(10)
 
         if (error || !data || data.length === 0) {
@@ -27,8 +27,7 @@ async function getFeaturedProducts(): Promise<Product[]> {
             return MOCK_PRODUCTS.filter(p => p.is_featured)
         }
 
-        const products = data.map(mapProdutoToProduct)
-        return products.filter(p => p.is_featured)
+        return data as Product[]
 
     } catch (error) {
         console.error('Erro ao buscar produtos:', error)

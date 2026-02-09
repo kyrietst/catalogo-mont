@@ -114,6 +114,22 @@
 
 ---
 
+### 6. Por que Schema Híbrido + Views?
+
+**Decisão:** Manter tabelas legadas (PT) e criar novas (prefixo `cat_`) consumidas via Views.
+
+**Justificativa:**
+- **Segurança:** O frontend nunca acessa as tabelas do sistema interno diretamente.
+- **Estabilidade:** Sem risco de quebrar o sistema legado ao alterar colunas para o site.
+- **Padronização:** API do frontend recebe dados em Inglês (`price_cents`, `name`) via Views, independente do nome original no banco (`total`, `nome`).
+- **Desacoplamento:** O banco pode mudar internamente, basta ajustar a View.
+
+**Alternativas Consideradas:**
+- ❌ Renomear tabelas antigas — Risco altíssimo de quebrar o sistema atual.
+- ❌ Duplicar dados — Problema de sincronia (Single Source of Truth violada).
+
+---
+
 ## 📁 Estrutura de Pastas
 
 ```
@@ -285,19 +301,23 @@ export default function Component({ props }: Props) {
 
 ### Supabase RLS
 
-- **Catálogo:** Usa `SUPABASE_ANON_KEY` (read-only em `produtos`)
-- **Sistema Interno:** Usa `SUPABASE_SERVICE_ROLE_KEY` (CRUD completo)
+### Supabase RLS & Permissions
 
-### Validação
+- **Catálogo (Anon Key):**
+    - `vw_catalogo_produtos`: SELECT (Público)
+    - `cat_imagens_produto`: SELECT (Público)
+    - `cat_pedidos`: INSERT (Público)
+    - **Proibido:** UPDATE/DELETE em qualquer tabela.
 
-- **Frontend:** Zod schemas para forms
-- **Backend:** Validação adicional em API routes (se necessário)
+- **Sistema Interno (Service Role):**
+    - Acesso total a todas as tabelas (`produtos`, `vendas`, `contatos`).
+    - Gerencia status dos pedidos via dashboard admin.
 
 ### Environment Variables
 
 - **Nunca commitar** `.env.local`
 - **Sempre usar** `NEXT_PUBLIC_` para variáveis client-side
-- **Service Role Key** apenas em server-side
+- **Service Role Key** apenas em server-side (API Routes/Server Actions)
 
 ---
 
