@@ -28,6 +28,9 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
+.env.development.local
+.env.test.local
+.env.production.local
 
 # vercel
 .vercel
@@ -38,3 +41,49 @@ next-env.d.ts
 
 # supabase
 .supabase
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.DS_Store
+
+# OS files
+Thumbs.db
+.AppleDouble
+.LSOverride
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Logs
+logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Security
+*.key
+*.pem
+*.p12
+*.pfx
+secrets.json
+credentials.json
+
+# Backup files
+*.bak
+*.backup
+*~
