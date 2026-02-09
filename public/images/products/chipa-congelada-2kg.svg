@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" width="400" height="500">
+  <!-- Background -->
+  <rect width="400" height="500" fill="#FAF7F2"/>
+  
+  <!-- Decorative Elements -->
+  <circle cx="350" cy="50" r="80" fill="#F5F0E8" opacity="0.6"/>
+  <circle cx="50" cy="450" r="60" fill="#F5F0E8" opacity="0.6"/>
+  
+  <!-- Minimalist Illustration - Cheese Bread Dough -->
+  <ellipse cx="200" cy="220" rx="120" ry="110" fill="#E8DCC8" opacity="0.8"/>
+  <ellipse cx="200" cy="220" rx="100" ry="90" fill="#F5E6D3" opacity="0.9"/>
+  <ellipse cx="200" cy="220" rx="80" ry="70" fill="#FFF8E7"/>
+  
+  <!-- Subtle Texture Dots -->
+  <circle cx="180" cy="200" r="3" fill="#D4A574" opacity="0.3"/>
+  <circle cx="220" cy="210" r="2.5" fill="#D4A574" opacity="0.3"/>
+  <circle cx="195" cy="235" r="2" fill="#D4A574" opacity="0.3"/>
+  <circle cx="210" cy="225" r="2.5" fill="#D4A574" opacity="0.3"/>
+  
+  <!-- Product Name -->
+  <text x="200" y="380" font-family="Playfair Display, serif" font-size="32" font-weight="600" fill="#2C1810" text-anchor="middle">
+    Chipa Congelada
+  </text>
+  
+  <!-- Weight Badge -->
+  <rect x="140" y="410" width="120" height="40" rx="20" fill="#2C1810"/>
+  <text x="200" y="437" font-family="system-ui, sans-serif" font-size="18" font-weight="500" fill="#FAF7F2" text-anchor="middle">
+    2kg
+  </text>
+  
+  <!-- Category Badge -->
+  <rect x="130" y="460" width="140" height="28" rx="14" fill="#D4A574" opacity="0.2"/>
+  <text x="200" y="480" font-family="system-ui, sans-serif" font-size="14" font-weight="500" fill="#2C1810" text-anchor="middle">
+    Congelado
+  </text>
+</svg>

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" width="400" height="500">
+  <!-- Background -->
+  <rect width="400" height="500" fill="#F5F0E8"/>
+  
+  <!-- Decorative Elements -->
+  <circle cx="80" cy="80" r="70" fill="#FAF7F2" opacity="0.7"/>
+  <circle cx="320" cy="420" r="90" fill="#FAF7F2" opacity="0.7"/>
+  
+  <!-- Minimalist Illustration - Cheese Sticks -->
+  <g transform="translate(200, 220)">
+    <!-- Stick 1 -->
+    <rect x="-50" y="-60" width="15" height="120" rx="7.5" fill="#F5E6D3"/>
+    <rect x="-50" y="-60" width="15" height="120" rx="7.5" fill="#E8DCC8" opacity="0.3"/>
+    
+    <!-- Stick 2 -->
+    <rect x="-20" y="-70" width="15" height="140" rx="7.5" fill="#FFF8E7"/>
+    <rect x="-20" y="-70" width="15" height="140" rx="7.5" fill="#D4A574" opacity="0.2"/>
+    
+    <!-- Stick 3 -->
+    <rect x="10" y="-55" width="15" height="110" rx="7.5" fill="#F5E6D3"/>
+    <rect x="10" y="-55" width="15" height="110" rx="7.5" fill="#E8DCC8" opacity="0.3"/>
+    
+    <!-- Stick 4 -->
+    <rect x="35" y="-65" width="15" height="130" rx="7.5" fill="#FFF8E7"/>
+    <rect x="35" y="-65" width="15" height="130" rx="7.5" fill="#D4A574" opacity="0.2"/>
+  </g>
+  
+  <!-- Product Name -->
+  <text x="200" y="370" font-family="Playfair Display, serif" font-size="28" font-weight="600" fill="#2C1810" text-anchor="middle">
+    Palito de Queijo
+  </text>
+  <text x="200" y="400" font-family="Playfair Display, serif" font-size="28" font-weight="600" fill="#2C1810" text-anchor="middle">
+    Congelado
+  </text>
+  
+  <!-- Weight Badge -->
+  <rect x="140" y="420" width="120" height="40" rx="20" fill="#2C1810"/>
+  <text x="200" y="447" font-family="system-ui, sans-serif" font-size="18" font-weight="500" fill="#FAF7F2" text-anchor="middle">
+    2kg
+  </text>
+  
+  <!-- Category Badge -->
+  <rect x="130" y="470" width="140" height="28" rx="14" fill="#D4A574" opacity="0.2"/>
+  <text x="200" y="490" font-family="system-ui, sans-serif" font-size="14" font-weight="500" fill="#2C1810" text-anchor="middle">
+    Congelado
+  </text>
+</svg>
