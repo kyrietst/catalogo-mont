@@ -27,7 +27,8 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
     return (
         <section
             ref={sectionRef}
-            className="py-20 md:py-32 bg-mont-cream"
+            className="py-20 md:py-32 bg-transparent"
+            id="destaques"
         >
             <div className="container mx-auto px-4">
                 <div className="text-center mb-12">

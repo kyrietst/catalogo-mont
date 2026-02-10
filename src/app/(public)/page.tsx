@@ -7,6 +7,7 @@ import FeaturedProducts from './_components/FeaturedProducts'
 import HowItWorks from './_components/HowItWorks'
 import BrandStory from './_components/BrandStory'
 import FinalCTA from './_components/FinalCTA'
+import HomeWrapper from './_components/HomeWrapper'
 
 // Force dynamic rendering (não SSG)
 export const dynamic = 'force-dynamic'
@@ -42,13 +43,13 @@ export default async function HomePage() {
         <>
             <Navbar />
 
-            <main className="min-h-screen">
+            <HomeWrapper>
                 <HeroSection />
                 <FeaturedProducts products={featuredProducts} />
                 <HowItWorks />
                 <BrandStory />
                 <FinalCTA />
-            </main>
+            </HomeWrapper>
 
             <Footer />
         </>

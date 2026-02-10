@@ -1,42 +1,51 @@
-'use client'
+import { useLayoutEffect, useRef } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-import { useEffect, useRef } from 'react'
-import { scrollReveal, cleanupScrollTriggers } from '@/lib/gsap/animations'
-
-interface UseScrollAnimationOptions {
+interface ScrollAnimationOptions {
+    y?: number
+    duration?: number
+    delay?: number
+    start?: string
     stagger?: number
-    enabled?: boolean
 }
 
-/**
- * Hook para aplicar scroll reveal animation em elementos
- * 
- * @example
- * const ref = useScrollAnimation<HTMLDivElement>()
- * return <div ref={ref} className="animate-target">Content</div>
- */
-export function useScrollAnimation<T extends HTMLElement>(
-    options: UseScrollAnimationOptions = {}
-) {
-    const { stagger = 0.1, enabled = true } = options
-    const ref = useRef<T>(null)
+export function useScrollAnimation({
+    y = 50,
+    duration = 0.8,
+    delay = 0,
+    start = 'top 85%',
+}: ScrollAnimationOptions = {}) {
+    const elementRef = useRef<any>(null)
 
-    useEffect(() => {
-        if (!enabled || !ref.current) return
+    useLayoutEffect(() => {
+        gsap.registerPlugin(ScrollTrigger)
 
-        const elements = ref.current.querySelectorAll<HTMLElement>('.animate-target')
+        const element = elementRef.current
+        if (!element) return
 
-        if (elements.length > 0) {
-            scrollReveal(Array.from(elements), { stagger })
-        } else {
-            // Se não houver .animate-target, anima o próprio elemento
-            scrollReveal([ref.current], { stagger })
-        }
+        const ctx = gsap.context(() => {
+            gsap.fromTo(element,
+                { y: y, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: duration,
+                    delay: delay,
+                    ease: 'power3.out',
+                    scrollTrigger: {
+                        trigger: element,
+                        start: start,
+                        toggleActions: 'play none none reverse' // Reverse on scroll up? Or 'play none none none'? Prompt didn't specify. 'play none none none' is usually safer for reading.
+                        // But verifying: `toggleActions: 'play none none none'` means play continuously?
+                        // Actually 'play none none none' is play once.
+                    }
+                }
+            )
+        })
 
-        return () => {
-            cleanupScrollTriggers()
-        }
-    }, [stagger, enabled])
+        return () => ctx.revert()
+    }, [y, duration, delay, start])
 
-    return ref
+    return elementRef
 }

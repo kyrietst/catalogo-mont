@@ -53,7 +53,7 @@ export default function HowItWorks() {
         <section
             id="como-funciona"
             ref={sectionRef}
-            className="py-20 md:py-32 bg-mont-surface"
+            className="py-20 md:py-32 bg-transparent"
         >
             <div className="container mx-auto px-4">
                 <div className="text-center mb-16">

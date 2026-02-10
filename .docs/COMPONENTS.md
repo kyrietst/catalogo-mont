@@ -8,6 +8,12 @@
 - `ProductCard`: Public catalog item
 - `ProductModal`: Product details modal
 
+## Visual Components (`src/components/visual/`)
+- `FloatingCheeseBread`: Parallax cheese bread element (CSS/SVG)
+- `MountainSilhouette`: SVG mountain background decoration
+- `GrainTexture`: CSS noise overlay for texture
+- `ParticleField`: Floating particles background animation
+
 ## Admin Components (`src/components/admin/`)
 - `AdminHeader`: Authenticated header with logout
 - `AdminNav`: Mobile bottom navigation

@@ -4,6 +4,53 @@
 
 ---
 
+## Sessão 7 — Redesign da Home (Fase 3) (2026-02-10)
+
+### O que foi feito
+
+**Implementação:**
+1. ✅ **Redesign Visual Completo:**
+   - **Hero Section:** Parallax multi-camada com 5 níveis de profundidade.
+   - **Final CTA:** Design espelhado do Hero com pães flutuantes.
+   - **Elementos Visuais CSS/SVG:**
+     - `FloatingCheeseBread`: Pães realistas feitos apenas com CSS gradients.
+     - `MountainSilhouette`: SVG das montanhas da marca.
+     - `ParticleField`: Partículas (farinha) flutuando com keyframes.
+     - `GrainTexture`: Overlay de ruído para textura.
+
+2. ✅ **Animações GSAP:**
+   - **Parallax:** Elementos se movem em velocidades diferentes no scroll.
+   - **Text Reveal:** Títulos revelados palavra por palavra.
+   - **Color Transition:** Fundo muda de cor suavemente entre seções (`HomeWrapper`).
+   - **Cart Feedback:** Ícone do carrinho "pula" ao adicionar produto.
+
+3. ✅ **Mobile Experience:**
+   - **Menu Mobile:** Hambúrguer com drawer slide-in animado.
+   - **Responsividade:** Ajuste de Hero e CTA para 375px.
+
+**Arquivos Criados:**
+- `src/components/visual/FloatingCheeseBread.tsx`
+- `src/components/visual/MountainSilhouette.tsx`
+- `src/components/visual/GrainTexture.tsx`
+- `src/components/visual/ParticleField.tsx`
+- `src/app/(public)/_components/HomeWrapper.tsx`
+- `src/hooks/useScrollAnimation.ts`
+
+**Arquivos Modificados:**
+- `src/app/(public)/_components/HeroSection.tsx` (Rewrite)
+- `src/app/(public)/_components/FinalCTA.tsx` (Rewrite)
+- `src/components/catalog/Navbar.tsx` (Mobile Menu + Anim)
+- `src/app/(public)/_components/BrandStory.tsx` (Anim)
+
+**Decisões Técnicas:**
+- **Zero Assets Externos:** Substituição de `hero-bg.jpg` e `cta-bg.jpg` por componentes CSS/SVG para performance.
+- **GSAP Context:** Uso de `gsap.context` e `useLayoutEffect` para limpeza correta de animações em React.
+- **Wrapper de Cor:** `HomeWrapper` gerencia a cor de fundo do `main` baseado na seção visível.
+
+**Status:** ✅ Redesign aplicado e documentado.
+
+---
+
 ## Sessão 6 — Painel Admin, Auth & Imagens (2026-02-09)
 
 ### O que foi feito
