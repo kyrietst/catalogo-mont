@@ -24,6 +24,7 @@ export default function HeroSection() {
     }
 
     useEffect(() => {
+        console.log('[HERO] useEffect executou')
         gsap.registerPlugin(ScrollTrigger)
 
         const ctx = gsap.context(() => {
@@ -36,9 +37,14 @@ export default function HeroSection() {
             // Store float animations for cleanup
             const floatAnimations: gsap.core.Tween[] = []
 
+            console.log('[HERO] Total de refs de pães:', breadRefs.current.length)
+            console.log('[HERO] Refs válidos:', breadRefs.current.filter(r => r).length)
+
             // Parallax + Idle for Breads
             breadRefs.current.forEach((bread, index) => {
                 if (!bread) return
+
+                console.log('[HERO] Criando float animation para pão', index, bread)
 
                 // 1. Idle Floating Animation (Randomized)
                 // Coexist with scroll parallax (GSAP composition)
@@ -76,6 +82,7 @@ export default function HeroSection() {
                         scrub: true
                     }
                 })
+                console.log('[HERO] ScrollTrigger criado, scrub:', true)
             })
 
             // Cleanup function will handle floatAnimations kill via context revert, 
@@ -95,7 +102,10 @@ export default function HeroSection() {
 
         }, containerRef)
 
-        return () => ctx.revert()
+        return () => {
+            console.log('[HERO] Cleanup executou')
+            ctx.revert()
+        }
     }, [])
 
     return (
