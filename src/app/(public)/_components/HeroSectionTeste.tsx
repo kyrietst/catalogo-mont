@@ -40,7 +40,7 @@ export default function HeroSectionTeste() {
             // ============================================================
             // Time que está ganhando não se mexe!
             mm.add("(max-width: 768px)", () => {
-                gsap.set(cheeseRef.current, { scaleX: 0.5, x: 0 })
+                gsap.set(cheeseRef.current, { scaleX: 0.25, x: 0 })
 
                 const tl = gsap.timeline({
                     scrollTrigger: {
