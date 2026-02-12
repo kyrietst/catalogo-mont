@@ -5,7 +5,6 @@ import ScrollWrapper from './ScrollWrapper'
 import HeroCopy from './HeroCopy'
 import FloatingPaes from './FloatingPaes'
 import PaoDeQueijo from './PaoDeQueijo'
-import CheeseStrings from './CheeseStrings'
 import DiveOverlay from './DiveOverlay'
 
 export default function ImmersiveHero() {
@@ -24,7 +23,6 @@ export default function ImmersiveHero() {
             <HeroCopy />
             <FloatingPaes />
             <PaoDeQueijo />
-            <CheeseStrings />
             <DiveOverlay />
 
         </ScrollWrapper>
