@@ -2,7 +2,7 @@ import { Navbar, Footer } from '@/components/catalog'
 import { createClient } from '@/lib/supabase/server'
 import { mapProdutoToProduct, MOCK_PRODUCTS } from '@/lib/supabase/mappers'
 import type { Product } from '@/types/product'
-import HeroSection from './_components/HeroSection'
+import ImmersiveHero from './_components/hero/ImmersiveHero'
 import FeaturedProducts from './_components/FeaturedProducts'
 import HowItWorks from './_components/HowItWorks'
 import BrandStory from './_components/BrandStory'
@@ -44,7 +44,7 @@ export default async function HomePage() {
             <Navbar />
 
             <HomeWrapper>
-                <HeroSection />
+                <ImmersiveHero />
                 <FeaturedProducts products={featuredProducts} />
                 <HowItWorks />
                 <BrandStory />
