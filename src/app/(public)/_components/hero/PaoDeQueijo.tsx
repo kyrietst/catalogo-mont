@@ -131,7 +131,7 @@ export default function PaoDeQueijo() {
     }, [timeline])
 
     return (
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none">
+        <div className="absolute left-[53.5%] top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none">
             <div
                 ref={sceneRef}
                 className="relative w-[50vmin] h-[50vmin] md:w-[40vmin] md:h-[40vmin]"
