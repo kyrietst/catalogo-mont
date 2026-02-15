@@ -36,7 +36,15 @@ export function Navbar({ cartItemCount: initialCount = 0 }: NavbarProps) {
 
     useEffect(() => {
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 50)
+            const heroWrapper = document.querySelector('[data-hero-wrapper]')
+            if (heroWrapper) {
+                // Só ativar fundo sólido quando o scroll ultrapassar 90% do hero
+                const heroBottom = heroWrapper.scrollHeight * 0.9
+                setIsScrolled(window.scrollY > heroBottom)
+            } else {
+                // Fallback para páginas sem hero
+                setIsScrolled(window.scrollY > 50)
+            }
         }
 
         window.addEventListener('scroll', handleScroll, { passive: true })

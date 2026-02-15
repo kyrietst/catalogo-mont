@@ -6,25 +6,24 @@ import HeroCopy from './HeroCopy'
 import FloatingPaes from './FloatingPaes'
 import PaoDeQueijo from './PaoDeQueijo'
 import DiveOverlay from './DiveOverlay'
+import HeroTransition from './HeroTransition'
 
 export default function ImmersiveHero() {
     return (
-        <ScrollWrapper>
-            {/* Visual Debugging - Will be removed later */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-50">
-                <div className="text-white/20 text-xs font-mono">
-                    Immersive Hero Active
-                </div>
-            </div>
+        <>
+            <ScrollWrapper>
+                {/* Background */}
+                <div className="absolute inset-0 bg-[#3D2B22]" />
 
-            {/* Background */}
-            <div className="absolute inset-0 bg-[#3D2B22]" />
+                <HeroCopy />
+                <FloatingPaes />
+                <PaoDeQueijo />
+                <DiveOverlay />
+            </ScrollWrapper>
 
-            <HeroCopy />
-            <FloatingPaes />
-            <PaoDeQueijo />
-            <DiveOverlay />
-
-        </ScrollWrapper>
+            {/* Overlay creme de transição — FORA do ScrollWrapper
+                para sobreviver ao unpin do GSAP */}
+            <HeroTransition />
+        </>
     )
 }

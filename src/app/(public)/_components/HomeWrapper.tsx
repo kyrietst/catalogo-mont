@@ -23,10 +23,15 @@ export default function HomeWrapper({ children }: { children: React.ReactNode })
                 // Check if element exists before creating trigger to avoid warnings
                 if (!document.querySelector(selector)) return;
 
+                // Para #destaques (primeira seção após o hero), antecipar a
+                // transição de cor para evitar a faixa marrom entre hero e produtos
+                const startValue = selector === '#destaques' ? 'top 95%' : 'top 60%'
+                const endValue = selector === '#destaques' ? 'top 60%' : 'top 20%'
+
                 ScrollTrigger.create({
                     trigger: selector,
-                    start: 'top 60%',
-                    end: 'top 20%',
+                    start: startValue,
+                    end: endValue,
                     scrub: true,
                     animation: gsap.to(main, { backgroundColor: color, ease: 'none' })
                 })
