@@ -1,63 +1,52 @@
 import type { Product } from '@/types/product'
 
 /**
- * Schema real do banco (tabela produtos)
+ * Schema real do banco (tabela produtos + view vw_catalogo_produtos)
  */
 interface ProdutoDatabase {
     id: string
     nome: string
     codigo: string
-    preco: string // numeric (decimal)
-    custo: string // numeric (decimal)
-    unidade: string
-    ativo: boolean
-    criado_em: string
-    atualizado_em: string
+    slug: string
+    descricao: string | null
+    categoria: 'congelado' | 'refrigerado' // Vem da view
+    weight_kg: number // Vem da view
+    price_cents: number // Vem da view
+    price_formatted: string // Vem da view
     estoque_atual: number | null
-    apelido: string | null
     estoque_minimo: number | null
+    ativo: boolean
+    is_featured: boolean // Vem da view
+    stock_status: string // Vem da view
+    primary_image_url: string | null // Vem da view
+    images: any[] | null // Vem da view (json)
+    criado_em?: string
+    atualizado_em?: string
 }
 
 /**
  * Mapeia produto do banco para o type Product usado no frontend
  */
 export function mapProdutoToProduct(produto: ProdutoDatabase): Product {
-    // Extrai categoria do código (heurística)
-    const isCongelado = produto.codigo.includes('congelado') || produto.apelido === 'C' || produto.apelido === 'X' || produto.apelido === 'P'
-
-    // Extrai peso do nome (heurística)
-    const weightMatch = produto.nome.match(/(\d+)kg/i)
-    const weight_kg = weightMatch ? parseFloat(weightMatch[1]) : 1.0
-
-    // Gera slug a partir do código
-    const slug = produto.codigo.replace(/_/g, '-')
-
-    // Converte preço decimal para centavos
-    const price_cents = Math.round(parseFloat(produto.preco) * 100)
-    const cost_cents = Math.round(parseFloat(produto.custo) * 100)
-
-    // Determina se é destaque (produtos mais vendidos - heurística)
-    const is_featured = ['chipa_congelada_2kg', 'palito_queijo_congelado_2kg', 'pao_queijo_congelado_1kg'].includes(produto.codigo)
-
     return {
         id: produto.id,
         name: produto.nome,
-        slug,
-        description: null, // Não existe no schema real
-        category: isCongelado ? 'congelado' : 'refrigerado',
-        weight_kg,
-        price_cents,
-        cost_cents,
+        slug: produto.slug,
+        description: produto.descricao,
+        category: produto.categoria,
+        weight_kg: produto.weight_kg,
+        price_cents: produto.price_cents,
+        cost_cents: 0, // Não vem da view pública por segurança
         stock_quantity: produto.estoque_atual || 0,
         stock_min_alert: produto.estoque_minimo || 5,
         is_active: produto.ativo,
-        is_featured,
-        sort_order: 0, // Não existe no schema real
-        created_at: produto.criado_em,
-        updated_at: produto.atualizado_em,
-        primary_image_url: null,
-        images: [],
-        stock_status: 'em_estoque',
+        is_featured: produto.is_featured,
+        sort_order: 0,
+        created_at: produto.criado_em || new Date().toISOString(),
+        updated_at: produto.atualizado_em || new Date().toISOString(),
+        primary_image_url: produto.primary_image_url,
+        images: produto.images || [],
+        stock_status: produto.stock_status,
     }
 }
 
@@ -81,7 +70,7 @@ export const MOCK_PRODUCTS: Product[] = [
         sort_order: 1,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-        primary_image_url: null,
+        primary_image_url: null, // Sem imagem ainda
         images: [],
         stock_status: 'em_estoque',
     },
@@ -101,7 +90,7 @@ export const MOCK_PRODUCTS: Product[] = [
         sort_order: 2,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-        primary_image_url: null,
+        primary_image_url: null, // Sem imagem ainda
         images: [],
         stock_status: 'em_estoque',
     },
@@ -121,7 +110,7 @@ export const MOCK_PRODUCTS: Product[] = [
         sort_order: 3,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-        primary_image_url: null,
+        primary_image_url: 'https://herlvujykltxnwqmwmyx.supabase.co/storage/v1/object/public/products/pao-de-queijo-congelado-1kg-10un-100g-cover.webp',
         images: [],
         stock_status: 'em_estoque',
     },
@@ -141,7 +130,7 @@ export const MOCK_PRODUCTS: Product[] = [
         sort_order: 4,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-        primary_image_url: null,
+        primary_image_url: 'https://herlvujykltxnwqmwmyx.supabase.co/storage/v1/object/public/products/pao-de-queijo-congelado-2kg-40un-50g-cover.webp',
         images: [],
         stock_status: 'em_estoque',
     },
@@ -161,7 +150,7 @@ export const MOCK_PRODUCTS: Product[] = [
         sort_order: 5,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-        primary_image_url: null,
+        primary_image_url: 'https://herlvujykltxnwqmwmyx.supabase.co/storage/v1/object/public/products/balde-massa-1kg-cover.webp',
         images: [],
         stock_status: 'em_estoque',
     },
@@ -181,7 +170,7 @@ export const MOCK_PRODUCTS: Product[] = [
         sort_order: 6,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-        primary_image_url: null,
+        primary_image_url: 'https://herlvujykltxnwqmwmyx.supabase.co/storage/v1/object/public/products/balde-massa-4kg-cover.webp',
         images: [],
         stock_status: 'em_estoque',
     },

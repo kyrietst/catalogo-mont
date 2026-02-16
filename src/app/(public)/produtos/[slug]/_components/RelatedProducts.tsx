@@ -24,7 +24,7 @@ export default function RelatedProducts({ products }: RelatedProductsProps) {
                         category={product.category}
                         weight_kg={product.weight_kg}
                         price_cents={product.price_cents}
-                        image_url={product.image_url}
+                        image_url={product.primary_image_url || product.image_url}
                     />
                 ))}
             </div>
