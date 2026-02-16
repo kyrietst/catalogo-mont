@@ -39,7 +39,7 @@ export default function ScrollWrapper({ children }: ScrollWrapperProps) {
                     end: 'bottom bottom',
                     pin: contentRef.current,
                     pinSpacing: false, // Important so we scroll "through" the 600vh
-                    scrub: 1.2,
+                    scrub: 2.0,
                     invalidateOnRefresh: true,
                     onUpdate: (self) => setScrollProgress(self.progress)
                 }
@@ -58,7 +58,7 @@ export default function ScrollWrapper({ children }: ScrollWrapperProps) {
                 O container principal tem 600vh para dar espaço de rolagem.
                 O conteúdo fixo (pinned) tem 100vh.
              */}
-            <div ref={wrapperRef} data-hero-wrapper className="relative w-full h-[600vh] bg-[#3D2B22]">
+            <div ref={wrapperRef} data-hero-wrapper className="relative w-full h-[900vh] bg-[#3D2B22]">
                 <div ref={contentRef} className="w-full h-screen overflow-hidden">
                     {children}
                 </div>

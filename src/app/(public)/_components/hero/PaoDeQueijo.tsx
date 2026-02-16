@@ -43,7 +43,7 @@ export default function PaoDeQueijo() {
                 { scale: 1 },
                 {
                     scale: () => getFullscreenScale(),
-                    duration: 40,       // Estendido (terminaria em 55) para que o zoom NUNCA pare antes do Split
+                    duration: 18,       // 15 + 18 = 33. Termina EXATAMENTE onde o Dive começa.
                     ease: 'power1.in',  // Acelerando para conectar com o Dive
                     force3D: true
                 },
@@ -57,13 +57,11 @@ export default function PaoDeQueijo() {
             // Left Half
             timeline.fromTo(crustLeftRef.current,
                 {
-                    clipPath: 'inset(0 0% 0 0)',
                     xPercent: 0.5
                 },
                 {
-                    clipPath: 'inset(0 50% 0 0)',
                     xPercent: -40,
-                    duration: 12,       // Um pouco mais longo para suavidade
+                    duration: 12,
                     ease: 'power2.inOut'
                 },
                 35
@@ -72,11 +70,9 @@ export default function PaoDeQueijo() {
             // Right Half
             timeline.fromTo(crustRightRef.current,
                 {
-                    clipPath: 'inset(0 0 0 0%)',
                     xPercent: -0.5
                 },
                 {
-                    clipPath: 'inset(0 0 0 50%)',
                     xPercent: 40,
                     duration: 12,
                     ease: 'power2.inOut'
@@ -140,7 +136,7 @@ export default function PaoDeQueijo() {
                 <div
                     ref={crustLeftRef}
                     className="absolute inset-0 w-full h-full z-10"
-                    style={{ clipPath: 'inset(0 0 0 0)' }}
+                    style={{}}
                 >
                     <img
                         src="/hero-cheese/pao_left.png"
@@ -153,7 +149,7 @@ export default function PaoDeQueijo() {
                 <div
                     ref={crustRightRef}
                     className="absolute inset-0 w-full h-full z-10"
-                    style={{ clipPath: 'inset(0 0 0 0)' }}
+                    style={{}}
                 >
                     <img
                         src="/hero-cheese/pao_right.png"
