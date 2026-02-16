@@ -43,8 +43,8 @@ export default function PaoDeQueijo() {
                 { scale: 1 },
                 {
                     scale: () => getFullscreenScale(),
-                    duration: 23,       // Encurtado para terminar em 38
-                    ease: 'power2.inOut',
+                    duration: 40,       // Estendido (terminaria em 55) para que o zoom NUNCA pare antes do Split
+                    ease: 'power1.in',  // Acelerando para conectar com o Dive
                     force3D: true
                 },
                 15
@@ -66,7 +66,7 @@ export default function PaoDeQueijo() {
                     duration: 12,       // Um pouco mais longo para suavidade
                     ease: 'power2.inOut'
                 },
-                38  // Atrasado para 38 (era 40) para eliminar o pause
+                35
             )
 
             // Right Half
@@ -81,7 +81,7 @@ export default function PaoDeQueijo() {
                     duration: 12,
                     ease: 'power2.inOut'
                 },
-                38
+                35
             )
 
             // --- CHEESE ANIMATION (Scroll 39% -> 51%) ---
@@ -91,14 +91,14 @@ export default function PaoDeQueijo() {
                 pointerEvents: 'auto',
                 scaleX: 1.0, // Começa em tamanho normal para não parecer "encolhido"
                 scaleY: 0.6  // Já na altura final
-            }, 38)
+            }, 35)
 
             // Opacidade surge rápido (duration 3) mas com leve atraso
             timeline.to(cheeseRef.current, {
                 opacity: 1,
                 duration: 3,
                 ease: 'power1.out'
-            }, 40) // Atrasado para 40 (era 42) para não vazar antes de abrir
+            }, 37) // Atrasado para 37
 
             // Estiramento progressivo (duration 12 para acompanhar o pão)
             timeline.to(cheeseRef.current, {
@@ -113,7 +113,7 @@ export default function PaoDeQueijo() {
                 scaleY: 0.6,
                 duration: 12,
                 ease: 'power2.inOut'
-            }, 38) // Sincronizado com Split (38)
+            }, 35) // Sincronizado com Split (35)
 
             // --- FASE 4: DIVE (Sloooow zoom) ---
             // Começa ANTES do split (38) e LOGO APÓS zoom inicial (36)
@@ -121,9 +121,9 @@ export default function PaoDeQueijo() {
                 scale: () => getFullscreenScale() * 5,
                 opacity: 0,
                 duration: 48, // Mais longo para compensar o inicio antecipado
-                ease: 'power2.inOut',
+                ease: 'power1.out', // Começa rápido para manter o ímpeto do zoom anterior
                 force3D: true
-            }, 36) // Dive começa em 36 (2 frames antes do split em 38)
+            }, 33) // Dive começa em 33
 
         }, sceneRef)
 
