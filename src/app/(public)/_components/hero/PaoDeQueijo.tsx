@@ -66,7 +66,7 @@ export default function PaoDeQueijo() {
                     duration: 12,       // Um pouco mais longo para suavidade
                     ease: 'power2.inOut'
                 },
-                40  // Atrasado para 40 (era 39) para vir DEPOIS do dive (37)
+                38  // Atrasado para 38 (era 40) para eliminar o pause
             )
 
             // Right Half
@@ -81,7 +81,7 @@ export default function PaoDeQueijo() {
                     duration: 12,
                     ease: 'power2.inOut'
                 },
-                39
+                38
             )
 
             // --- CHEESE ANIMATION (Scroll 39% -> 51%) ---
@@ -91,14 +91,14 @@ export default function PaoDeQueijo() {
                 pointerEvents: 'auto',
                 scaleX: 1.0, // Começa em tamanho normal para não parecer "encolhido"
                 scaleY: 0.6  // Já na altura final
-            }, 40)
+            }, 38)
 
             // Opacidade surge rápido (duration 3) mas com leve atraso
             timeline.to(cheeseRef.current, {
                 opacity: 1,
                 duration: 3,
                 ease: 'power1.out'
-            }, 42) // Atrasado para 42 (era 39) para não vazar antes de abrir
+            }, 40) // Atrasado para 40 (era 42) para não vazar antes de abrir
 
             // Estiramento progressivo (duration 12 para acompanhar o pão)
             timeline.to(cheeseRef.current, {
@@ -113,17 +113,17 @@ export default function PaoDeQueijo() {
                 scaleY: 0.6,
                 duration: 12,
                 ease: 'power2.inOut'
-            }, 40) // Sincronizado com Split (40)
+            }, 38) // Sincronizado com Split (38)
 
             // --- FASE 4: DIVE (Sloooow zoom) ---
-            // Começa ANTES do split (40) e LOGO APÓS zoom inicial (37)
+            // Começa ANTES do split (38) e LOGO APÓS zoom inicial (36)
             timeline.to(sceneRef.current, {
                 scale: () => getFullscreenScale() * 5,
                 opacity: 0,
                 duration: 48, // Mais longo para compensar o inicio antecipado
                 ease: 'power2.inOut',
                 force3D: true
-            }, 38) // Dive começa em 38 (2 frames antes do split em 40)
+            }, 36) // Dive começa em 36 (2 frames antes do split em 38)
 
         }, sceneRef)
 
