@@ -43,7 +43,7 @@ export default function PaoDeQueijo() {
                 { scale: 1 },
                 {
                     scale: () => getFullscreenScale(),
-                    duration: 26,       // Aumentado levemente para overlap
+                    duration: 23,       // Encurtado para terminar em 38
                     ease: 'power2.inOut',
                     force3D: true
                 },
@@ -66,7 +66,7 @@ export default function PaoDeQueijo() {
                     duration: 12,       // Um pouco mais longo para suavidade
                     ease: 'power2.inOut'
                 },
-                39
+                40  // Atrasado para 40 (era 39) para vir DEPOIS do dive (37)
             )
 
             // Right Half
@@ -91,7 +91,7 @@ export default function PaoDeQueijo() {
                 pointerEvents: 'auto',
                 scaleX: 1.0, // Começa em tamanho normal para não parecer "encolhido"
                 scaleY: 0.6  // Já na altura final
-            }, 39)
+            }, 40)
 
             // Opacidade surge rápido (duration 3) mas com leve atraso
             timeline.to(cheeseRef.current, {
@@ -113,17 +113,17 @@ export default function PaoDeQueijo() {
                 scaleY: 0.6,
                 duration: 12,
                 ease: 'power2.inOut'
-            }, 39)
+            }, 40) // Sincronizado com Split (40)
 
             // --- FASE 4: DIVE (Sloooow zoom) ---
-            // Começa ANTES do split terminar (49) para um flow contínuo
+            // Começa ANTES do split (40) e LOGO APÓS zoom inicial (37)
             timeline.to(sceneRef.current, {
                 scale: () => getFullscreenScale() * 5,
                 opacity: 0,
-                duration: 36,
+                duration: 48, // Mais longo para compensar o inicio antecipado
                 ease: 'power2.inOut',
                 force3D: true
-            }, 49)
+            }, 38) // Dive começa em 38 (2 frames antes do split em 40)
 
         }, sceneRef)
 
