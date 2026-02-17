@@ -64,7 +64,14 @@ export default function ScrollWrapper({ children }: ScrollWrapperProps) {
                 O container principal tem 600vh para dar espaço de rolagem.
                 O conteúdo fixo (pinned) tem 100vh.
              */}
-            <div ref={wrapperRef} data-hero-wrapper className="relative w-full h-[500vh] bg-[#3D2B22]">
+            <div
+                ref={wrapperRef}
+                data-hero-wrapper
+                className="relative w-full h-[500vh]"
+                style={{
+                    background: 'linear-gradient(to bottom, #3D2B22 0%, #3D2B22 80%, #FAF7F2 95%, #FAF7F2 100%)'
+                }}
+            >
                 <div ref={contentRef} className="w-full h-[100dvh] overflow-hidden">
                     {children}
                 </div>
