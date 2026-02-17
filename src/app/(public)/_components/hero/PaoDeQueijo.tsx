@@ -114,7 +114,7 @@ export default function PaoDeQueijo() {
             // --- FASE 4: DIVE (Sloooow zoom) ---
             // Começa ANTES do split (38) e LOGO APÓS zoom inicial (36)
             timeline.to(sceneRef.current, {
-                scale: () => getFullscreenScale() * 5,
+                scale: () => getFullscreenScale() * 2.5,
                 opacity: 0,
                 duration: 28,   // ERA 48 — reduz o tempo morto após o dive
                 ease: 'power1.out', // Começa rápido para manter o ímpeto do zoom anterior
@@ -136,12 +136,16 @@ export default function PaoDeQueijo() {
                 <div
                     ref={crustLeftRef}
                     className="absolute inset-0 w-full h-full z-10"
-                    style={{}}
+                    style={{ willChange: 'transform' }}
                 >
                     <img
                         src="/hero-cheese/pao_left.png"
+                        srcSet="/hero-cheese/pao_left_500.png 500w, /hero-cheese/pao_left.png 1000w"
+                        sizes="(max-width: 768px) 50vmin, 40vmin"
                         alt="Pão Esquerda"
                         className="w-full h-full object-contain"
+                        fetchPriority="high"
+                        decoding="async"
                     />
                 </div>
 
@@ -149,12 +153,16 @@ export default function PaoDeQueijo() {
                 <div
                     ref={crustRightRef}
                     className="absolute inset-0 w-full h-full z-10"
-                    style={{}}
+                    style={{ willChange: 'transform' }}
                 >
                     <img
                         src="/hero-cheese/pao_right.png"
+                        srcSet="/hero-cheese/pao_right_500.png 500w, /hero-cheese/pao_right.png 1000w"
+                        sizes="(max-width: 768px) 50vmin, 40vmin"
                         alt="Pão Direita"
                         className="w-full h-full object-contain"
+                        fetchPriority="high"
+                        decoding="async"
                     />
                 </div>
 
@@ -167,11 +175,10 @@ export default function PaoDeQueijo() {
                         bottom: '15%',
                         left: '-30%',
                         right: '-30%',
-                        // Máscara para suavizar as bordas (feathering em 4 lados)
-                        WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 15%, black 85%, transparent), linear-gradient(to right, transparent 2%, black 10%, black 90%, transparent 98%)',
-                        WebkitMaskComposite: 'source-in' as any,
-                        maskImage: 'linear-gradient(to bottom, transparent, black 15%, black 85%, transparent), linear-gradient(to right, transparent 2%, black 10%, black 90%, transparent 98%)',
-                        maskComposite: 'intersect' as any
+                        // Máscara Otimizada (GPU Friendly)
+                        WebkitMaskImage: 'radial-gradient(ellipse 48% 42% at 50% 50%, black 60%, transparent 100%)',
+                        maskImage: 'radial-gradient(ellipse 48% 42% at 50% 50%, black 60%, transparent 100%)',
+                        willChange: 'transform, opacity'
                     }}
                 >
                     {/* Wrapper de offset — ajustar translateX aqui para posicionar */}
@@ -183,8 +190,12 @@ export default function PaoDeQueijo() {
                     >
                         <img
                             src="/hero-cheese/cheese.png"
+                            srcSet="/hero-cheese/cheese_500.png 500w, /hero-cheese/cheese.png 1000w"
+                            sizes="(max-width: 768px) 50vmin, 40vmin"
                             alt="Queijo derretido"
                             className="w-full h-full object-cover"
+                            fetchPriority="high"
+                            decoding="async"
                         />
                     </div>
                 </div>

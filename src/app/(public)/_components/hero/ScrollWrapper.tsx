@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useLayoutEffect, useRef, useState } from 'react'
+import React, { useLayoutEffect, useRef, useState, useMemo } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -15,17 +15,17 @@ interface ScrollWrapperProps {
 
 export const HeroContext = React.createContext<{
     timeline: gsap.core.Timeline | null
-    scrollProgress: number
+    scrollProgressRef: React.MutableRefObject<number> | null
 }>({
     timeline: null,
-    scrollProgress: 0
+    scrollProgressRef: null
 })
 
 export default function ScrollWrapper({ children }: ScrollWrapperProps) {
     const wrapperRef = useRef<HTMLDivElement>(null)
     const contentRef = useRef<HTMLDivElement>(null)
+    const scrollProgressRef = useRef<number>(0)
     const [timeline, setTimeline] = useState<gsap.core.Timeline | null>(null)
-    const [scrollProgress, setScrollProgress] = useState(0)
 
     useLayoutEffect(() => {
         if (!wrapperRef.current || !contentRef.current) return
@@ -40,8 +40,9 @@ export default function ScrollWrapper({ children }: ScrollWrapperProps) {
                     pin: contentRef.current,
                     pinSpacing: false, // Important so we scroll "through" the 600vh
                     scrub: 1.0,
-                    invalidateOnRefresh: true,
-                    onUpdate: (self) => setScrollProgress(self.progress)
+                    onUpdate: (self) => {
+                        scrollProgressRef.current = self.progress
+                    }
                 }
             })
 
@@ -52,14 +53,19 @@ export default function ScrollWrapper({ children }: ScrollWrapperProps) {
         return () => ctx.revert()
     }, [])
 
+    const contextValue = useMemo(() => ({
+        timeline,
+        scrollProgressRef
+    }), [timeline])
+
     return (
-        <HeroContext.Provider value={{ timeline, scrollProgress }}>
+        <HeroContext.Provider value={contextValue}>
             {/* 
                 O container principal tem 600vh para dar espaço de rolagem.
                 O conteúdo fixo (pinned) tem 100vh.
              */}
-            <div ref={wrapperRef} data-hero-wrapper className="relative w-full h-[300vh] bg-[#3D2B22]">
-                <div ref={contentRef} className="w-full h-screen overflow-hidden">
+            <div ref={wrapperRef} data-hero-wrapper className="relative w-full h-[500vh] bg-[#3D2B22]">
+                <div ref={contentRef} className="w-full h-[100dvh] overflow-hidden">
                     {children}
                 </div>
             </div>

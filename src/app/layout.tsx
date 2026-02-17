@@ -41,6 +41,11 @@ export default function RootLayout({
 }) {
     return (
         <html lang="pt-BR" className={`${playfair.variable} ${dmSans.variable} ${jetbrains.variable}`}>
+            <head>
+                <link rel="preload" href="/hero-cheese/pao_left.png" as="image" />
+                <link rel="preload" href="/hero-cheese/pao_right.png" as="image" />
+                <link rel="preload" href="/hero-cheese/cheese.png" as="image" />
+            </head>
             <body className="font-body bg-mont-cream text-mont-espresso antialiased">
                 {children}
             </body>
