@@ -11,8 +11,19 @@ export default function HomeWrapper({ children }: { children: React.ReactNode })
         gsap.registerPlugin(ScrollTrigger)
 
         const ctx = gsap.context(() => {
-            // Apenas as seções que precisam de transição de cor ENTRE SI
-            // (não mais a transição hero → destaques)
+            // Mudar o fundo do <html> quando sair do hero
+            ScrollTrigger.create({
+                trigger: '#destaques',
+                start: 'top 90%',
+                end: 'top 50%',
+                scrub: true,
+                animation: gsap.fromTo(document.documentElement,
+                    { backgroundColor: '#3D2B22' },
+                    { backgroundColor: '#FAF7F2', ease: 'none' }
+                )
+            })
+
+            // Transições de cor do main entre seções
             const sections = [
                 { selector: '#como-funciona', color: '#F5F0E8' },
                 { selector: '#brand-story', color: '#FAF7F2' },
@@ -33,12 +44,24 @@ export default function HomeWrapper({ children }: { children: React.ReactNode })
                     })
                 })
             })
+
+            // Quando chegar no final-cta (marrom), html também fica marrom
+            if (document.querySelector('#final-cta')) {
+                ScrollTrigger.create({
+                    trigger: '#final-cta',
+                    start: 'top 60%',
+                    end: 'top 20%',
+                    scrub: true,
+                    animation: gsap.to(document.documentElement,
+                        { backgroundColor: '#3D2B22', ease: 'none' }
+                    )
+                })
+            }
         }, mainRef)
 
         return () => ctx.revert()
     }, [])
 
-    // Cor inicial agora é CREME (#FAF7F2) — o hero tem seu próprio fundo marrom
     return (
         <main ref={mainRef} className="min-h-screen bg-[#FAF7F2]">
             {children}
