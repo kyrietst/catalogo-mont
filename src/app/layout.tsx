@@ -40,13 +40,13 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
     return (
-        <html lang="pt-BR" className={`${playfair.variable} ${dmSans.variable} ${jetbrains.variable}`}>
+        <html lang="pt-BR" className={`${playfair.variable} ${dmSans.variable} ${jetbrains.variable} bg-[#3D2B22]`}>
             <head>
                 <link rel="preload" href="/hero-cheese/pao_left.png" as="image" />
                 <link rel="preload" href="/hero-cheese/pao_right.png" as="image" />
                 <link rel="preload" href="/hero-cheese/cheese.png" as="image" />
             </head>
-            <body className="font-body bg-mont-cream text-mont-espresso antialiased">
+            <body className="font-body bg-mont-cream text-mont-espresso antialiased min-h-screen">
                 {children}
             </body>
         </html>
