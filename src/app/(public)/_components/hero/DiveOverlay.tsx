@@ -19,7 +19,7 @@ export default function DiveOverlay() {
                 { opacity: 0 },
                 {
                     opacity: 1,
-                    duration: 15,
+                    duration: 10,
                     ease: 'power1.inOut'
                 },
                 35  // Ajustar conforme necessário — deve começar

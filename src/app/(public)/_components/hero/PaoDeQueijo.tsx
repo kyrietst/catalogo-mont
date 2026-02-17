@@ -116,7 +116,7 @@ export default function PaoDeQueijo() {
             timeline.to(sceneRef.current, {
                 scale: () => getFullscreenScale() * 5,
                 opacity: 0,
-                duration: 48, // Mais longo para compensar o inicio antecipado
+                duration: 28,   // ERA 48 — reduz o tempo morto após o dive
                 ease: 'power1.out', // Começa rápido para manter o ímpeto do zoom anterior
                 force3D: true
             }, 18) // Dive começa em 18
