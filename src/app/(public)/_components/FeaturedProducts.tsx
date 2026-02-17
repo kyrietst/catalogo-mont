@@ -3,6 +3,8 @@
 import { useEffect, useRef } from 'react'
 import { ProductCard } from '@/components/catalog'
 import { scrollReveal } from '@/lib/gsap/animations'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import type { Product } from '@/types/product'
 
 interface FeaturedProductsProps {
@@ -14,10 +16,43 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
     const gridRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        if (!gridRef.current) return
+        if (!sectionRef.current) return
+        gsap.registerPlugin(ScrollTrigger)
 
-        const cards = Array.from(gridRef.current.querySelectorAll('.product-card')) as HTMLElement[]
-        const ctx = scrollReveal(cards, { stagger: 0.15 })
+        const ctx = gsap.context(() => {
+            // --- EFEITO DE PROFUNDIDADE (parallax Z) ---
+            // A seção inteira começa "atrás" e vem pra frente
+            gsap.fromTo(sectionRef.current,
+                {
+                    y: 120,          // Começa 120px abaixo
+                    scale: 0.88,     // Começa menor (como se estivesse mais longe)
+                    opacity: 0.3,    // Levemente transparente
+                },
+                {
+                    y: 0,
+                    scale: 1,
+                    opacity: 1,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: sectionRef.current,
+                        start: 'top 100%',    // Começa quando o topo da seção atinge o fundo da viewport
+                        end: 'top 30%',       // Termina quando o topo da seção atinge 30% da viewport
+                        scrub: 1.5,           // Suave, atrelado ao scroll
+                    }
+                }
+            )
+
+            // --- CARDS INDIVIDUAIS (mantém o reveal existente) ---
+            if (gridRef.current) {
+                const cards = Array.from(
+                    gridRef.current.querySelectorAll('.product-card')
+                ) as HTMLElement[]
+
+                if (cards.length > 0) {
+                    scrollReveal(cards, { stagger: 0.15 })
+                }
+            }
+        }, sectionRef)
 
         return () => ctx.revert()
     }, [products])
@@ -27,8 +62,12 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
     return (
         <section
             ref={sectionRef}
-            className="py-20 md:py-32 bg-transparent"
+            className="pt-8 pb-20 md:pt-12 md:pb-32 bg-transparent"
             id="destaques"
+            style={{
+                transformOrigin: 'center top',  // Scale a partir do topo central
+                willChange: 'transform, opacity' // Performance hint pro browser
+            }}
         >
             <div className="container mx-auto px-4">
                 <div className="text-center mb-12">
@@ -40,7 +79,6 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
                     </p>
                 </div>
 
-                {/* Layout Assimétrico: 1 grande + 2 pequenos */}
                 <div
                     ref={gridRef}
                     className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"

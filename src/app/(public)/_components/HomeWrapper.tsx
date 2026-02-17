@@ -9,41 +9,38 @@ export default function HomeWrapper({ children }: { children: React.ReactNode })
 
     useEffect(() => {
         gsap.registerPlugin(ScrollTrigger)
-        const main = mainRef.current
 
         const ctx = gsap.context(() => {
+            // Apenas as seções que precisam de transição de cor ENTRE SI
+            // (não mais a transição hero → destaques)
             const sections = [
-                { selector: '#destaques', color: '#FAF7F2' },
                 { selector: '#como-funciona', color: '#F5F0E8' },
                 { selector: '#brand-story', color: '#FAF7F2' },
                 { selector: '#final-cta', color: '#3D2B22' }
             ]
 
             sections.forEach(({ selector, color }) => {
-                // Check if element exists before creating trigger to avoid warnings
-                if (!document.querySelector(selector)) return;
-
-                // Para #destaques (primeira seção após o hero), antecipar a
-                // transição de cor para evitar a faixa marrom entre hero e produtos
-                const startValue = selector === '#destaques' ? 'top 95%' : 'top 60%'
-                const endValue = selector === '#destaques' ? 'top 60%' : 'top 20%'
+                if (!document.querySelector(selector)) return
 
                 ScrollTrigger.create({
                     trigger: selector,
-                    start: startValue,
-                    end: endValue,
+                    start: 'top 60%',
+                    end: 'top 20%',
                     scrub: true,
-                    animation: gsap.to(main, { backgroundColor: color, ease: 'none' })
+                    animation: gsap.to(mainRef.current, {
+                        backgroundColor: color,
+                        ease: 'none'
+                    })
                 })
             })
-        }, mainRef) // Scope to mainRef
+        }, mainRef)
 
         return () => ctx.revert()
     }, [])
 
-    // Initial color matches Hero (#3D2B22)
+    // Cor inicial agora é CREME (#FAF7F2) — o hero tem seu próprio fundo marrom
     return (
-        <main ref={mainRef} className="min-h-screen bg-[#3D2B22] transition-colors duration-300">
+        <main ref={mainRef} className="min-h-screen bg-[#FAF7F2]">
             {children}
         </main>
     )
