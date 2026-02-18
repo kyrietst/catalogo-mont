@@ -42,6 +42,14 @@ export default function FloatingPaes() {
 
         // Scatter Animation (Explosão no Scroll)
         // Scroll 15% -> 25%
+
+        // FIX BUG 3: Fade out container logo no início do scroll para não poluir o zoom
+        timeline.to(containerRef.current, {
+            opacity: 0,
+            duration: 2, // Speed it up to fade out faster
+            ease: 'power1.in'
+        }, 0)
+
         const paesElements = containerRef.current.querySelectorAll('.floating-pao')
 
         // Direções de explosão (hardcoded para controle artístico)

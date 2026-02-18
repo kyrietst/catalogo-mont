@@ -26,6 +26,21 @@ export default function ScrollWrapper({ children }: ScrollWrapperProps) {
     const contentRef = useRef<HTMLDivElement>(null)
     const scrollProgressRef = useRef<number>(0)
     const [timeline, setTimeline] = useState<gsap.core.Timeline | null>(null)
+    // Removed state to avoid re-renders clashing with GSAP pin
+
+    useLayoutEffect(() => {
+        const updateHeight = () => {
+            if (contentRef.current) {
+                // Direct DOM manipulation to avoid React re-render cycle breaking GSAP pin
+                contentRef.current.style.height = `${window.innerHeight}px`
+                // Force ScrollTrigger to re-calculate pin spacers
+                ScrollTrigger.refresh()
+            }
+        }
+        updateHeight()
+        window.addEventListener('resize', updateHeight)
+        return () => window.removeEventListener('resize', updateHeight)
+    }, [])
 
     useLayoutEffect(() => {
         if (!wrapperRef.current || !contentRef.current) return
@@ -72,7 +87,8 @@ export default function ScrollWrapper({ children }: ScrollWrapperProps) {
                     background: 'linear-gradient(to bottom, #3D2B22 0%, #3D2B22 80%, #FAF7F2 95%, #FAF7F2 100%)'
                 }}
             >
-                <div ref={contentRef} className="w-full h-[100dvh] overflow-hidden">
+                {/* Fallback height for SSR/Initial render before JS kicks in */}
+                <div ref={contentRef} className="w-full h-screen overflow-hidden">
                     {children}
                 </div>
             </div>
