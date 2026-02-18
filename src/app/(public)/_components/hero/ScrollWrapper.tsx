@@ -28,36 +28,34 @@ export default function ScrollWrapper({ children }: ScrollWrapperProps) {
     const [timeline, setTimeline] = useState<gsap.core.Timeline | null>(null)
     // Removed state to avoid re-renders clashing with GSAP pin
 
-    useLayoutEffect(() => {
-        const updateHeight = () => {
-            if (contentRef.current) {
-                // Direct DOM manipulation to avoid React re-render cycle breaking GSAP pin
-                contentRef.current.style.height = `${window.innerHeight}px`
-                // Force ScrollTrigger to re-calculate pin spacers
-                ScrollTrigger.refresh()
-            }
-        }
-        updateHeight()
-        window.addEventListener('resize', updateHeight)
-        return () => window.removeEventListener('resize', updateHeight)
-    }, [])
-
+    // Combine logic into a single effect to guarantee order:
+    // 1. Set Height -> 2. Create Pin -> 3. Add Resize Listener
     useLayoutEffect(() => {
         if (!wrapperRef.current || !contentRef.current) return
 
+        // 1. Initial Height Set
+        const setHeight = () => {
+            if (contentRef.current) {
+                contentRef.current.style.height = `${window.innerHeight}px`
+            }
+        }
+        setHeight()
+
+        // 2. GSAP Context & Pin Check
         const ctx = gsap.context(() => {
-            // Master Timeline
             const tl = gsap.timeline({
                 scrollTrigger: {
                     trigger: wrapperRef.current,
                     start: 'top top',
                     end: 'bottom bottom',
                     pin: contentRef.current,
-                    pinSpacing: false, // Important so we scroll "through" the 600vh
+                    pinSpacing: false,
                     scrub: 1.0,
                     onUpdate: (self) => {
                         scrollProgressRef.current = self.progress
-                    }
+                    },
+                    // Add invalidateOnRefresh to handle dynamic height changes better
+                    invalidateOnRefresh: true
                 }
             })
 
@@ -65,7 +63,19 @@ export default function ScrollWrapper({ children }: ScrollWrapperProps) {
 
         }, wrapperRef)
 
-        return () => ctx.revert()
+        // 3. Resize Listener
+        const handleResize = () => {
+            setHeight()
+            // Force refresh after height change
+            ScrollTrigger.refresh()
+        }
+
+        window.addEventListener('resize', handleResize)
+
+        return () => {
+            window.removeEventListener('resize', handleResize)
+            ctx.revert()
+        }
     }, [])
 
     const contextValue = useMemo(() => ({
