@@ -39,7 +39,7 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
                     scrollTrigger: {
                         trigger: sectionRef.current,
                         start: 'top 100%',
-                        end: 'top 10%',    // ERA 'top 15%' — completa mais tarde (mais scroll pra apreciar o arco)
+                        end: 'top 30%',    // Adiantado: agora completa mais cedo (em 30% da tela em vez de 10%)
                         scrub: 1.2,
                     }
                 }
@@ -57,9 +57,9 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
             className="pt-8 pb-20 md:pt-12 md:pb-32 bg-transparent relative z-10"
             id="destaques"
             style={{
-                marginTop: '-90vh',           // ERA -120vh — produtos entram um pouco mais tarde
-                perspective: '600px',         // ERA 800px — mais intenso
-                perspectiveOrigin: '50% 10%', // ERA 50% 20% — ponto de fuga mais alto
+                marginTop: '-110vh',           // Adiantado: Puxa a seção 20vh mais para cima (era -90vh)
+                perspective: '600px',
+                perspectiveOrigin: '50% 10%',
             }}
         >
             <div
