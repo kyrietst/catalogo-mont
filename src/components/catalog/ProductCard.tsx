@@ -17,6 +17,7 @@ interface ProductCardProps {
     price_cents: number
     image_url?: string | null
     is_featured?: boolean
+    index?: number
     className?: string
 }
 
@@ -29,6 +30,7 @@ export function ProductCard({
     price_cents,
     image_url,
     is_featured,
+    index,
     className
 }: ProductCardProps) {
     const cardRef = useRef<HTMLDivElement>(null)
@@ -83,13 +85,25 @@ export function ProductCard({
                 {/* Image Block */}
                 <div className="relative aspect-[3/4] w-full overflow-hidden">
                     {image_url ? (
-                        <Image
-                            src={image_url}
-                            alt={name}
-                            fill
-                            className="object-cover"
-                            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-                        />
+                        <>
+                            {(() => {
+                                const imageSizes = is_featured
+                                    ? "(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 50vw"
+                                    : "(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw";
+
+                                return (
+                                    <Image
+                                        src={image_url}
+                                        alt={name}
+                                        fill
+                                        className="object-cover"
+                                        quality={is_featured ? 92 : 88}
+                                        priority={typeof index !== 'undefined' && index < 4}
+                                        sizes={imageSizes}
+                                    />
+                                );
+                            })()}
+                        </>
                     ) : (
                         <div className="w-full h-full flex items-center justify-center bg-mont-surface text-mont-warm-gray">
                             <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -122,7 +136,7 @@ export function ProductCard({
                 </div>
 
                 {/* Info Block */}
-                <div className="p-3 bg-mont-cream">
+                <div className="p-3 bg-mont-cream min-h-[88px]">
                     <h3 className="font-display text-sm text-mont-espresso line-clamp-2 leading-snug">
                         {name}
                     </h3>

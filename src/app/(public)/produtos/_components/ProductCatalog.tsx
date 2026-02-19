@@ -70,9 +70,9 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
             {/* Grid de Produtos */}
             <div
                 ref={gridRef}
-                className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
+                className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3"
             >
-                {filteredProducts.map((product) => (
+                {filteredProducts.map((product, index) => (
                     <div key={product.id} className="product-card">
                         <ProductCard
                             id={product.id}
@@ -83,6 +83,7 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
                             price_cents={product.price_cents}
                             is_featured={product.is_featured}
                             image_url={product.primary_image_url || product.image_url}
+                            index={index}
                         />
                     </div>
                 ))}

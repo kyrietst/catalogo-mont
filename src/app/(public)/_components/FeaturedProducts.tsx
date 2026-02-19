@@ -86,31 +86,33 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
                         </p>
                     </div>
 
-                    <div
-                        ref={gridRef}
-                        /* ALTERAÇÃO: grid-cols-2 no mobile (era grid-cols-1) e gap-3 (era gap-6) */
-                        /* PRESERVADO: md:grid-cols-2/3 para layout desktop */
-                        className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3"
-                    >
-                        {products.map((product, index) => (
-                            <div
-                                key={product.id}
-                                /* PRESERVADO: Lógica de destaque do primeiro card (md:col-span-2) */
-                                className={`product-card ${index === 0 ? 'md:col-span-2 md:row-span-2' : ''
-                                    }`}
-                            >
-                                <ProductCard
-                                    id={product.id}
-                                    name={product.name}
-                                    slug={product.slug}
-                                    category={product.category}
-                                    weight_kg={product.weight_kg}
-                                    price_cents={product.price_cents}
-                                    image_url={product.primary_image_url}
-                                    is_featured={index === 0}
-                                />
-                            </div>
-                        ))}
+                    <div className="max-w-[1400px] mx-auto">
+                        <div
+                            ref={gridRef}
+                            /* ALTERAÇÃO: grid-cols-2 no mobile, 4 colunas em lg+ para bento grid 50/50 */
+                            className="grid grid-cols-2 lg:grid-cols-4 gap-3"
+                        >
+                            {products.map((product, index) => (
+                                <div
+                                    key={product.id}
+                                    /* PRESERVADO: Lógica de destaque do primeiro card (md:col-span-2) */
+                                    className={`product-card ${index === 0 ? 'md:col-span-2 md:row-span-2' : ''
+                                        }`}
+                                >
+                                    <ProductCard
+                                        id={product.id}
+                                        name={product.name}
+                                        slug={product.slug}
+                                        category={product.category}
+                                        weight_kg={product.weight_kg}
+                                        price_cents={product.price_cents}
+                                        image_url={product.primary_image_url}
+                                        is_featured={index === 0}
+                                        index={index}
+                                    />
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>

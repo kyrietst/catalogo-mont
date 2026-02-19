@@ -63,8 +63,8 @@ export default function HeroCopy() {
 
                 {/* NÍVEL 3 — Subtítulo rítmico */}
                 <div
-                    className="text-white/70 text-base md:text-lg max-w-2xl mx-auto mb-12 font-sans space-y-1"
-                    style={{ textShadow: '0 1px 8px rgba(0,0,0,0.7)' }}
+                    className="text-white text-base md:text-lg max-w-2xl mx-auto mb-12 font-sans space-y-1 font-medium"
+                    style={{ textShadow: '0 2px 12px rgba(0,0,0,0.9), 0 1px 4px rgba(0,0,0,1)' }}
                 >
                     <p className="m-0">Não é oco. Não murcha.</p>
                     <p className="m-0">O cheiro já avisa que é diferente.</p>

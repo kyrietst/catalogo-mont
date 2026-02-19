@@ -53,7 +53,7 @@ export default async function ProdutosPage() {
             <main className="min-h-screen bg-mont-cream pt-16 pb-20">
                 <StoreBanner />
 
-                <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 mt-8 md:mt-10">
+                <div className="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-8 mt-8 md:mt-10">
                     {featuredProduct && (
                         <FeaturedProduct product={featuredProduct} />
                     )}
