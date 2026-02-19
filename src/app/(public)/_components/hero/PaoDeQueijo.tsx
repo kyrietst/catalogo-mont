@@ -113,13 +113,20 @@ export default function PaoDeQueijo() {
 
             // --- FASE 4: DIVE (Sloooow zoom) ---
             // Começa ANTES do split (38) e LOGO APÓS zoom inicial (36)
+            // 1. Scale only (no opacity change)
             timeline.to(sceneRef.current, {
                 scale: () => getFullscreenScale() * 2.5,
-                opacity: 0,
-                duration: 28,   // ERA 48 — reduz o tempo morto após o dive
-                ease: 'power1.out', // Começa rápido para manter o ímpeto do zoom anterior
+                duration: 28,
+                ease: 'power1.out',
                 force3D: true
-            }, 18) // Dive começa em 18
+            }, 18)
+
+            // 2. Opacity fades only after bread is fully open
+            timeline.to(sceneRef.current, {
+                opacity: 0,
+                duration: 8,
+                ease: 'power1.inOut'
+            }, 38)
 
         }, sceneRef)
 
