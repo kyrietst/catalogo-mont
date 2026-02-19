@@ -10,6 +10,9 @@ interface FeaturedProductsProps {
     products: Product[]
 }
 
+const SECTION_TITLE = "Os favoritos da casa"
+const SECTION_SUBTITLE = "Quem abre o forno e v\u00EA que n\u00E3o murchou, entende por qu\u00EA."
+
 export default function FeaturedProducts({ products }: FeaturedProductsProps) {
     const sectionRef = useRef<HTMLElement>(null)
     const contentRef = useRef<HTMLDivElement>(null)
@@ -21,25 +24,26 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
 
         const ctx = gsap.context(() => {
             // --- EFEITO 3D: Arco de trás pra frente ---
+            // PRESERVADO: Toda a lógica de animação abaixo
             gsap.fromTo(contentRef.current,
                 {
-                    rotateX: -65,          // ERA -50 — bem mais inclinado pra trás
-                    y: 350,                // ERA 300 — começa mais embaixo
-                    scale: 0.45,           // ERA 0.55 — começa bem menor (mais longe)
+                    rotateX: -65,
+                    y: 350,
+                    scale: 0.45,
                     opacity: 0,
-                    z: -200,               // NOVO — empurra pra trás no eixo Z real
+                    z: -200,
                 },
                 {
                     rotateX: 0,
                     y: 0,
                     scale: 1,
                     opacity: 1,
-                    z: 0,                  // Volta pra posição original
-                    ease: 'power4.out',    // ERA power3.out — arco mais agressivo
+                    z: 0,
+                    ease: 'power4.out',
                     scrollTrigger: {
                         trigger: sectionRef.current,
                         start: 'top 100%',
-                        end: 'top 30%',    // Adiantado: agora completa mais cedo (em 30% da tela em vez de 10%)
+                        end: 'top 30%',
                         scrub: 1.2,
                     }
                 }
@@ -54,10 +58,11 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
     return (
         <section
             ref={sectionRef}
-            className="pt-8 pb-20 md:pt-12 md:pb-32 bg-transparent relative z-10"
+            className="pt-8 pb-20 md:pt-12 md:pb-32 bg-[#FAF7F2] relative z-10"
             id="destaques"
             style={{
-                marginTop: '-110vh',           // Adiantado: Puxa a seção 20vh mais para cima (era -90vh)
+                // PRESERVADO: Posicionamento e perspectiva
+                marginTop: '-110vh',
                 perspective: '600px',
                 perspectiveOrigin: '50% 10%',
             }}
@@ -72,21 +77,25 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
             >
                 <div className="container mx-auto px-4">
                     <div className="text-center mb-12">
+                        {/* ALTERAÇÃO: Novos textos com Unicode encoding */}
                         <h2 className="font-display text-4xl md:text-5xl text-mont-espresso mb-4">
-                            Produtos em Destaque
+                            {SECTION_TITLE}
                         </h2>
                         <p className="text-mont-gray text-lg max-w-2xl mx-auto">
-                            Nossos produtos mais queridos, escolhidos a dedo pra você
+                            {SECTION_SUBTITLE}
                         </p>
                     </div>
 
                     <div
                         ref={gridRef}
-                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                        /* ALTERAÇÃO: grid-cols-2 no mobile (era grid-cols-1) e gap-3 (era gap-6) */
+                        /* PRESERVADO: md:grid-cols-2/3 para layout desktop */
+                        className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3"
                     >
                         {products.map((product, index) => (
                             <div
                                 key={product.id}
+                                /* PRESERVADO: Lógica de destaque do primeiro card (md:col-span-2) */
                                 className={`product-card ${index === 0 ? 'md:col-span-2 md:row-span-2' : ''
                                     }`}
                             >
@@ -108,3 +117,4 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
         </section>
     )
 }
+

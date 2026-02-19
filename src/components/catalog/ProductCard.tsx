@@ -3,9 +3,10 @@
 import { useRef, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Badge } from '@/components/ui'
 import { cn } from '@/lib/utils/cn'
 import { productCardHover } from '@/lib/gsap/animations'
+import { useCartStore } from '@/lib/cart/store'
+import gsap from 'gsap'
 
 interface ProductCardProps {
     id: string
@@ -31,6 +32,8 @@ export function ProductCard({
     className
 }: ProductCardProps) {
     const cardRef = useRef<HTMLDivElement>(null)
+    const buttonRef = useRef<HTMLButtonElement>(null)
+    const addItem = useCartStore((state) => state.addItem)
 
     useEffect(() => {
         if (cardRef.current) {
@@ -43,17 +46,42 @@ export function ProductCard({
         currency: 'BRL'
     }).format(price_cents / 100)
 
+    const handleAddToCart = (e: React.MouseEvent) => {
+        e.preventDefault()
+        e.stopPropagation()
+
+        if (buttonRef.current) {
+            gsap.fromTo(buttonRef.current,
+                { scale: 0.8 },
+                { scale: 1, duration: 0.2, ease: 'back.out(1.7)' }
+            )
+        }
+
+        // Reconstruct product object for the store
+        // Note: we're passing minimal info required for the cart
+        addItem({
+            id,
+            name,
+            slug,
+            category,
+            weight_kg,
+            price_cents,
+            image_url,
+            is_featured
+        } as any, 1)
+    }
+
     return (
-        <Link href={`/produtos/${slug}`}>
+        <Link href={`/produtos/${slug}`} className="block">
             <div
                 ref={cardRef}
                 className={cn(
-                    'group relative bg-mont-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300',
+                    'group relative bg-mont-cream rounded-2xl overflow-hidden shadow-sm cursor-pointer transition-all duration-300',
                     className
                 )}
             >
-                {/* Image Container */}
-                <div className="relative aspect-square overflow-hidden bg-mont-surface">
+                {/* Image Block */}
+                <div className="relative aspect-[3/4] w-full overflow-hidden">
                     {image_url ? (
                         <Image
                             src={image_url}
@@ -63,8 +91,8 @@ export function ProductCard({
                             sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                         />
                     ) : (
-                        <div className="w-full h-full flex items-center justify-center text-mont-warm-gray">
-                            <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="w-full h-full flex items-center justify-center bg-mont-surface text-mont-warm-gray">
+                            <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
@@ -75,27 +103,48 @@ export function ProductCard({
                         </div>
                     )}
 
-                    {/* Badges */}
-                    <div className="absolute top-3 left-3 flex flex-col gap-2">
-                        <Badge variant={category} />
-                        {is_featured && <Badge variant="destaque" />}
+                    {/* Category Badge */}
+                    <div className={cn(
+                        'absolute top-2 left-2 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider',
+                        category === 'congelado'
+                            ? 'bg-blue-100 text-blue-700'
+                            : 'bg-green-100 text-green-700'
+                    )}>
+                        {category === 'congelado' ? '❄️ Congelado' : '🧊 Refrigerado'}
                     </div>
+
+                    {/* Featured Badge */}
+                    {is_featured && (
+                        <div className="absolute top-2 right-2 bg-mont-gold text-white text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
+                            Mais Vendido
+                        </div>
+                    )}
                 </div>
 
-                {/* Content */}
-                <div className="p-4 space-y-2">
-                    <h3 className="font-display text-lg sm:text-xl text-mont-espresso line-clamp-2">
+                {/* Info Block */}
+                <div className="p-3 bg-mont-cream">
+                    <h3 className="font-display text-sm text-mont-espresso line-clamp-2 leading-snug">
                         {name}
                     </h3>
 
-                    <p className="text-sm text-mont-warm-gray font-body">
+                    <p className="text-[10px] text-mont-espresso/50 mt-0.5">
                         {weight_kg}kg
                     </p>
 
-                    <p className="font-body text-xl sm:text-2xl font-bold text-mont-gold">
+                    <p className="font-bold text-base text-mont-gold mt-1">
                         {formattedPrice}
                     </p>
                 </div>
+
+                {/* Add to Cart Button */}
+                <button
+                    ref={buttonRef}
+                    onClick={handleAddToCart}
+                    className="absolute bottom-3 right-3 w-8 h-8 rounded-full bg-mont-espresso text-mont-cream flex items-center justify-center text-lg font-bold transition-transform hover:scale-110 active:scale-95 z-10"
+                    aria-label="Adicionar ao carrinho"
+                >
+                    +
+                </button>
             </div>
         </Link>
     )

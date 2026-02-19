@@ -38,8 +38,8 @@ export function Navbar({ cartItemCount: initialCount = 0 }: NavbarProps) {
         const handleScroll = () => {
             const heroWrapper = document.querySelector('[data-hero-wrapper]')
             if (heroWrapper) {
-                // Só ativar fundo sólido quando o scroll ultrapassar 90% do hero
-                const heroBottom = heroWrapper.scrollHeight * 0.9
+                // Só ativar fundo sólido quando o scroll ultrapassar 58% do hero (logo após o flash terminar totalmente)
+                const heroBottom = heroWrapper.scrollHeight * 0.58
                 setIsScrolled(window.scrollY > heroBottom)
             } else {
                 // Fallback para páginas sem hero

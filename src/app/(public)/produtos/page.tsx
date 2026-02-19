@@ -3,6 +3,11 @@ import { createClient } from '@/lib/supabase/server'
 import { mapProdutoToProduct, MOCK_PRODUCTS } from '@/lib/supabase/mappers'
 import type { Product } from '@/types/product'
 import ProductCatalog from './_components/ProductCatalog'
+import FeaturedProduct from './_components/FeaturedProduct'
+import StoreBanner from './_components/StoreBanner'
+import IngredientsSection from './_components/IngredientsSection'
+import BenefitsCarousel from './_components/BenefitsCarousel'
+import TrustBar from './_components/TrustBar'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
@@ -32,30 +37,33 @@ async function getAllProducts(): Promise<Product[]> {
 }
 
 export const metadata = {
-    title: 'Catálogo de Produtos | Mont Distribuidora',
-    description: 'Confira nosso catálogo completo de massas congeladas e refrigeradas. Pão de queijo, chipa e palitos de queijo artesanais.',
+    title: 'Produtos | Mont Massas',
+    description: 'Conhe\u00E7a nossa linha completa de produtos artesanais.',
 }
 
 export default async function ProdutosPage() {
     const products = await getAllProducts()
 
+    const featuredProduct = products.find(p => p.is_featured);
+
     return (
         <>
             <Navbar />
 
-            <main className="min-h-screen bg-mont-cream py-20">
-                <div className="container mx-auto px-4">
-                    <div className="text-center mb-12">
-                        <h1 className="font-display text-4xl md:text-6xl text-mont-espresso mb-4">
-                            Nossos Produtos
-                        </h1>
-                        <p className="text-mont-gray text-lg max-w-2xl mx-auto">
-                            Massas artesanais congeladas e refrigeradas, feitas com ingredientes naturais
-                        </p>
-                    </div>
+            <main className="min-h-screen bg-mont-cream pt-16 pb-20">
+                <StoreBanner />
+
+                <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 mt-8 md:mt-10">
+                    {featuredProduct && (
+                        <FeaturedProduct product={featuredProduct} />
+                    )}
 
                     <ProductCatalog products={products} />
                 </div>
+
+                <IngredientsSection />
+                <BenefitsCarousel />
+                <TrustBar />
             </main>
 
             <Footer />

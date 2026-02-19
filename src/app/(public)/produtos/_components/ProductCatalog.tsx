@@ -30,14 +30,16 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
 
     return (
         <div>
-            {/* Filtros (Tabs) */}
-            <div className="flex justify-center mb-12">
-                <div className="inline-flex bg-mont-white rounded-lg p-1 shadow-sm">
+            {/* Filtros (Pills Scrolláveis) */}
+            <section className="mb-8 md:mb-10">
+                <div
+                    className="flex flex-nowrap overflow-x-auto gap-2 px-4 py-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory justify-start md:justify-center"
+                >
                     <button
                         onClick={() => setSelectedCategory('todos')}
-                        className={`px-6 py-3 rounded-md font-medium transition-all ${selectedCategory === 'todos'
-                            ? 'bg-mont-gold text-mont-white shadow-sm'
-                            : 'text-mont-gray hover:text-mont-espresso'
+                        className={`px-5 py-2 rounded-full text-sm whitespace-nowrap transition-colors duration-200 cursor-pointer snap-start ${selectedCategory === 'todos'
+                            ? 'bg-mont-espresso text-mont-cream font-semibold border-none'
+                            : 'bg-transparent border-[1.5px] border-mont-espresso/30 text-mont-espresso/60'
                             }`}
                     >
                         Todos
@@ -45,9 +47,9 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
 
                     <button
                         onClick={() => setSelectedCategory('congelado')}
-                        className={`px-6 py-3 rounded-md font-medium transition-all ${selectedCategory === 'congelado'
-                            ? 'bg-mont-gold text-mont-white shadow-sm'
-                            : 'text-mont-gray hover:text-mont-espresso'
+                        className={`px-5 py-2 rounded-full text-sm whitespace-nowrap transition-colors duration-200 cursor-pointer snap-start ${selectedCategory === 'congelado'
+                            ? 'bg-mont-espresso text-mont-cream font-semibold border-none'
+                            : 'bg-transparent border-[1.5px] border-mont-espresso/30 text-mont-espresso/60'
                             }`}
                     >
                         ❄️ Congelados
@@ -55,20 +57,20 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
 
                     <button
                         onClick={() => setSelectedCategory('refrigerado')}
-                        className={`px-6 py-3 rounded-md font-medium transition-all ${selectedCategory === 'refrigerado'
-                            ? 'bg-mont-gold text-mont-white shadow-sm'
-                            : 'text-mont-gray hover:text-mont-espresso'
+                        className={`px-5 py-2 rounded-full text-sm whitespace-nowrap transition-colors duration-200 cursor-pointer snap-start ${selectedCategory === 'refrigerado'
+                            ? 'bg-mont-espresso text-mont-cream font-semibold border-none'
+                            : 'bg-transparent border-[1.5px] border-mont-espresso/30 text-mont-espresso/60'
                             }`}
                     >
                         🧊 Refrigerados
                     </button>
                 </div>
-            </div>
+            </section>
 
             {/* Grid de Produtos */}
             <div
                 ref={gridRef}
-                className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+                className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
             >
                 {filteredProducts.map((product) => (
                     <div key={product.id} className="product-card">
