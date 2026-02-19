@@ -5,6 +5,8 @@ import { HeroContext } from './ScrollWrapper'
 import { ArrowDown } from 'lucide-react'
 import gsap from 'gsap'
 
+import Link from 'next/link'
+
 export default function HeroCopy() {
     const { timeline } = useContext(HeroContext)
     const containerRef = useRef<HTMLDivElement>(null)
@@ -34,33 +36,47 @@ export default function HeroCopy() {
 
     return (
         <div className="absolute inset-0 z-40 flex flex-col items-center justify-center pointer-events-none">
-            <div ref={containerRef} className="text-center px-4 max-w-4xl mt-[-10vh]">
+            <div ref={containerRef} className="text-center px-4 max-w-4xl mt-[-5vh]">
+                {/* NÍVEL 1 — Eyebrow */}
+                <span
+                    className="block text-xs uppercase tracking-[0.25em] text-[#E8601C] font-bold mb-4"
+                    style={{ textShadow: '0 1px 4px rgba(0,0,0,0.3)' }}
+                >
+                    100% Queijo Canastra legítimo
+                </span>
+
+                {/* NÍVEL 2 — Headline H1 */}
                 <h1
-                    className="text-[#FAF7F2] font-black leading-[1.1] mb-6 tracking-tight hero-title"
+                    className="text-white font-bold leading-[1.1] mb-8 tracking-tight hero-title"
                 >
                     <span style={{ textShadow: '0 2px 12px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.8)' }}>
-                        O sabor que só o
+                        Pão de queijo
                     </span>
                     <br />
-                    <span className="text-transparent bg-clip-text bg-gradient-to-br from-[#E8601C] to-[#C43E1A]">
-                        artesanal
-                    </span>
                     <span style={{ textShadow: '0 2px 12px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.8)' }}>
-                        {' '}tem
+                        de
+                    </span>
+                    <span className="text-transparent bg-clip-text bg-gradient-to-br from-[#E8601C] to-[#C43E1A]">
+                        verdade.
                     </span>
                 </h1>
 
-                <p
-                    className="text-white text-lg md:text-xl font-medium max-w-2xl mx-auto mb-10 leading-relaxed font-sans"
+                {/* NÍVEL 3 — Subtítulo rítmico */}
+                <div
+                    className="text-white/70 text-base md:text-lg max-w-2xl mx-auto mb-12 font-sans space-y-1"
                     style={{ textShadow: '0 1px 8px rgba(0,0,0,0.7)' }}
                 >
-                    Massa natural de pão de queijo, feita com ingredientes selecionados
-                    para assar na sua casa.
-                </p>
+                    <p className="m-0">Não é oco. Não murcha.</p>
+                    <p className="m-0">O cheiro já avisa que é diferente.</p>
+                </div>
 
-                <button className="bg-[#E8601C] text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-[#D45010] transition-colors shadow-lg hover:shadow-xl pointer-events-auto transform hover:scale-105 duration-300">
-                    Peça pelo WhatsApp
-                </button>
+                {/* NÍVEL 4 — CTA */}
+                <Link
+                    href="/produtos"
+                    className="bg-[#E8601C] text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-[#D45010] transition-all shadow-lg hover:shadow-xl pointer-events-auto transform hover:scale-105 duration-300 no-underline inline-block"
+                >
+                    Descobrir os produtos
+                </Link>
             </div>
 
             <div
@@ -73,7 +89,7 @@ export default function HeroCopy() {
 
             <style jsx global>{`
                 .hero-title {
-                    font-size: clamp(2.5rem, 8vw, 5rem);
+                    font-size: clamp(3rem, 10vw, 6rem);
                 }
             `}</style>
         </div>
