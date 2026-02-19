@@ -122,11 +122,12 @@ export default function PaoDeQueijo() {
             }, 18)
 
             // 2. Opacity fades only after bread is fully open
+            // Sincronizado para atingir 0 exatamente no pico do flash (44)
             timeline.to(sceneRef.current, {
                 opacity: 0,
                 duration: 8,
                 ease: 'power1.inOut'
-            }, 38)
+            }, 36)
 
         }, sceneRef)
 

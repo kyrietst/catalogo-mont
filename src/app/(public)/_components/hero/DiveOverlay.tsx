@@ -56,12 +56,12 @@ export default function DiveOverlay() {
     return (
         <div
             ref={containerRef}
-            className="absolute inset-0 z-[30] pointer-events-none overflow-hidden"
+            className="absolute inset-0 z-[15] pointer-events-none overflow-hidden"
         >
             {/* Flash Branco no topo */}
             <div
                 ref={flashRef}
-                className="absolute inset-0 z-[31] pointer-events-none"
+                className="absolute inset-0 z-[16] pointer-events-none"
                 style={{ backgroundColor: '#FFFFFF', opacity: 0 }}
             />
 
