@@ -126,11 +126,9 @@ export function ProductCard({
                     <h3 className="font-display text-sm text-mont-espresso line-clamp-2 leading-snug">
                         {name}
                     </h3>
-
                     <p className="text-[10px] text-mont-espresso/50 mt-0.5">
                         {weight_kg}kg
                     </p>
-
                     <p className="font-bold text-base text-mont-gold mt-1">
                         {formattedPrice}
                     </p>

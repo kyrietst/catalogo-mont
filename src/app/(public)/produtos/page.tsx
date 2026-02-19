@@ -21,14 +21,14 @@ async function getAllProducts(): Promise<Product[]> {
             .select('*')
             .eq('is_active', true)
             // .order('sort_order', { ascending: true }) // Se a view tiver sort_order
-            .order('name', { ascending: true }) // Fallback seguro
+            .order('nome', { ascending: true }) // Ajustado para 'nome' que é o campo real no banco
 
         if (error || !data || data.length === 0) {
             console.log('Usando produtos mockados (fallback)')
             return MOCK_PRODUCTS
         }
 
-        return data as Product[]
+        return data.map(p => mapProdutoToProduct(p as any))
 
     } catch (error) {
         console.error('Erro ao buscar produtos:', error)

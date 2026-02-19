@@ -28,7 +28,7 @@ async function getFeaturedProducts(): Promise<Product[]> {
             return MOCK_PRODUCTS.filter(p => p.is_featured)
         }
 
-        return data as Product[]
+        return data.map(p => mapProdutoToProduct(p as any))
 
     } catch (error) {
         console.error('Erro ao buscar produtos:', error)
