@@ -35,14 +35,25 @@ export default function HeroCopy() {
     return (
         <div className="absolute inset-0 z-40 flex flex-col items-center justify-center pointer-events-none">
             <div ref={containerRef} className="text-center px-4 max-w-4xl mt-[-10vh]">
-                <h1 className="text-[#FAF7F2] font-black leading-[1.1] mb-6 tracking-tight hero-title">
-                    O sabor que só o <br />
+                <h1
+                    className="text-[#FAF7F2] font-black leading-[1.1] mb-6 tracking-tight hero-title"
+                >
+                    <span style={{ textShadow: '0 2px 12px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.8)' }}>
+                        O sabor que só o
+                    </span>
+                    <br />
                     <span className="text-transparent bg-clip-text bg-gradient-to-br from-[#E8601C] to-[#C43E1A]">
                         artesanal
-                    </span> tem
+                    </span>
+                    <span style={{ textShadow: '0 2px 12px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.8)' }}>
+                        {' '}tem
+                    </span>
                 </h1>
 
-                <p className="text-[#C4B5A5] text-lg md:text-xl font-medium max-w-2xl mx-auto mb-10 leading-relaxed font-sans">
+                <p
+                    className="text-white text-lg md:text-xl font-medium max-w-2xl mx-auto mb-10 leading-relaxed font-sans"
+                    style={{ textShadow: '0 1px 8px rgba(0,0,0,0.7)' }}
+                >
                     Massa natural de pão de queijo, feita com ingredientes selecionados
                     para assar na sua casa.
                 </p>

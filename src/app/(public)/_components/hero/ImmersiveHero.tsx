@@ -12,7 +12,29 @@ export default function ImmersiveHero() {
     return (
         <ScrollWrapper>
             {/* Background */}
-            <div className="absolute inset-0 bg-[#3D2B22]" />
+            {/* Background artesanal — imagem de forno lenha + bancada */}
+            <div className="absolute inset-0 overflow-hidden">
+
+                {/* Imagem de fundo responsiva */}
+                <picture>
+                    <source
+                        media="(max-width: 768px)"
+                        srcSet="/hero/hero-bg-mobile.png"
+                    />
+                    <img
+                        src="/hero/hero-bg-desktop.png"
+                        alt=""
+                        aria-hidden="true"
+                        className="absolute inset-0 w-full h-full object-cover object-center"
+                        style={{ willChange: 'transform' }}
+                        fetchPriority="high"
+                        decoding="async"
+                    />
+                </picture>
+
+
+
+            </div>
 
             <HeroCopy />
             <FloatingPaes />
