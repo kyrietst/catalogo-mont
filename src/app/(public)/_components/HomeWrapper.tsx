@@ -11,14 +11,15 @@ export default function HomeWrapper({ children }: { children: React.ReactNode })
         gsap.registerPlugin(ScrollTrigger)
 
         const ctx = gsap.context(() => {
+            gsap.set(document.documentElement, { backgroundColor: '#3D2B22' })
+
             // Mudar o fundo do <html> quando sair do hero
             ScrollTrigger.create({
                 trigger: '#destaques',
                 start: 'top 90%',
                 end: 'top 50%',
                 scrub: true,
-                animation: gsap.fromTo(document.documentElement,
-                    { backgroundColor: '#3D2B22' },
+                animation: gsap.to(document.documentElement,
                     { backgroundColor: '#FAF7F2', ease: 'none' }
                 )
             })
