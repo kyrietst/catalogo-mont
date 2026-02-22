@@ -8,7 +8,10 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 if (typeof window !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger)
     ScrollTrigger.config({ ignoreMobileResize: true })
-    ScrollTrigger.normalizeScroll(true)
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+    if (!isIOS) {
+        ScrollTrigger.normalizeScroll(true)
+    }
 }
 
 interface ScrollWrapperProps {
