@@ -47,7 +47,8 @@ export default function ScrollWrapper({ children }: ScrollWrapperProps) {
                     end: 'bottom bottom',
                     pin: contentRef.current,
                     pinSpacing: false,
-                    scrub: 1.0,
+                    scrub: 0.5,
+                    anticipatePin: 1,
                     onUpdate: (self) => {
                         scrollProgressRef.current = self.progress
                     },
