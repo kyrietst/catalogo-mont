@@ -44,9 +44,9 @@ export default function ScrollWrapper({ children }: ScrollWrapperProps) {
                 scrollTrigger: {
                     trigger: wrapperRef.current,
                     start: 'top top',
-                    end: 'bottom bottom',
+                    end: '+=250%',
                     pin: contentRef.current,
-                    pinSpacing: false,
+                    pinSpacing: true,
                     scrub: 0.5,
                     anticipatePin: 1,
                     onUpdate: (self) => {
@@ -74,19 +74,22 @@ export default function ScrollWrapper({ children }: ScrollWrapperProps) {
     return (
         <HeroContext.Provider value={contextValue}>
             {/* 
-                O container principal tem 350dvh para dar espaço de rolagem.
-                O conteúdo fixo (pinned) tem 100dvh.
+                Removido 'h-[350dvh]' - GSAP controlará o espaçamento nativo agora via pinSpacing: true.
+                O background foi movido para o contentRef que será fixado.
              */}
             <div
                 ref={wrapperRef}
                 data-hero-wrapper
-                className="relative w-full h-[350dvh]"
-                style={{
-                    background: 'linear-gradient(to bottom, #0D0603 0%, #0D0603 80%, #FAF7F2 95%, #FAF7F2 100%)'
-                }}
+                className="relative w-full"
             >
                 {/* Fallback height for SSR/Initial render before JS kicks in */}
-                <div ref={contentRef} className="w-full h-[100dvh] overflow-hidden">
+                <div
+                    ref={contentRef}
+                    className="w-full h-[100dvh] overflow-hidden"
+                    style={{
+                        background: 'linear-gradient(to bottom, #0D0603 0%, #0D0603 80%, #FAF7F2 95%, #FAF7F2 100%)'
+                    }}
+                >
                     {children}
                 </div>
             </div>
