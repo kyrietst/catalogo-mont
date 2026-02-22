@@ -111,8 +111,7 @@ export default function HeroSection() {
     return (
         <section
             ref={containerRef}
-            className="relative min-h-[100dvh] flex items-center justify-center bg-[#3D2B22]"
-            style={{ overflowX: 'clip', overflowY: 'visible' }}
+            className="relative min-h-[100dvh] flex items-center justify-center bg-[#3D2B22] overflow-x-hidden isolate"
         >
             {/* Layer 1: Background + Grain */}
             <div className="absolute inset-0 z-0">

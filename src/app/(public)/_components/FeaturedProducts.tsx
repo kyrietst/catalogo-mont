@@ -62,7 +62,7 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
             id="destaques"
             style={{
                 // PRESERVADO: Posicionamento e perspectiva
-                marginTop: '-110vh',
+                marginTop: '-80vh',
                 perspective: '600px',
                 perspectiveOrigin: '50% 10%',
             }}

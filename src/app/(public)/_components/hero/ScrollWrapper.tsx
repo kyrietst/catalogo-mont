@@ -92,7 +92,7 @@ export default function ScrollWrapper({ children }: ScrollWrapperProps) {
             <div
                 ref={wrapperRef}
                 data-hero-wrapper
-                className="relative w-full h-[500vh]"
+                className="relative w-full h-[350vh]"
                 style={{
                     background: 'linear-gradient(to bottom, #0D0603 0%, #0D0603 80%, #FAF7F2 95%, #FAF7F2 100%)'
                 }}
