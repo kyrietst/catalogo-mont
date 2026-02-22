@@ -36,33 +36,37 @@ export default function ScrollWrapper({ children }: ScrollWrapperProps) {
     // Combine logic into a single effect to guarantee order:
     // Create Pin with ScrollTrigger
     useLayoutEffect(() => {
-        if (!wrapperRef.current || !contentRef.current) return
+        try {
+            if (!wrapperRef.current || !contentRef.current) return
 
-        // GSAP Context & Pin Check
-        const ctx = gsap.context(() => {
-            const tl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: wrapperRef.current,
-                    start: 'top top',
-                    end: '+=250%',
-                    pin: contentRef.current,
-                    pinSpacing: true,
-                    scrub: 0.5,
-                    anticipatePin: 1,
-                    onUpdate: (self) => {
-                        scrollProgressRef.current = self.progress
-                    },
-                    // Add invalidateOnRefresh to handle dynamic height changes better
-                    invalidateOnRefresh: true
-                }
-            })
+            // GSAP Context & Pin Check
+            const ctx = gsap.context(() => {
+                const tl = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: wrapperRef.current,
+                        start: 'top top',
+                        end: '+=250%',
+                        pin: contentRef.current,
+                        pinSpacing: true,
+                        scrub: 0.5,
+                        anticipatePin: 1,
+                        onUpdate: (self) => {
+                            scrollProgressRef.current = self.progress
+                        },
+                        // Add invalidateOnRefresh to handle dynamic height changes better
+                        invalidateOnRefresh: true
+                    }
+                })
 
-            setTimeline(tl)
+                setTimeline(tl)
 
-        }, wrapperRef)
+            }, wrapperRef)
 
-        return () => {
-            ctx.revert()
+            return () => {
+                ctx.revert()
+            }
+        } catch (error) {
+            console.error('ScrollWrapper error:', error)
         }
     }, [])
 
