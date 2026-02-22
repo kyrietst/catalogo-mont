@@ -81,6 +81,9 @@ export default function ScrollWrapper({ children }: ScrollWrapperProps) {
                 ref={wrapperRef}
                 data-hero-wrapper
                 className="relative w-full"
+                style={{
+                    background: 'linear-gradient(to bottom, #0D0603 0%, #0D0603 80%, #FAF7F2 95%, #FAF7F2 100%)'
+                }}
             >
                 {/* Fallback height for SSR/Initial render before JS kicks in */}
                 <div
