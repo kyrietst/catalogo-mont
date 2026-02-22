@@ -9,7 +9,7 @@ interface OrderItem {
     id: string
     quantidade: number
     preco_unitario: number
-    total: number
+    total_centavos: number
     produto: {
         nome: string
     }
@@ -20,8 +20,9 @@ interface Order {
     numero_pedido: number
     cliente_nome: string
     cliente_telefone: string
-    total: number
+    total_centavos: number
     status: string
+    status_pagamento: string
     criado_em: string
     metodo_entrega: string
     metodo_pagamento: string
@@ -56,7 +57,6 @@ export default function AdminOrdersPage() {
     const handleStatusChange = async (id: string, newStatus: string) => {
         const originalOrders = [...orders]
 
-        // Optimistic update
         setOrders(orders.map(o =>
             o.id === id ? { ...o, status: newStatus } : o
         ))
@@ -71,6 +71,30 @@ export default function AdminOrdersPage() {
             if (!res.ok) {
                 setOrders(originalOrders)
                 alert('Erro ao atualizar status')
+            }
+        } catch (error) {
+            setOrders(originalOrders)
+            alert('Erro de conexão')
+        }
+    }
+
+    const handlePaymentStatusChange = async (id: string, newStatus: string) => {
+        const originalOrders = [...orders]
+
+        setOrders(orders.map(o =>
+            o.id === id ? { ...o, status_pagamento: newStatus } : o
+        ))
+
+        try {
+            const res = await fetch(`/api/admin/pedidos/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status_pagamento: newStatus })
+            })
+
+            if (!res.ok) {
+                setOrders(originalOrders)
+                alert('Erro ao atualizar pagamento')
             }
         } catch (error) {
             setOrders(originalOrders)
@@ -128,6 +152,7 @@ export default function AdminOrdersPage() {
                             expanded={expandedOrderId === order.id}
                             onToggleExpand={() => setExpandedOrderId(expandedOrderId === order.id ? null : order.id)}
                             onStatusChange={handleStatusChange}
+                            onPaymentStatusChange={handlePaymentStatusChange}
                         />
                     ))}
                     {filteredOrders.length === 0 && (

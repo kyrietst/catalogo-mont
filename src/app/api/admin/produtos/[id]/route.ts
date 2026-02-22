@@ -39,6 +39,10 @@ export async function PATCH(
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    if (user.user_metadata?.role !== 'admin') {
+        return NextResponse.json({ error: 'Acesso não autorizado' }, { status: 403 })
+    }
+
     // 2. Parse & Validate Body
     const body = await request.json()
     const result = updateProductSchema.safeParse(body)

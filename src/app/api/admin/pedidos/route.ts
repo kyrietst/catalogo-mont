@@ -25,6 +25,10 @@ export async function GET() {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    if (user.user_metadata?.role !== 'admin') {
+        return NextResponse.json({ error: 'Acesso não autorizado' }, { status: 403 })
+    }
+
     // 2. Data Access (Service Role)
     const supabase = createClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -38,8 +42,8 @@ export async function GET() {
       cat_itens_pedido (
         id,
         quantidade,
-        preco_unitario,
-        total,
+        preco_unitario_centavos,
+        total_centavos,
         produto: produto_id (
           nome
         )

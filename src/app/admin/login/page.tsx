@@ -23,7 +23,7 @@ export default function LoginPage() {
         setLoading(true)
         setError(null)
 
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
             email,
             password,
         })
@@ -32,6 +32,12 @@ export default function LoginPage() {
             setError(error.message || 'Credenciais inválidas. Verifique seu email e senha.')
             setLoading(false)
         } else {
+            if (data.user?.user_metadata?.role !== 'admin') {
+                await supabase.auth.signOut()
+                setError('Acesso não autorizado.')
+                setLoading(false)
+                return
+            }
             router.push('/admin')
             router.refresh()
         }

@@ -8,7 +8,7 @@ interface OrderItem {
     id: string
     quantidade: number
     preco_unitario: number
-    total: number
+    total_centavos: number
     produto: {
         nome: string
     }
@@ -19,8 +19,9 @@ interface Order {
     numero_pedido: number
     cliente_nome: string
     cliente_telefone: string
-    total: number
+    total_centavos: number
     status: string
+    status_pagamento: string
     criado_em: string
     metodo_entrega: string
     metodo_pagamento: string
@@ -33,6 +34,7 @@ interface OrderCardProps {
     expanded: boolean
     onToggleExpand: () => void
     onStatusChange: (id: string, newStatus: string) => Promise<void>
+    onPaymentStatusChange: (id: string, newStatus: string) => Promise<void>
 }
 
 export default function OrderCard({
@@ -40,7 +42,8 @@ export default function OrderCard({
     items,
     expanded,
     onToggleExpand,
-    onStatusChange
+    onStatusChange,
+    onPaymentStatusChange
 }: OrderCardProps) {
 
     const formatDate = (dateStr: string) => {
@@ -95,7 +98,7 @@ export default function OrderCard({
 
                     <div className="flex items-center gap-2">
                         <span className="font-jetbrains font-bold text-lg text-mont-gold">
-                            {formatCurrency(order.total)}
+                            {formatCurrency(order.total_centavos)}
                         </span>
                         {expanded ? <ChevronUp size={18} className="text-gray-400" /> : <ChevronDown size={18} className="text-gray-400" />}
                     </div>
@@ -129,6 +132,20 @@ export default function OrderCard({
                             <option value="entregue">Entregue</option>
                             <option value="cancelado">Cancelado</option>
                         </select>
+
+                        {/* Pagamento Select */}
+                        <div className="flex items-center gap-1.5">
+                            <span className="text-xs text-gray-400 font-medium">Pagamento</span>
+                            <select
+                                value={order.status_pagamento}
+                                onChange={(e) => onPaymentStatusChange(order.id, e.target.value)}
+                                className="px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-xs font-medium focus:ring-2 focus:ring-mont-gold outline-none"
+                            >
+                                <option value="pendente">Pendente</option>
+                                <option value="pago">Pago</option>
+                                <option value="parcial">Parcial</option>
+                            </select>
+                        </div>
                     </div>
 
                     {/* Items List */}
@@ -145,7 +162,7 @@ export default function OrderCard({
                                     </span>
                                 </div>
                                 <div className="font-jetbrains text-gray-600 text-xs">
-                                    {formatCurrency(item.total)}
+                                    {formatCurrency(item.total_centavos)}
                                 </div>
                             </div>
                         )) || <p className="text-xs text-gray-400 italic">Carregando itens...</p>}

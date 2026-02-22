@@ -6,7 +6,12 @@
       "Bash(node /home/kyrie/.nvm/versions/node/v22.20.0/lib/node_modules/@supabase/mcp-server-supabase/dist/transports/stdio.js:*)",
       "Bash(claude mcp:*)",
       "Bash(python3:*)",
-      "Bash(SUPABASE_URL=https://herlvujykltxnwqmwmyx.supabase.co SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhlcmx2dWp5a2x0eG53cW13bXl4Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NTMyNzcwNywiZXhwIjoyMDgwOTAzNzA3fQ.p6SmxPnmKrINkDjVdXLOvYF-uOK6geMQvciwvFr88YI SUPABASE_ACCESS_TOKEN=sbp_30eb72c080dc7564c90e9acbc154aba85c3d6598 timeout 5 node:*)"
+      "Bash(SUPABASE_URL=https://herlvujykltxnwqmwmyx.supabase.co SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhlcmx2dWp5a2x0eG53cW13bXl4Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NTMyNzcwNywiZXhwIjoyMDgwOTAzNzA3fQ.p6SmxPnmKrINkDjVdXLOvYF-uOK6geMQvciwvFr88YI SUPABASE_ACCESS_TOKEN=sbp_30eb72c080dc7564c90e9acbc154aba85c3d6598 timeout 5 node:*)",
+      "mcp__supabase-distribuidora__list_projects",
+      "mcp__supabase-distribuidora__execute_sql",
+      "mcp__supabase-distribuidora__get_advisors",
+      "mcp__supabase-distribuidora__apply_migration",
+      "mcp__supabase-distribuidora__get_logs"
     ]
   }
 }
