@@ -1,14 +1,16 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useCartStore } from '@/lib/cart/store'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { Loader2 } from 'lucide-react'
 import { Navbar, Footer } from '@/components/catalog'
 import { Button, Input } from '@/components/ui'
 import { formatCurrency, formatPhone, unformatPhone, isValidPhone } from '@/lib/utils/format'
 import { generateWhatsAppMessage, generateWhatsAppUrl } from '@/lib/whatsapp/checkout'
+import { useCep } from '@/hooks/useCep'
 import Link from 'next/link'
 
 const DELIVERY_FEE_CENTS = 800 // R$ 8,00
@@ -16,46 +18,104 @@ const DELIVERY_FEE_CENTS = 800 // R$ 8,00
 const checkoutSchema = z.object({
     customer_name: z.string().min(3, 'Nome muito curto'),
     customer_phone: z.string().refine(isValidPhone, 'Telefone inválido'),
-    customer_address: z.string().min(10, 'Endereço incompleto'),
     delivery_method: z.enum(['entrega', 'retirada']),
+    payment_method: z.enum(['pix', 'dinheiro']),
+    // Campos de endereço — montados em customer_address no onSubmit
+    cep: z.string().optional(),
+    logradouro: z.string().optional(),
+    numero: z.string().optional(),
+    complemento: z.string().optional(),
+    bairro: z.string().optional(),
+    cidade: z.string().optional(),
+    uf: z.string().optional(),
     referred_by: z.string().optional(),
     notes: z.string().optional(),
 })
 
 type CheckoutFormData = z.infer<typeof checkoutSchema>
 
+const formatCep = (value: string) => {
+    const digits = value.replace(/\D/g, '').slice(0, 8)
+    if (digits.length > 5) return `${digits.slice(0, 5)}-${digits.slice(5)}`
+    return digits
+}
+
 export default function CarrinhoPage() {
     const { items, updateQuantity, removeItem, getTotalPrice, clearCart } = useCartStore()
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [phoneValue, setPhoneValue] = useState('')
+    const [cepDisplayValue, setCepDisplayValue] = useState('')
+
+    const { fetchCep, loading: loadingCep } = useCep()
 
     const {
         register,
         handleSubmit,
         watch,
+        setValue,
+        setFocus,
         formState: { errors },
     } = useForm<CheckoutFormData>({
         resolver: zodResolver(checkoutSchema),
         defaultValues: {
             delivery_method: 'entrega',
+            payment_method: 'pix',
+            cep: '',
+            logradouro: '',
+            numero: '',
+            complemento: '',
+            bairro: '',
+            cidade: '',
+            uf: '',
         },
     })
 
     const deliveryMethod = watch('delivery_method')
+    const cepValue = watch('cep')
     const subtotalCents = getTotalPrice()
     const deliveryFeeCents = deliveryMethod === 'entrega' ? DELIVERY_FEE_CENTS : 0
     const totalCents = subtotalCents + deliveryFeeCents
+
+    // Dispara busca ao completar 8 dígitos — mesmo padrão do ContatoFormModal.tsx
+    useEffect(() => {
+        if (cepValue && cepValue.replace(/\D/g, '').length === 8) {
+            fetchCep(cepValue).then((data) => {
+                if (data) {
+                    setValue('logradouro', data.street)
+                    setValue('bairro', data.neighborhood)
+                    setValue('cidade', data.city)
+                    setValue('uf', data.state)
+                    setTimeout(() => setFocus('numero'), 100)
+                }
+            })
+        }
+    }, [cepValue]) // eslint-disable-line react-hooks/exhaustive-deps
 
     const onSubmit = async (data: CheckoutFormData) => {
         setIsSubmitting(true)
 
         try {
-            // Prepara payload para API
+            // Monta customer_address a partir dos campos individuais
+            let customer_address: string | undefined
+            if (data.delivery_method === 'entrega') {
+                const parts: string[] = []
+                if (data.logradouro) {
+                    parts.push(`${data.logradouro}, ${data.numero || 'S/N'}`)
+                }
+                if (data.complemento) parts.push(data.complemento)
+                if (data.bairro) parts.push(data.bairro)
+                if (data.cidade && data.uf) parts.push(`${data.cidade}/${data.uf}`)
+                const cepClean = (data.cep || '').replace(/\D/g, '')
+                if (cepClean) parts.push(cepClean)
+                customer_address = parts.join(' - ')
+            }
+
             const orderPayload = {
                 customer_name: data.customer_name,
                 customer_phone: unformatPhone(data.customer_phone),
-                customer_address: data.customer_address,
+                customer_address,
                 delivery_method: data.delivery_method,
+                payment_method: data.payment_method,
                 items: items.map(item => ({
                     product_id: item.product.id,
                     product_name: item.product.name,
@@ -80,9 +140,9 @@ export default function CarrinhoPage() {
                 throw new Error('Erro ao salvar pedido')
             }
 
-            // Gera mensagem WhatsApp
+            // Gera mensagem WhatsApp (usa customer_address montado)
             const message = generateWhatsAppMessage(
-                data,
+                { ...data, customer_address: customer_address || '' },
                 items,
                 subtotalCents,
                 deliveryFeeCents,
@@ -90,11 +150,7 @@ export default function CarrinhoPage() {
             )
 
             const whatsappUrl = generateWhatsAppUrl(message)
-
-            // Abre WhatsApp
             window.open(whatsappUrl, '_blank')
-
-            // Limpa carrinho
             clearCart()
 
         } catch (error) {
@@ -286,13 +342,104 @@ export default function CarrinhoPage() {
                                     </div>
                                 </div>
 
+                                <div>
+                                    <label className="block text-mont-gray text-sm mb-2">
+                                        Forma de pagamento
+                                    </label>
+                                    <div className="space-y-2">
+                                        {[
+                                            { id: 'pix', label: 'PIX' },
+                                            { id: 'dinheiro', label: 'Dinheiro' }
+                                        ].map(option => (
+                                            <label key={option.id} className="flex items-center gap-2 cursor-pointer">
+                                                <input
+                                                    type="radio"
+                                                    value={option.id}
+                                                    {...register('payment_method')}
+                                                    className="text-mont-gold"
+                                                />
+                                                <span className="text-mont-espresso">
+                                                    {option.label}
+                                                </span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
+
                                 {deliveryMethod === 'entrega' && (
-                                    <Input
-                                        label="Endereço completo"
-                                        {...register('customer_address')}
-                                        error={errors.customer_address?.message}
-                                        placeholder="Rua, número, bairro, cidade"
-                                    />
+                                    <div className="space-y-3">
+                                        {/* CEP com máscara e spinner */}
+                                        <div className="relative">
+                                            <Input
+                                                label="CEP"
+                                                maxLength={9}
+                                                value={cepDisplayValue}
+                                                {...register('cep', {
+                                                    onChange: (e) => {
+                                                        const masked = formatCep(e.target.value)
+                                                        setCepDisplayValue(masked)
+                                                        setValue('cep', masked)
+                                                    },
+                                                })}
+                                                placeholder="00000-000"
+                                            />
+                                            {loadingCep && (
+                                                <div className="absolute right-3 top-[42px]">
+                                                    <Loader2 className="h-4 w-4 animate-spin text-mont-gold" />
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Logradouro — somente leitura, preenchido pelo CEP */}
+                                        <Input
+                                            label="Logradouro"
+                                            readOnly
+                                            {...register('logradouro')}
+                                            className="bg-mont-surface cursor-not-allowed opacity-75"
+                                            placeholder="Preenchido automaticamente"
+                                        />
+
+                                        {/* Número (foco automático após busca) + Complemento */}
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <Input
+                                                label="Número"
+                                                {...register('numero')}
+                                                placeholder="Ex: 123"
+                                            />
+                                            <Input
+                                                label="Complemento"
+                                                {...register('complemento')}
+                                                placeholder="Apto, bloco..."
+                                            />
+                                        </div>
+
+                                        {/* Bairro — somente leitura, preenchido pelo CEP */}
+                                        <Input
+                                            label="Bairro"
+                                            readOnly
+                                            {...register('bairro')}
+                                            className="bg-mont-surface cursor-not-allowed opacity-75"
+                                            placeholder="Preenchido automaticamente"
+                                        />
+
+                                        {/* Cidade + UF — somente leitura, preenchidos pelo CEP */}
+                                        <div className="grid grid-cols-[1fr_80px] gap-3">
+                                            <Input
+                                                label="Cidade"
+                                                readOnly
+                                                {...register('cidade')}
+                                                className="bg-mont-surface cursor-not-allowed opacity-75"
+                                                placeholder="Preenchida automaticamente"
+                                            />
+                                            <Input
+                                                label="UF"
+                                                readOnly
+                                                {...register('uf')}
+                                                className="bg-mont-surface cursor-not-allowed opacity-75 text-center"
+                                                placeholder="—"
+                                            />
+                                        </div>
+                                    </div>
                                 )}
 
                                 <Input

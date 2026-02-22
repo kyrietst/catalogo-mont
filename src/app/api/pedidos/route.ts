@@ -8,6 +8,7 @@ const orderSchema = z.object({
     customer_phone: z.string().min(10),
     customer_address: z.string().optional(),
     delivery_method: z.enum(['entrega', 'retirada']),
+    payment_method: z.enum(['pix', 'dinheiro']),
     items: z.array(z.object({
         product_id: z.string().uuid(),
         product_name: z.string(),
@@ -54,7 +55,7 @@ export async function POST(request: Request) {
                     subtotal_centavos: validatedData.subtotal_cents,
                     frete_centavos: validatedData.delivery_fee_cents,
                     total_centavos: validatedData.total_cents,
-                    metodo_pagamento: 'pix', // Default
+                    metodo_pagamento: validatedData.payment_method,
                     observacoes: validatedData.notes || null,
                     indicado_por: validatedData.referred_by || null,
                     status: 'pendente',

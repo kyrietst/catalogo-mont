@@ -82,7 +82,7 @@ export function Navbar({ cartItemCount: initialCount = 0 }: NavbarProps) {
         }
     }, [isMobileMenuOpen])
 
-    const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '5511999999999'
+    const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '5511934417085'
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=Olá! Gostaria de falar com a Mont.`
 
     return (

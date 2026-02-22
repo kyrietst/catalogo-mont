@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
 export function Footer() {
-    const whatsappNumber = '5511999999999' // Placeholder - atualizar com número real
+    const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '5511934417085'
     const whatsappMessage = encodeURIComponent('Olá! Vim pelo site e gostaria de saber mais sobre os produtos.')
 
     return (

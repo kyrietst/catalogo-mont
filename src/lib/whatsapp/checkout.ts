@@ -5,8 +5,14 @@ interface CheckoutFormData {
     customer_phone: string
     customer_address: string
     delivery_method: 'entrega' | 'retirada'
+    payment_method: 'pix' | 'dinheiro'
     referred_by?: string
     notes?: string
+}
+
+const paymentMethodLabels = {
+    pix: 'PIX',
+    dinheiro: 'Dinheiro'
 }
 
 /**
@@ -59,6 +65,7 @@ export function generateWhatsAppMessage(
     }
 
     message += `*Total:* ${formatCurrency(totalCents)}\n`
+    message += `*Pagamento:* ${paymentMethodLabels[formData.payment_method]}\n`
 
     // Informações adicionais
     if (formData.referred_by) {
@@ -78,7 +85,7 @@ export function generateWhatsAppMessage(
  * Gera URL do WhatsApp com mensagem pré-preenchida
  */
 export function generateWhatsAppUrl(message: string): string {
-    const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '5511999999999'
+    const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '5511934417085'
     const encodedMessage = encodeURIComponent(message)
 
     return `https://wa.me/${whatsappNumber}?text=${encodedMessage}`

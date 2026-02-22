@@ -82,7 +82,7 @@ export default function FinalCTA() {
         return () => ctx.revert()
     }, [])
 
-    const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '5511999999999'
+    const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '5511934417085'
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=Ol\u00E1! Gostaria de saber mais sobre os produtos da Mont Distribuidora.`
 
     return (
