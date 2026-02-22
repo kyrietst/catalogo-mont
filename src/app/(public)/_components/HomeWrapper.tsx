@@ -46,18 +46,6 @@ export default function HomeWrapper({ children }: { children: React.ReactNode })
                 })
             })
 
-            // Quando chegar no final-cta (marrom), html também fica marrom
-            if (document.querySelector('#final-cta')) {
-                ScrollTrigger.create({
-                    trigger: '#final-cta',
-                    start: 'top 60%',
-                    end: 'top 20%',
-                    scrub: true,
-                    animation: gsap.to(document.documentElement,
-                        { backgroundColor: '#3D2B22', ease: 'none' }
-                    )
-                })
-            }
         }, mainRef)
 
         return () => ctx.revert()
