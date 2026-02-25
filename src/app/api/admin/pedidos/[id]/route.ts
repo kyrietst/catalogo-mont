@@ -66,54 +66,94 @@ export async function PATCH(
         return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    // Integração automática: sincroniza com vendas quando entregue + pago
-    if (data.status === 'entregue' && data.status_pagamento === 'pago') {
-        const vendaNote = `catalogo:${params.id}`
+    // Integração automática: sincroniza com vendas
+    const { data: existingVenda, error: idempotenciaError } = await supabase
+        .from('vendas')
+        .select('id')
+        .eq('cat_pedido_id', params.id)
+        .maybeSingle()
 
-        // Idempotência: verifica se já foi sincronizado
-        const { data: existingVenda } = await supabase
+    if (idempotenciaError) {
+        console.error('IDEMPOTENCIA_ERROR:', idempotenciaError)
+    }
+
+    if (existingVenda) {
+        // Atualiza registro existente em vendas
+        const vendaUpdate: Record<string, unknown> = {}
+
+        if (data.status === 'entregue') {
+            vendaUpdate.status = 'entregue'
+        } else if (data.status === 'cancelado') {
+            vendaUpdate.status = 'cancelada'
+        } else {
+            vendaUpdate.status = 'pendente'
+        }
+
+        if (data.status_pagamento === 'pago') {
+            vendaUpdate.pago = true
+            vendaUpdate.valor_pago = data.total_centavos / 100
+        } else {
+            vendaUpdate.pago = false
+            vendaUpdate.valor_pago = 0
+        }
+
+        const { error: updateError } = await supabase
             .from('vendas')
+            .update(vendaUpdate)
+            .eq('cat_pedido_id', params.id)
+
+        if (updateError) {
+            console.error('VENDA_UPDATE_ERROR:', updateError)
+        }
+    } else {
+        // Get or create contato pelo telefone
+        let contatoId: string | null = null
+
+        const { data: contatoExistente, error: contatoError } = await supabase
+            .from('contatos')
             .select('id')
-            .eq('notes', vendaNote)
+            .eq('telefone', data.telefone_cliente)
             .maybeSingle()
 
-        if (!existingVenda) {
-            // Busca itens do pedido
-            const { data: itens } = await supabase
-                .from('cat_itens_pedido')
-                .select('produto_id, nome_produto, quantidade, preco_unitario_centavos, total_centavos')
-                .eq('pedido_id', params.id)
-
-            // Cria registro em vendas
-            const { data: novaVenda, error: vendaError } = await supabase
-                .from('vendas')
+        if (contatoExistente) {
+            contatoId = contatoExistente.id
+        } else {
+            const { data: novoContato, error: contatoCreateError } = await supabase
+                .from('contatos')
                 .insert({
-                    customer_name: data.nome_cliente,
-                    customer_phone: data.telefone_cliente,
-                    source: 'catalogo',
-                    total_cents: data.total_centavos,
-                    payment_method: data.metodo_pagamento,
-                    payment_status: 'pago',
-                    notes: vendaNote,
-                    referred_by: data.indicado_por || null,
+                    nome: data.nome_cliente,
+                    telefone: data.telefone_cliente,
+                    tipo: 'catalogo',
+                    origem: 'catalogo',
+                    status: 'cliente'
                 })
                 .select('id')
                 .single()
 
-            // Cria itens da venda
-            if (!vendaError && novaVenda && itens?.length) {
-                await supabase
-                    .from('direct_sale_items')
-                    .insert(itens.map(item => ({
-                        sale_id: novaVenda.id,
-                        product_id: item.produto_id,
-                        product_name: item.nome_produto,
-                        quantity: item.quantidade,
-                        unit_price_cents: item.preco_unitario_centavos,
-                        total_cents: item.total_centavos,
-                    })))
+            if (!contatoCreateError && novoContato) {
+                contatoId = novoContato.id
+            } else {
+                console.error('CONTATO_CREATE_ERROR:', contatoCreateError)
             }
         }
+
+        // Cria registro em vendas (fallback)
+        const { error: vendaError } = await supabase
+            .from('vendas')
+            .insert({
+                origem: 'catalogo',
+                status: data.status === 'entregue' ? 'entregue' : (data.status === 'cancelado' ? 'cancelada' : 'pendente'),
+                total: data.total_centavos / 100,
+                forma_pagamento: data.metodo_pagamento,
+                pago: data.status_pagamento === 'pago',
+                valor_pago: data.status_pagamento === 'pago' ? data.total_centavos / 100 : 0,
+                taxa_entrega: data.frete_centavos / 100,
+                observacoes: data.observacoes || null,
+                cat_pedido_id: params.id,
+                data: new Date().toISOString().split('T')[0],
+                contato_id: contatoId,
+            })
+        console.error('VENDA_ERROR:', vendaError)
     }
 
     return NextResponse.json(data)

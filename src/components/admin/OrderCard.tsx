@@ -17,8 +17,8 @@ interface OrderItem {
 interface Order {
     id: string
     numero_pedido: number
-    cliente_nome: string
-    cliente_telefone: string
+    nome_cliente: string
+    telefone_cliente: string
     total_centavos: number
     status: string
     status_pagamento: string
@@ -86,7 +86,7 @@ export default function OrderCard({
                     <div className="space-y-1">
                         <div className="flex items-center gap-1.5 text-sm font-medium text-gray-700">
                             <User size={14} className="text-gray-400" />
-                            {order.cliente_nome}
+                            {order.nome_cliente}
                         </div>
                         <div className="flex items-center gap-1.5 text-xs text-gray-500">
                             {order.metodo_entrega === 'entrega' ? <Package size={12} /> : <Store size={12} />}
@@ -112,40 +112,36 @@ export default function OrderCard({
                     {/* Actions */}
                     <div className="mb-4 flex flex-wrap gap-2">
                         <a
-                            href={`tel:${order.cliente_telefone}`}
+                            href={`tel:${order.telefone_cliente}`}
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-100 text-green-700 rounded-lg text-xs font-bold hover:bg-green-200"
                         >
                             <Phone size={14} />
                             Ligar
                         </a>
 
-                        {/* Status Select */}
-                        <select
-                            value={order.status}
-                            onChange={(e) => onStatusChange(order.id, e.target.value)}
-                            className="px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-xs font-medium focus:ring-2 focus:ring-mont-gold outline-none"
-                        >
-                            <option value="pendente">Pendente</option>
-                            <option value="confirmado">Confirmado</option>
-                            <option value="preparando">Preparando</option>
-                            <option value="enviado">Enviado</option>
-                            <option value="entregue">Entregue</option>
-                            <option value="cancelado">Cancelado</option>
-                        </select>
-
-                        {/* Pagamento Select */}
-                        <div className="flex items-center gap-1.5">
-                            <span className="text-xs text-gray-400 font-medium">Pagamento</span>
-                            <select
-                                value={order.status_pagamento}
-                                onChange={(e) => onPaymentStatusChange(order.id, e.target.value)}
-                                className="px-3 py-1.5 bg-white border border-gray-300 rounded-lg text-xs font-medium focus:ring-2 focus:ring-mont-gold outline-none"
+                        {/* Status Actions */}
+                        {order.status !== 'cancelado' && (
+                            <button
+                                onClick={() => onStatusChange(order.id, order.status === 'entregue' ? 'pendente' : 'entregue')}
+                                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${order.status === 'entregue'
+                                        ? "bg-white text-red-600 border border-red-200 hover:bg-red-50"
+                                        : "bg-mont-espresso text-white hover:bg-black"
+                                    }`}
                             >
-                                <option value="pendente">Pendente</option>
-                                <option value="pago">Pago</option>
-                                <option value="parcial">Parcial</option>
-                            </select>
-                        </div>
+                                {order.status === 'entregue' ? 'Desmarcar Entregue' : 'Marcar como Entregue'}
+                            </button>
+                        )}
+
+                        {/* Payment Actions */}
+                        <button
+                            onClick={() => onPaymentStatusChange(order.id, order.status_pagamento === 'pago' ? 'pendente' : 'pago')}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${order.status_pagamento === 'pago'
+                                    ? "bg-white text-red-600 border border-red-200 hover:bg-red-50"
+                                    : "bg-mont-gold text-white hover:bg-mont-espresso"
+                                }`}
+                        >
+                            {order.status_pagamento === 'pago' ? 'Desmarcar Pago' : 'Marcar como Pago'}
+                        </button>
                     </div>
 
                     {/* Items List */}

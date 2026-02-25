@@ -92,11 +92,70 @@ export async function POST(request: Request) {
                 throw itensError
             }
 
+            // --- INÍCIO DA SINCRONIZAÇÃO COM VENDAS ---
+            try {
+                // 1. Get or create contato pelo telefone
+                let contatoId: string | null = null
+
+                const { data: contatoExistente, error: contatoError } = await supabase
+                    .from('contatos')
+                    .select('id')
+                    .eq('telefone', validatedData.customer_phone)
+                    .maybeSingle()
+
+                if (contatoExistente) {
+                    contatoId = contatoExistente.id
+                } else {
+                    const { data: novoContato, error: contatoCreateError } = await supabase
+                        .from('contatos')
+                        .insert({
+                            nome: validatedData.customer_name,
+                            telefone: validatedData.customer_phone,
+                            tipo: 'catalogo',
+                            origem: 'catalogo',
+                            status: 'cliente'
+                        })
+                        .select('id')
+                        .single()
+
+                    if (!contatoCreateError && novoContato) {
+                        contatoId = novoContato.id
+                    } else {
+                        console.error('SYNC: Erro ao criar contato:', contatoCreateError)
+                    }
+                }
+
+                // 2. Inserir em vendas
+                const { error: vendaError } = await supabase
+                    .from('vendas')
+                    .insert({
+                        origem: 'catalogo',
+                        status: 'pendente',
+                        total: validatedData.total_cents / 100,
+                        forma_pagamento: validatedData.payment_method,
+                        pago: false,
+                        valor_pago: 0,
+                        taxa_entrega: validatedData.delivery_fee_cents / 100,
+                        observacoes: validatedData.notes || null,
+                        cat_pedido_id: pedido.id,
+                        data: new Date().toISOString().split('T')[0],
+                        contato_id: contatoId,
+                    })
+
+                if (vendaError) {
+                    console.error('SYNC: Erro ao sincronizar com vendas:', vendaError)
+                } else {
+                    console.log('SYNC: Pedido sincronizado com vendas com sucesso')
+                }
+            } catch (syncError) {
+                console.error('SYNC: Falha crítica na sincronização:', syncError)
+                // Não interrompemos o retorno do pedido se a sincronização falhar
+            }
+            // --- FIM DA SINCRONIZAÇÃO ---
+
             return NextResponse.json({
                 pedido_id: pedido.id,
-                numero_pedido: pedido.numero_pedido, // A view/tabela tem esse campo ou serial? O prompt diz "numero_pedido: cat_pedidos.numero_pedido".
-                // Se a tabela cat_pedidos tem serial, ok. Se nao, vai dar undefined.
-                // O prompt diz: "Após inserir com sucesso, retornar: { pedido_id: cat_pedidos.id, numero_pedido: cat_pedidos.numero_pedido, status: 'pendente' }"
+                numero_pedido: pedido.numero_pedido,
                 status: 'pendente',
                 message: 'Pedido criado com sucesso'
             })

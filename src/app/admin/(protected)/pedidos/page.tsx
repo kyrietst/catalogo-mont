@@ -18,8 +18,8 @@ interface OrderItem {
 interface Order {
     id: string
     numero_pedido: number
-    cliente_nome: string
-    cliente_telefone: string
+    nome_cliente: string
+    telefone_cliente: string
     total_centavos: number
     status: string
     status_pagamento: string

@@ -30,6 +30,24 @@ const checkoutSchema = z.object({
     uf: z.string().optional(),
     referred_by: z.string().optional(),
     notes: z.string().optional(),
+}).superRefine((data, ctx) => {
+    if (data.delivery_method === 'entrega') {
+        const cleanCep = (data.cep || '').replace(/\D/g, '')
+        if (cleanCep.length !== 8) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: 'CEP obrigatório para entrega',
+                path: ['cep'],
+            })
+        }
+        if (!data.numero || data.numero.trim() === '') {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: 'Número obrigatório para entrega',
+                path: ['numero'],
+            })
+        }
+    }
 })
 
 type CheckoutFormData = z.infer<typeof checkoutSchema>
@@ -99,14 +117,14 @@ export default function CarrinhoPage() {
             let customer_address: string | undefined
             if (data.delivery_method === 'entrega') {
                 const parts: string[] = []
+                // Logradouro, Número - Complemento - Bairro - Cidade/UF - CEP
                 if (data.logradouro) {
                     parts.push(`${data.logradouro}, ${data.numero || 'S/N'}`)
                 }
                 if (data.complemento) parts.push(data.complemento)
                 if (data.bairro) parts.push(data.bairro)
                 if (data.cidade && data.uf) parts.push(`${data.cidade}/${data.uf}`)
-                const cepClean = (data.cep || '').replace(/\D/g, '')
-                if (cepClean) parts.push(cepClean)
+                if (data.cep) parts.push(data.cep)
                 customer_address = parts.join(' - ')
             }
 
@@ -381,6 +399,7 @@ export default function CarrinhoPage() {
                                                         setValue('cep', masked)
                                                     },
                                                 })}
+                                                error={errors.cep?.message}
                                                 placeholder="00000-000"
                                             />
                                             {loadingCep && (
@@ -404,6 +423,7 @@ export default function CarrinhoPage() {
                                             <Input
                                                 label="Número"
                                                 {...register('numero')}
+                                                error={errors.numero?.message}
                                                 placeholder="Ex: 123"
                                             />
                                             <Input
@@ -438,6 +458,18 @@ export default function CarrinhoPage() {
                                                 className="bg-mont-surface cursor-not-allowed opacity-75 text-center"
                                                 placeholder="—"
                                             />
+                                        </div>
+
+                                        <div className="flex items-center gap-2 text-sm text-mont-warm-gray mt-1">
+                                            <span>Problemas com seu endereço?</span>
+                                            <a
+                                                href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}?text=Olá, estou com dificuldade para preencher meu endereço no catálogo Mont.`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-mont-gold underline hover:text-mont-espresso transition-colors"
+                                            >
+                                                Fale com o suporte
+                                            </a>
                                         </div>
                                     </div>
                                 )}
