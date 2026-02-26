@@ -158,3 +158,70 @@ export async function PATCH(
 
     return NextResponse.json(data)
 }
+
+export async function DELETE(
+    request: Request,
+    { params }: { params: { id: string } }
+) {
+    const cookieStore = cookies()
+
+    const authSupabase = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+            cookies: {
+                getAll() { return cookieStore.getAll() },
+                setAll() { }
+            }
+        }
+    )
+
+    const { data: { user } } = await authSupabase.auth.getUser()
+
+    if (!user || user.user_metadata?.role !== 'admin') {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+    )
+
+    // 1. Buscar venda vinculada
+    const { data: venda } = await supabase
+        .from('vendas')
+        .select('id')
+        .eq('cat_pedido_id', params.id)
+        .maybeSingle()
+
+    if (venda) {
+        // Sequência de deleção em cascata Jarvis:
+        // 1. Lancamentos
+        await supabase.from('lancamentos').delete().eq('venda_id', venda.id)
+
+        // 2. Pagamentos
+        await supabase.from('pagamentos_venda').delete().eq('venda_id', venda.id)
+
+        // 3. Itens da Venda
+        await supabase.from('itens_venda').delete().eq('venda_id', venda.id)
+
+        // 4. A própria Venda
+        await supabase.from('vendas').delete().eq('id', venda.id)
+    }
+
+    // Sequência de deleção Catálogo:
+    // 5. Itens do Pedido (Catálogo)
+    await supabase.from('cat_itens_pedido').delete().eq('pedido_id', params.id)
+
+    // 6. O Pedido do Catálogo
+    const { error: deleteOrderError } = await supabase
+        .from('cat_pedidos')
+        .delete()
+        .eq('id', params.id)
+
+    if (deleteOrderError) {
+        return NextResponse.json({ error: deleteOrderError.message }, { status: 500 })
+    }
+
+    return NextResponse.json({ success: true })
+}

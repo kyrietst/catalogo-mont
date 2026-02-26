@@ -1,7 +1,7 @@
 
 'use client'
 
-import { ChevronDown, ChevronUp, Package, Phone, User, Monitor, Store } from 'lucide-react'
+import { ChevronDown, ChevronUp, Package, Phone, User, Monitor, Store, Trash2 } from 'lucide-react'
 import StatusBadge from './StatusBadge'
 
 interface OrderItem {
@@ -35,6 +35,7 @@ interface OrderCardProps {
     onToggleExpand: () => void
     onStatusChange: (id: string, newStatus: string) => Promise<void>
     onPaymentStatusChange: (id: string, newStatus: string) => Promise<void>
+    onDelete: (id: string, numero: number) => void
 }
 
 export default function OrderCard({
@@ -43,7 +44,8 @@ export default function OrderCard({
     expanded,
     onToggleExpand,
     onStatusChange,
-    onPaymentStatusChange
+    onPaymentStatusChange,
+    onDelete
 }: OrderCardProps) {
 
     const formatDate = (dateStr: string) => {
@@ -124,8 +126,8 @@ export default function OrderCard({
                             <button
                                 onClick={() => onStatusChange(order.id, order.status === 'entregue' ? 'pendente' : 'entregue')}
                                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${order.status === 'entregue'
-                                        ? "bg-white text-red-600 border border-red-200 hover:bg-red-50"
-                                        : "bg-mont-espresso text-white hover:bg-black"
+                                    ? "bg-white text-red-600 border border-red-200 hover:bg-red-50"
+                                    : "bg-mont-espresso text-white hover:bg-black"
                                     }`}
                             >
                                 {order.status === 'entregue' ? 'Desmarcar Entregue' : 'Marcar como Entregue'}
@@ -136,12 +138,26 @@ export default function OrderCard({
                         <button
                             onClick={() => onPaymentStatusChange(order.id, order.status_pagamento === 'pago' ? 'pendente' : 'pago')}
                             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${order.status_pagamento === 'pago'
-                                    ? "bg-white text-red-600 border border-red-200 hover:bg-red-50"
-                                    : "bg-mont-gold text-white hover:bg-mont-espresso"
+                                ? "bg-white text-red-600 border border-red-200 hover:bg-red-50"
+                                : "bg-mont-gold text-white hover:bg-mont-espresso"
                                 }`}
                         >
                             {order.status_pagamento === 'pago' ? 'Desmarcar Pago' : 'Marcar como Pago'}
                         </button>
+
+                        {/* Delete Action - Only for pendente/cancelado */}
+                        {(order.status === 'pendente' || order.status === 'cancelado') && (
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onDelete(order.id, order.numero_pedido);
+                                }}
+                                className="ml-auto p-1.5 text-gray-400 hover:text-red-500 transition-colors"
+                                title="Excluir Pedido"
+                            >
+                                <Trash2 size={18} />
+                            </button>
+                        )}
                     </div>
 
                     {/* Items List */}
