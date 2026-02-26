@@ -13,7 +13,8 @@
       "mcp__supabase-distribuidora__apply_migration",
       "mcp__supabase-distribuidora__get_logs",
       "Bash(cd:*)",
-      "Bash(head:*)"
+      "Bash(head:*)",
+      "Bash(ls:*)"
     ]
   }
 }
