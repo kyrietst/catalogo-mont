@@ -61,7 +61,9 @@ export default async function ProdutosPage() {
                     <ProductCatalog products={products} />
                 </div>
 
-                <IngredientsSection />
+                <div className="mt-12">
+                    <IngredientsSection />
+                </div>
                 <BenefitsCarousel />
                 <TrustBar />
             </main>
