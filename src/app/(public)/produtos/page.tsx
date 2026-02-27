@@ -24,7 +24,7 @@ async function getAllProducts(): Promise<Product[]> {
             .order('nome', { ascending: true }) // Ajustado para 'nome' que é o campo real no banco
 
         if (error || !data || data.length === 0) {
-            console.log('Usando produtos mockados (fallback)')
+
             return MOCK_PRODUCTS
         }
 
@@ -50,7 +50,7 @@ export default async function ProdutosPage() {
         <>
             <Navbar />
 
-            <main className="min-h-screen bg-mont-cream pt-16 pb-20">
+            <main className="min-h-screen bg-mont-cream pt-20 pb-20">
                 <StoreBanner />
 
                 <div className="max-w-[1400px] mx-auto px-4 md:px-6 lg:px-8 mt-8 md:mt-10">
