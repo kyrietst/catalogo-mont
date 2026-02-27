@@ -24,7 +24,6 @@ async function getFeaturedProducts(): Promise<Product[]> {
             .limit(10)
 
         if (error || !data || data.length === 0) {
-            console.log('Usando produtos mockados (fallback)')
             return MOCK_PRODUCTS.filter(p => p.is_featured)
         }
 

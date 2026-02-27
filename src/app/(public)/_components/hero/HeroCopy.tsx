@@ -81,10 +81,14 @@ export default function HeroCopy() {
 
             <div
                 ref={scrollHintRef}
-                className="absolute bottom-12 flex flex-col items-center gap-2 text-[#FAF7F2]/50 animate-bounce"
+                className="absolute bottom-12 left-0 right-0 flex justify-center animate-bounce"
             >
-                <span className="text-sm uppercase tracking-widest font-light">Role para descobrir</span>
-                <ArrowDown size={20} />
+                <div className="flex flex-col items-center gap-1.5 px-5 py-2.5 rounded-full backdrop-blur-md bg-black/30 border border-white/10">
+                    <span className="text-[#FAF7F2]/80 text-xs uppercase tracking-[0.2em] font-light">
+                        Role para descobrir
+                    </span>
+                    <ArrowDown size={16} className="text-[#FAF7F2]/60" />
+                </div>
             </div>
 
             <style jsx global>{`
