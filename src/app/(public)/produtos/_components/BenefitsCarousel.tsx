@@ -91,7 +91,7 @@ export default function BenefitsCarousel() {
                                 width={benefit.size}
                                 height={benefit.size}
                                 alt={benefit.title}
-                                style={{ objectFit: 'contain' }}
+                                style={{ height: 'auto', objectFit: 'contain' }}
                             />
                         </div>
                         <div>

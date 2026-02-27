@@ -141,6 +141,7 @@ export default function IngredientsSection() {
                                     height={160}
                                     alt={ingredient.title}
                                     className="object-contain"
+                                    style={{ height: 'auto' }}
                                 />
                             </div>
 
