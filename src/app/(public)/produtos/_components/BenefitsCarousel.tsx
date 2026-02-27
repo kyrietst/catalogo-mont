@@ -37,37 +37,62 @@ export default function BenefitsCarousel() {
     ]
 
     return (
-        <section
-            ref={containerRef}
-            className="bg-mont-cream py-12 px-4 md:py-14 overflow-hidden"
-        >
-            <h2 className="font-display text-xl md:text-2xl text-mont-espresso pl-4 mb-6">
+        <section className="bg-mont-cream py-12 md:py-14">
+            <h2 className="font-display text-xl md:text-2xl text-mont-espresso px-6 mb-6">
                 {sectionTitle}
             </h2>
 
             <div
-                className="flex overflow-x-auto scroll-snap-x mandatory snap-x snap-mandatory [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden gap-4 px-4 pb-4"
+                style={{
+                    display: 'flex',
+                    overflowX: 'auto',
+                    gap: '16px',
+                    paddingLeft: '48px',
+                    paddingRight: '24px',
+                    paddingBottom: '16px',
+                    scrollbarWidth: 'none',
+                    msOverflowStyle: 'none'
+                }}
             >
                 {benefits.map((benefit) => (
                     <div
                         key={benefit.id}
-                        className="min-w-[82vw] sm:min-w-[320px] scroll-snap-align-start snap-start flex-shrink-0 bg-white rounded-2xl p-5 shadow-sm border border-mont-espresso/10"
+                        style={{
+                            minWidth: '300px',
+                            flexShrink: 0,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '12px',
+                            border: '1px solid rgba(0,0,0,0.08)',
+                            borderRadius: '16px',
+                            backgroundColor: 'white',
+                            padding: '16px 16px 16px 0px',
+                            overflow: 'visible'
+                        }}
                     >
-                        <div className="mb-3">
+                        <div style={{
+                            flexShrink: 0,
+                            marginLeft: '-48px',
+                            filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.25))',
+                            zIndex: 10,
+                            position: 'relative'
+                        }}>
                             <Image
                                 src={benefit.imagePath}
-                                width={180}
-                                height={180}
+                                width={120}
+                                height={120}
                                 alt={benefit.title}
-                                className="object-contain"
+                                style={{ objectFit: 'contain' }}
                             />
                         </div>
-                        <h3 className="font-display text-base text-mont-espresso font-semibold mb-1">
-                            {benefit.title}
-                        </h3>
-                        <p className="text-xs text-mont-espresso/60 leading-relaxed">
-                            {benefit.description}
-                        </p>
+                        <div>
+                            <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '14px', marginBottom: '4px' }}>
+                                {benefit.title}
+                            </h3>
+                            <p style={{ fontSize: '12px', opacity: 0.6, lineHeight: 1.5 }}>
+                                {benefit.description}
+                            </p>
+                        </div>
                     </div>
                 ))}
             </div>
