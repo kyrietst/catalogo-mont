@@ -1,6 +1,7 @@
 'use client'
 
-import { useLayoutEffect, useRef } from 'react'
+import { useRef, useEffect } from 'react'
+import Image from 'next/image'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -11,6 +12,7 @@ export default function IngredientsSection() {
     const headerRef = useRef<HTMLDivElement>(null)
     const gridRef = useRef<HTMLDivElement>(null)
     const footerRef = useRef<HTMLDivElement>(null)
+    const cardsRef = useRef<HTMLDivElement[]>([])
 
     // Unicode Strings
     const headline = "5 ingredientes. Zero atalhos."
@@ -18,35 +20,40 @@ export default function IngredientsSection() {
 
     const ingredients = [
         {
-            emoji: '\uD83E\uDDC0',
-            nome: 'Queijo Canastra',
-            descricao: 'O ingrediente que ningu\u00E9m substitui aqui'
+            id: 1,
+            imagePath: '/images/ingredients/queijo-canastra.png',
+            title: 'Queijo Canastra',
+            description: 'Autêntico queijo da Serra da Canastra, garantindo o sabor tradicional e cura perfeita.'
         },
         {
-            emoji: '\uD83C\uDF3F',
-            nome: 'F\u00E9cula de mandioca',
-            descricao: 'A base leve que d\u00E1 a textura certa'
+            id: 2,
+            imagePath: '/images/ingredients/fecula-mandioca.png',
+            title: 'Fécula de mandioca',
+            description: 'Selecionada para garantir a elasticidade e leveza ideais da nossa massa artesanal.'
         },
         {
-            emoji: '\uD83E\uDD5A',
-            nome: 'Ovos',
-            descricao: 'Estrutura e maciez em cada unidade'
+            id: 3,
+            imagePath: '/images/ingredients/ovos.png',
+            title: 'Ovos',
+            description: 'Ovos frescos de produtores locais, conferindo cor e nutrição natural aos produtos.'
         },
         {
-            emoji: '\uD83E\uDEB4',
-            nome: '\u00D3leo de soja',
-            descricao: 'Equil\u00EDbrio no ponto certo'
+            id: 4,
+            imagePath: '/images/ingredients/oleo-soja.png',
+            title: 'Óleo de soja',
+            description: 'Óleo vegetal purificado para uma textura macia e cozimento uniforme.'
         },
         {
-            emoji: '\uD83E\uDDC2',
-            nome: 'Sal',
-            descricao: 'S\u00F3 o necess\u00E1rio'
+            id: 5,
+            imagePath: '/images/ingredients/sal.png',
+            title: 'Sal',
+            description: 'Na medida exata para realçar todos os sabores sem sobrepor o paladar do queijo.'
         }
     ]
 
-    const footerText = "\u00C9 por isso que n\u00E3o murcha. \u00C9 por isso que n\u00E3o \u00E9 oco. Ingrediente certo, resultado certo."
+    const footerText = "Ingrediente certo, resultado certo."
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         const ctx = gsap.context(() => {
             // Header animation
             gsap.from(headerRef.current?.children || [], {
@@ -62,7 +69,7 @@ export default function IngredientsSection() {
             })
 
             // Grid items animation
-            gsap.from(gridRef.current?.children || [], {
+            gsap.from(cardsRef.current, {
                 y: 20,
                 opacity: 0,
                 duration: 0.8,
@@ -113,23 +120,41 @@ export default function IngredientsSection() {
             {/* Ingredients Grid */}
             <div
                 ref={gridRef}
-                className="grid grid-cols-2 md:grid-cols-5 gap-6 max-w-5xl mx-auto"
+                className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto pl-14 pr-4 md:px-12"
             >
-                {ingredients.map((item, index) => (
-                    <div
-                        key={index}
-                        className={`flex flex-col items-center text-center gap-2 ${index === 4 ? 'col-span-2 md:col-span-1 flex justify-center' : ''
-                            }`}
-                    >
-                        <span className="text-4xl">{item.emoji}</span>
-                        <h3 className="font-display text-sm text-mont-cream font-normal">
-                            {item.nome}
-                        </h3>
-                        <p className="text-xs text-mont-cream/50 leading-snug max-w-[120px]">
-                            {item.descricao}
-                        </p>
-                    </div>
-                ))}
+                {ingredients.map((ingredient, index) => {
+                    // Custom offset for narrower images (Queijo/Ovos) to tighten the gap to text
+                    const isNarrow = ingredient.id === 1 || ingredient.id === 3
+                    const imageOffset = isNarrow ? '-left-6' : '-left-12'
+
+                    return (
+                        <div
+                            key={ingredient.id}
+                            ref={el => { cardsRef.current[index] = el as HTMLDivElement }}
+                            className="relative overflow-visible border border-white/10 rounded-2xl bg-white/5 flex items-center min-h-[110px] pl-32 pr-5 py-5"
+                        >
+                            {/* Image positioned absolute escaping the card */}
+                            <div className={`absolute ${imageOffset} top-1/2 -translate-y-1/2 drop-shadow-2xl`}>
+                                <Image
+                                    src={ingredient.imagePath}
+                                    width={160}
+                                    height={160}
+                                    alt={ingredient.title}
+                                    className="object-contain"
+                                />
+                            </div>
+
+                            <div className="flex flex-col">
+                                <h3 className="font-display text-base text-mont-cream">
+                                    {ingredient.title}
+                                </h3>
+                                <p className="text-xs text-mont-cream/60 mt-1 leading-relaxed">
+                                    {ingredient.description}
+                                </p>
+                            </div>
+                        </div>
+                    )
+                })}
             </div>
 
             {/* Footer Phrase */}
