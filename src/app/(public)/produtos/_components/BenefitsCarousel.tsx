@@ -14,25 +14,33 @@ export default function BenefitsCarousel() {
             id: 1,
             imagePath: '/images/benefits/queijo-verdade.png',
             title: 'Queijo Canastra de verdade',
-            description: 'Usamos o legítimo queijo da Serra da Canastra em abundância em todas as nossas receitas.'
+            description: 'Usamos o legítimo queijo da Serra da Canastra em abundância em todas as nossas receitas.',
+            size: 160,
+            offsetY: 0
         },
         {
             id: 2,
             imagePath: '/images/benefits/nao-oco.png',
             title: 'Não é oco, não murcha',
-            description: 'Diferente dos industriais, nosso pão de queijo é densamente recheado e mantém a estrutura após assar.'
+            description: 'Diferente dos industriais, nosso pão de queijo é densamente recheado e mantém a estrutura após assar.',
+            size: 160,
+            offsetY: 0
         },
         {
             id: 3,
-            imagePath: '/images/benefits/sem conservantes.png',
+            imagePath: '/images/benefits/sem-conservantes.png',
             title: 'Sem conservantes',
-            description: 'Apenas ingredientes naturais e frescos, garantindo uma alimentação saudável para sua família.'
+            description: 'Apenas ingredientes naturais e frescos, garantindo uma alimentação saudável para sua família.',
+            size: 160,
+            offsetY: 0
         },
         {
             id: 4,
             imagePath: '/images/benefits/pronto-20min.png',
             title: 'Pronto em 20 minutos',
-            description: 'A praticidade que você precisa com o sabor da padaria artesanal, direto do seu congelador.'
+            description: 'A praticidade que você precisa com o sabor da padaria artesanal, direto do seu congelador.',
+            size: 240,
+            offsetY: -40
         }
     ]
 
@@ -46,7 +54,7 @@ export default function BenefitsCarousel() {
                 style={{
                     display: 'flex',
                     overflowX: 'auto',
-                    gap: '16px',
+                    gap: '48px',
                     paddingLeft: '48px',
                     paddingRight: '24px',
                     paddingBottom: '16px',
@@ -58,7 +66,7 @@ export default function BenefitsCarousel() {
                     <div
                         key={benefit.id}
                         style={{
-                            minWidth: '300px',
+                            minWidth: '280px',
                             flexShrink: 0,
                             display: 'flex',
                             alignItems: 'center',
@@ -66,30 +74,31 @@ export default function BenefitsCarousel() {
                             border: '1px solid rgba(0,0,0,0.08)',
                             borderRadius: '16px',
                             backgroundColor: 'white',
-                            padding: '16px 16px 16px 0px',
+                            padding: '20px 20px 20px 0px',
                             overflow: 'visible'
                         }}
                     >
                         <div style={{
                             flexShrink: 0,
-                            marginLeft: '-48px',
+                            marginLeft: '-60px',
                             filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.25))',
                             zIndex: 10,
-                            position: 'relative'
+                            position: 'relative',
+                            marginTop: benefit.offsetY + 'px'
                         }}>
                             <Image
                                 src={benefit.imagePath}
-                                width={120}
-                                height={120}
+                                width={benefit.size}
+                                height={benefit.size}
                                 alt={benefit.title}
                                 style={{ objectFit: 'contain' }}
                             />
                         </div>
                         <div>
-                            <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '14px', marginBottom: '4px' }}>
+                            <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '16px', marginBottom: '4px' }}>
                                 {benefit.title}
                             </h3>
-                            <p style={{ fontSize: '12px', opacity: 0.6, lineHeight: 1.5 }}>
+                            <p style={{ fontSize: '13px', opacity: 0.6, lineHeight: 1.5 }}>
                                 {benefit.description}
                             </p>
                         </div>
