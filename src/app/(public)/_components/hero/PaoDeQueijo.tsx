@@ -3,6 +3,7 @@
 import React, { useContext, useLayoutEffect, useRef } from 'react'
 import { HeroContext } from './ScrollWrapper'
 import gsap from 'gsap'
+import Image from 'next/image'
 
 export default function PaoDeQueijo() {
     const { timeline } = useContext(HeroContext)
@@ -146,14 +147,13 @@ export default function PaoDeQueijo() {
                     className="absolute inset-0 w-full h-full z-10"
                     style={{ willChange: 'transform' }}
                 >
-                    <img
+                    <Image
                         src="/hero-cheese/pao_left.png"
-                        srcSet="/hero-cheese/pao_left_500.png 500w, /hero-cheese/pao_left.png 1000w"
-                        sizes="(max-width: 768px) 50vmin, 40vmin"
                         alt="Pão Esquerda"
-                        className="w-full h-full object-contain"
-                        fetchPriority="high"
-                        decoding="async"
+                        fill
+                        className="object-contain"
+                        priority
+                        sizes="(max-width: 768px) 50vmin, 40vmin"
                     />
                 </div>
 
@@ -163,14 +163,13 @@ export default function PaoDeQueijo() {
                     className="absolute inset-0 w-full h-full z-10"
                     style={{ willChange: 'transform' }}
                 >
-                    <img
+                    <Image
                         src="/hero-cheese/pao_right.png"
-                        srcSet="/hero-cheese/pao_right_500.png 500w, /hero-cheese/pao_right.png 1000w"
-                        sizes="(max-width: 768px) 50vmin, 40vmin"
                         alt="Pão Direita"
-                        className="w-full h-full object-contain"
-                        fetchPriority="high"
-                        decoding="async"
+                        fill
+                        className="object-contain"
+                        priority
+                        sizes="(max-width: 768px) 50vmin, 40vmin"
                     />
                 </div>
 
@@ -196,14 +195,13 @@ export default function PaoDeQueijo() {
                             transform: 'translateX(10px)',  // Mantendo o offset que o usuário encontrou (10px)
                         }}
                     >
-                        <img
+                        <Image
                             src="/hero-cheese/cheese.png"
-                            srcSet="/hero-cheese/cheese_500.png 500w, /hero-cheese/cheese.png 1000w"
-                            sizes="(max-width: 768px) 50vmin, 40vmin"
                             alt="Queijo derretido"
-                            className="w-full h-full object-cover"
-                            fetchPriority="high"
-                            decoding="async"
+                            fill
+                            className="object-cover"
+                            priority
+                            sizes="(max-width: 768px) 50vmin, 40vmin"
                         />
                     </div>
                 </div>

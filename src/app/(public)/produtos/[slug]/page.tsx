@@ -1,4 +1,5 @@
 import { Navbar, Footer } from '@/components/catalog'
+import Image from 'next/image'
 import { createClient } from '@/lib/supabase/server'
 import { mapProdutoToProduct, MOCK_PRODUCTS } from '@/lib/supabase/mappers'
 import { formatCurrency } from '@/lib/utils/format'
@@ -100,11 +101,16 @@ export default async function ProdutoPage({ params }: { params: { slug: string }
                             {/* Imagem */}
                             <div className="aspect-square bg-mont-surface rounded-lg overflow-hidden flex items-center justify-center lg:mt-10">
                                 {product.primary_image_url ? (
-                                    <img
-                                        src={product.primary_image_url}
-                                        alt={product.name}
-                                        className="w-full h-full object-cover"
-                                    />
+                                    <div className="relative aspect-square w-full">
+                                        <Image
+                                            src={product.primary_image_url}
+                                            alt={product.name}
+                                            fill
+                                            className="object-cover"
+                                            priority
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                                        />
+                                    </div>
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center">
                                         <svg className="w-32 h-32 text-mont-gray/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -9,7 +9,7 @@ interface ProductCatalogProps {
     products: Product[]
 }
 
-type Category = 'todos' | 'congelado' | 'refrigerado'
+type Category = 'todos' | 'congelado' | 'refrigerado' | 'combo'
 
 export default function ProductCatalog({ products }: ProductCatalogProps) {
     const [selectedCategory, setSelectedCategory] = useState<Category>('todos')
@@ -62,7 +62,17 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
                             : 'bg-transparent border-[1.5px] border-mont-espresso/30 text-mont-espresso/60'
                             }`}
                     >
-                        🧊 Refrigerados
+                        🧊 Resfriados
+                    </button>
+
+                    <button
+                        onClick={() => setSelectedCategory('combo')}
+                        className={`px-5 py-2 rounded-full text-sm whitespace-nowrap transition-colors duration-200 cursor-pointer snap-start ${selectedCategory === 'combo'
+                            ? 'bg-mont-espresso text-mont-cream font-semibold border-none'
+                            : 'bg-transparent border-[1.5px] border-mont-espresso/30 text-mont-espresso/60'
+                            }`}
+                    >
+                        📦 Combos
                     </button>
                 </div>
             </section>

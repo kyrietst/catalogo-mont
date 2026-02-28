@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { useCartStore } from '@/lib/cart/store'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -234,12 +235,14 @@ export default function CarrinhoPage() {
                                     key={item.product.id}
                                     className="bg-mont-white p-4 rounded-lg shadow-sm flex gap-4"
                                 >
-                                    <div className="w-20 h-20 bg-mont-surface rounded flex-shrink-0">
+                                    <div className="relative w-20 h-20 bg-mont-surface rounded flex-shrink-0 overflow-hidden">
                                         {item.product.image_url ? (
-                                            <img
+                                            <Image
                                                 src={item.product.image_url}
                                                 alt={item.product.name}
-                                                className="w-full h-full object-cover rounded"
+                                                fill
+                                                className="object-cover"
+                                                sizes="80px"
                                             />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center">

@@ -2,6 +2,7 @@
 
 import { useRef } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { formatCurrency } from '@/lib/utils/format'
 import { Badge } from '@/components/ui'
 import type { Product } from '@/types/product'
@@ -34,11 +35,15 @@ export default function RelatedProducts({ products }: RelatedProductsProps) {
                     >
                         <div className="aspect-square bg-mont-surface overflow-hidden">
                             {product.primary_image_url ? (
-                                <img
-                                    src={product.primary_image_url}
-                                    alt={product.name}
-                                    className="w-full h-full object-cover"
-                                />
+                                <div className="relative w-full h-full">
+                                    <Image
+                                        src={product.primary_image_url}
+                                        alt={product.name}
+                                        fill
+                                        className="object-cover"
+                                        sizes="(max-width: 768px) 50vw, 192px"
+                                    />
+                                </div>
                             ) : (
                                 <div className="w-full h-full flex items-center justify-center text-mont-gray/30">
                                     <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">

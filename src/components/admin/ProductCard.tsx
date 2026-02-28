@@ -48,11 +48,15 @@ export default function ProductCard({ product, onToggleActive, onEdit }: Product
             <div className="flex justify-between items-start">
                 <div className="flex items-center gap-3 flex-1">
                     {product.sis_imagens_produto?.[0]?.url ? (
-                        <img
-                            src={product.sis_imagens_produto[0].url}
-                            alt={product.nome}
-                            className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
-                        />
+                        <div className="relative w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
+                            <Image
+                                src={product.sis_imagens_produto[0].url}
+                                alt={product.nome}
+                                fill
+                                className="object-cover"
+                                sizes="40px"
+                            />
+                        </div>
                     ) : (
                         <div className="w-10 h-10 rounded-lg bg-gray-100 flex-shrink-0" />
                     )}
