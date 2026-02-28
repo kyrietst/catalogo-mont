@@ -92,13 +92,13 @@ export default async function ProdutoPage({ params }: { params: { slug: string }
         <>
             <Navbar />
 
-            <main className="min-h-screen bg-mont-cream py-20">
+            <main className="min-h-screen bg-mont-cream pt-28 pb-20">
                 <div className="container mx-auto px-4">
                     <div className="max-w-6xl mx-auto">
                         {/* Grid: Imagem + Info */}
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20 items-start">
                             {/* Imagem */}
-                            <div className="aspect-square bg-mont-surface rounded-lg overflow-hidden">
+                            <div className="aspect-square bg-mont-surface rounded-lg overflow-hidden flex items-center justify-center lg:mt-10">
                                 {product.primary_image_url ? (
                                     <img
                                         src={product.primary_image_url}
@@ -116,13 +116,13 @@ export default async function ProdutoPage({ params }: { params: { slug: string }
 
                             {/* Info */}
                             <div>
+                                <h1 className="font-display text-4xl md:text-5xl text-mont-espresso mb-3">
+                                    {product.name}
+                                </h1>
+
                                 <div className="mb-4">
                                     <Badge variant={product.category} />
                                 </div>
-
-                                <h1 className="font-display text-4xl md:text-5xl text-mont-espresso mb-4">
-                                    {product.name}
-                                </h1>
 
                                 <p className="text-mont-gray text-lg mb-6">
                                     {product.subtitle}
@@ -144,7 +144,7 @@ export default async function ProdutoPage({ params }: { params: { slug: string }
                                         <h2 className="font-display text-2xl text-mont-espresso mb-3">
                                             Sobre o produto
                                         </h2>
-                                        <p className="text-mont-gray leading-relaxed">
+                                        <p className="text-mont-gray leading-relaxed whitespace-pre-line">
                                             {product.description}
                                         </p>
                                     </div>

@@ -9,7 +9,7 @@ interface ProdutoDatabase {
     codigo: string
     slug: string
     descricao: string | null
-    category: 'congelado' | 'refrigerado' // Vem da view
+    category: 'congelado' | 'refrigerado' | 'combo' // Vem da view
     subtitle?: string | null // Vem da view
     price_cents: number // Vem da view
     anchor_price_cents?: number | string | null // Vem da view

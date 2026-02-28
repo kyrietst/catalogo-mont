@@ -3,7 +3,7 @@ export interface Product {
     name: string
     slug: string
     description: string | null
-    category: 'congelado' | 'refrigerado'
+    category: 'congelado' | 'refrigerado' | 'combo'
     subtitle?: string | null
     price_cents: number
     anchor_price_cents?: number | null

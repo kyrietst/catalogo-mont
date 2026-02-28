@@ -2,19 +2,23 @@ import { HTMLAttributes } from 'react'
 import { cn } from '@/lib/utils/cn'
 
 export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
-    variant?: 'congelado' | 'refrigerado' | 'destaque'
+    variant?: 'congelado' | 'refrigerado' | 'resfriado' | 'combo' | 'destaque'
 }
 
 const Badge = ({ className, variant = 'congelado', children, ...props }: BadgeProps) => {
     const variants = {
         congelado: 'bg-blue-50 text-blue-700 border-blue-200',
         refrigerado: 'bg-green-50 text-green-700 border-green-200',
+        resfriado: 'bg-green-50 text-green-700 border-green-200',
+        combo: 'bg-orange-50 text-orange-700 border-orange-200',
         destaque: 'bg-mont-gold/10 text-mont-gold border-mont-gold/30'
     }
 
     const labels = {
         congelado: '❄️ Congelado',
-        refrigerado: '🧊 Refrigerado',
+        refrigerado: '🧊 Resfriado',
+        resfriado: '🧊 Resfriado',
+        combo: '📦 Combo',
         destaque: '⭐ Mais Vendido'
     }
 
