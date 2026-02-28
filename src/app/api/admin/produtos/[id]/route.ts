@@ -8,6 +8,7 @@ import { z } from 'zod'
 // Validation Schema
 const updateProductSchema = z.object({
     ativo: z.boolean().optional(),
+    visivel_catalogo: z.boolean().optional(),
     descricao: z.string().nullable().optional(),
     categoria: z.string().nullable().optional(),
     peso_kg: z.number().nullable().optional(),

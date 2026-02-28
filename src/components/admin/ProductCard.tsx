@@ -10,6 +10,7 @@ interface Product {
     nome: string
     preco: number
     ativo: boolean
+    visivel_catalogo: boolean
     categoria: string | null
     estoque_status?: string
     descricao: string | null
@@ -30,7 +31,7 @@ export default function ProductCard({ product, onToggleActive, onEdit }: Product
     const handleToggle = async (e: React.MouseEvent) => {
         e.stopPropagation()
         setLoading(true)
-        await onToggleActive(product.id, product.ativo)
+        await onToggleActive(product.id, product.visivel_catalogo)
         setLoading(false)
     }
 
@@ -58,22 +59,29 @@ export default function ProductCard({ product, onToggleActive, onEdit }: Product
                     </div>
                 </div>
 
-                <button
-                    onClick={handleToggle}
-                    disabled={loading}
-                    className={`ml-3 p-2 rounded-full transition-colors relative flex-shrink-0 ${product.ativo
-                        ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                        : 'bg-gray-200 text-gray-500 hover:bg-gray-300'
-                        }`}
-                >
-                    {loading ? (
-                        <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                    ) : product.ativo ? (
-                        <CheckCircle size={20} />
-                    ) : (
-                        <Archive size={20} />
+                <div className="flex items-center gap-3 ml-3">
+                    {product.destaque && (
+                        <span className="text-mont-gold text-lg leading-none" title="Destaque no catálogo">
+                            ★
+                        </span>
                     )}
-                </button>
+                    <button
+                        onClick={handleToggle}
+                        disabled={loading}
+                        className={`p-2 rounded-full transition-colors relative flex-shrink-0 ${product.visivel_catalogo
+                            ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                            : 'bg-gray-200 text-gray-500 hover:bg-gray-300'
+                            }`}
+                    >
+                        {loading ? (
+                            <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                        ) : product.visivel_catalogo ? (
+                            <CheckCircle size={20} />
+                        ) : (
+                            <Archive size={20} />
+                        )}
+                    </button>
+                </div>
             </div>
 
             <div className="mt-3 flex items-center justify-between text-xs text-gray-500">

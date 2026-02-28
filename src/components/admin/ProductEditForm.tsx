@@ -9,11 +9,14 @@ interface Product {
     nome: string
     preco: number
     ativo: boolean
+    visivel_catalogo: boolean
     categoria: string | null
     descricao: string | null
     peso_kg: number | null
     destaque: boolean
     slug: string | null
+    anchor_price_cents?: number | null
+    preco_ancoragem?: number | null
 }
 
 interface ProductEditFormProps {
@@ -25,7 +28,7 @@ interface ProductEditFormProps {
 export default function ProductEditForm({ product, onClose, onSave }: ProductEditFormProps) {
     const [formData, setFormData] = useState({
         descricao: product.descricao || '',
-        categoria: product.categoria || 'congelado',
+        categoria: product.categoria || '',
         peso_kg: product.peso_kg || 0,
         destaque: product.destaque || false,
         slug: product.slug || ''
@@ -79,6 +82,16 @@ export default function ProductEditForm({ product, onClose, onSave }: ProductEdi
                                 {product.ativo ? 'ATIVO' : 'INATIVO'}
                             </span>
                         </div>
+                        <div>
+                            <p className="block text-[10px] text-gray-500 uppercase tracking-wider mb-[2px]">
+                                Ancoragem (Sistema)
+                            </p>
+                            <p className="font-jetbrains font-bold text-mont-espresso/40 line-through">
+                                {product.preco_ancoragem
+                                    ? `R$ ${Number(product.preco_ancoragem).toFixed(2).replace('.', ',')}`
+                                    : '—'}
+                            </p>
+                        </div>
                     </div>
 
                     <div>
@@ -104,9 +117,10 @@ export default function ProductEditForm({ product, onClose, onSave }: ProductEdi
                                 onChange={e => setFormData({ ...formData, categoria: e.target.value })}
                                 className="w-full p-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-mont-gold text-sm"
                             >
+                                <option value="">Selecione uma categoria...</option>
                                 <option value="congelado">Congelado</option>
                                 <option value="refrigerado">Refrigerado</option>
-                                <option value="seco">Seco</option>
+                                <option value="combo">Combo</option>
                             </select>
                         </div>
                         <div>

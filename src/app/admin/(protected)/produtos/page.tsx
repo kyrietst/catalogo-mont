@@ -11,11 +11,13 @@ interface Product {
     nome: string
     preco: number
     ativo: boolean
+    visivel_catalogo: boolean
     categoria: string | null
     descricao: string | null
     peso_kg: number | null
     destaque: boolean
     slug: string | null
+    preco_ancoragem?: number | null
 }
 
 export default function AdminProductsPage() {
@@ -45,20 +47,20 @@ export default function AdminProductsPage() {
     const handleToggleActive = async (id: string, currentStatus: boolean) => {
         // Optimistic update
         setProducts(products.map(p =>
-            p.id === id ? { ...p, ativo: !currentStatus } : p
+            p.id === id ? { ...p, visivel_catalogo: !currentStatus } : p
         ))
 
         try {
             const res = await fetch(`/api/admin/produtos/${id}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ativo: !currentStatus })
+                body: JSON.stringify({ visivel_catalogo: !currentStatus })
             })
 
             if (!res.ok) {
                 // Revert on failure
                 setProducts(products.map(p =>
-                    p.id === id ? { ...p, ativo: currentStatus } : p
+                    p.id === id ? { ...p, visivel_catalogo: currentStatus } : p
                 ))
                 alert('Erro ao atualizar status')
             }
@@ -66,7 +68,7 @@ export default function AdminProductsPage() {
             console.error(error)
             // Revert on failure
             setProducts(products.map(p =>
-                p.id === id ? { ...p, ativo: currentStatus } : p
+                p.id === id ? { ...p, visivel_catalogo: currentStatus } : p
             ))
             alert('Erro de conexão')
         }
