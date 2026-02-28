@@ -106,6 +106,7 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
                                         category={product.category}
                                         weight_kg={product.weight_kg}
                                         price_cents={product.price_cents}
+                                        anchor_price_cents={product.anchor_price_cents}
                                         image_url={product.primary_image_url}
                                         is_featured={index === 0}
                                         index={index}

@@ -12,6 +12,7 @@ interface ProdutoDatabase {
     categoria: 'congelado' | 'refrigerado' // Vem da view
     weight_kg: number // Vem da view
     price_cents: number // Vem da view
+    anchor_price_cents?: number | string | null // Vem da view
     price_formatted: string // Vem da view
     estoque_atual: number | null
     estoque_minimo: number | null
@@ -36,6 +37,9 @@ export function mapProdutoToProduct(produto: ProdutoDatabase): Product {
         category: produto.categoria,
         weight_kg: produto.weight_kg,
         price_cents: produto.price_cents,
+        anchor_price_cents: produto.anchor_price_cents
+            ? Number(produto.anchor_price_cents)
+            : null,
         cost_cents: 0, // Não vem da view pública por segurança
         stock_quantity: produto.estoque_atual || 0,
         stock_min_alert: produto.estoque_minimo || 5,

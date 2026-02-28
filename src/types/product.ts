@@ -6,6 +6,7 @@ export interface Product {
     category: 'congelado' | 'refrigerado'
     weight_kg: number
     price_cents: number
+    anchor_price_cents?: number | null
     cost_cents: number | null
     stock_quantity: number
     stock_min_alert: number
