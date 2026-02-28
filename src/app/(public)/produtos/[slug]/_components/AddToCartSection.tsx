@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useCartStore } from '@/lib/cart/store'
 import { Button } from '@/components/ui'
+import { cn } from '@/lib/utils/cn'
 import type { Product } from '@/types/product'
 import { useRouter } from 'next/navigation'
 
@@ -14,8 +15,8 @@ interface AddToCartSectionProps {
 export default function AddToCartSection({ product, compact = false }: AddToCartSectionProps) {
     const [quantity, setQuantity] = useState(1)
     const [isAdding, setIsAdding] = useState(false)
+    const [isSuccess, setIsSuccess] = useState(false)
     const { addItem } = useCartStore()
-    const router = useRouter()
 
     const handleAddToCart = () => {
         setIsAdding(true)
@@ -24,7 +25,12 @@ export default function AddToCartSection({ product, compact = false }: AddToCart
         // Feedback visual
         setTimeout(() => {
             setIsAdding(false)
-            router.push('/carrinho')
+            setIsSuccess(true)
+
+            // Volta ao estado normal após 2 segundos
+            setTimeout(() => {
+                setIsSuccess(false)
+            }, 2000)
         }, 300)
     }
 
@@ -72,13 +78,16 @@ export default function AddToCartSection({ product, compact = false }: AddToCart
 
                 {/* Add Button */}
                 <Button
-                    variant="primary"
+                    variant={isSuccess ? "secondary" : "primary"}
                     size="md"
                     onClick={handleAddToCart}
                     isLoading={isAdding}
-                    className="flex-1"
+                    className={cn(
+                        "flex-1 transition-all duration-300",
+                        isSuccess && "border-green-500 text-green-600 hover:bg-green-50"
+                    )}
                 >
-                    Adicionar ao Carrinho
+                    {isSuccess ? 'Adicionado! ✓' : 'Adicionar ao Carrinho'}
                 </Button>
             </div>
         )
@@ -125,13 +134,16 @@ export default function AddToCartSection({ product, compact = false }: AddToCart
             </div>
 
             <Button
-                variant="primary"
+                variant={isSuccess ? "secondary" : "primary"}
                 size="lg"
                 onClick={handleAddToCart}
                 isLoading={isAdding}
-                className="w-full"
+                className={cn(
+                    "w-full transition-all duration-300",
+                    isSuccess && "border-green-500 text-green-600 hover:bg-green-50"
+                )}
             >
-                Adicionar ao Carrinho
+                {isSuccess ? 'Adicionado! ✓' : 'Adicionar ao Carrinho'}
             </Button>
         </div>
     )
