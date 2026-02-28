@@ -37,12 +37,27 @@ export async function GET() {
 
     const { data, error } = await supabase
         .from('produtos')
-        .select('*, sis_imagens_produto(url)')
+        .select('*')
         .order('nome')
 
     if (error) {
         return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    return NextResponse.json(data)
+    // Buscar imagens separadamente
+    const { data: imagens } = await supabase
+        .from('sis_imagens_produto')
+        .select('produto_id, url')
+
+    // Merge manual
+    const imagensMap = new Map(imagens?.map(i => [i.produto_id, i.url]) ?? [])
+
+    const combinedData = (data || []).map(p => ({
+        ...p,
+        sis_imagens_produto: imagensMap.has(p.id)
+            ? [{ url: imagensMap.get(p.id)! }]
+            : []
+    }))
+
+    return NextResponse.json(combinedData)
 }
