@@ -19,6 +19,7 @@ interface Product {
     destaque: boolean
     slug: string | null
     preco_ancoragem?: number | null
+    sis_imagens_produto?: { url: string }[] | null
 }
 
 export default function AdminProductsPage() {

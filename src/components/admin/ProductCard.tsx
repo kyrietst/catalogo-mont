@@ -20,6 +20,7 @@ interface Product {
     slug: string | null
     anchor_price_cents?: number | null
     preco_ancoragem?: number | null
+    sis_imagens_produto?: { url: string }[] | null
 }
 
 interface ProductCardProps {
@@ -45,20 +46,31 @@ export default function ProductCard({ product, onToggleActive, onEdit }: Product
                 }`}
         >
             <div className="flex justify-between items-start">
-                <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-serif font-bold text-mont-espresso text-lg leading-tight">
-                            {product.nome}
-                        </h3>
-                        {product.categoria && (
-                            <span className="text-[10px] bg-mont-cream px-1.5 py-0.5 rounded text-mont-espresso/70 uppercase font-bold tracking-wider">
-                                {product.categoria}
-                            </span>
-                        )}
-                    </div>
+                <div className="flex items-center gap-3 flex-1">
+                    {product.sis_imagens_produto?.[0]?.url ? (
+                        <img
+                            src={product.sis_imagens_produto[0].url}
+                            alt={product.nome}
+                            className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
+                        />
+                    ) : (
+                        <div className="w-10 h-10 rounded-lg bg-gray-100 flex-shrink-0" />
+                    )}
+                    <div>
+                        <div className="flex items-center gap-2 mb-1">
+                            <h3 className="font-serif font-bold text-mont-espresso text-lg leading-tight">
+                                {product.nome}
+                            </h3>
+                            {product.categoria && (
+                                <span className="text-[10px] bg-mont-cream px-1.5 py-0.5 rounded text-mont-espresso/70 uppercase font-bold tracking-wider">
+                                    {product.categoria}
+                                </span>
+                            )}
+                        </div>
 
-                    <div className="font-jetbrains text-mont-gold font-bold">
-                        R$ {Number(product.preco).toFixed(2).replace('.', ',')}
+                        <div className="font-jetbrains text-mont-gold font-bold">
+                            R$ {Number(product.preco).toFixed(2).replace('.', ',')}
+                        </div>
                     </div>
                 </div>
 

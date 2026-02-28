@@ -37,7 +37,7 @@ export async function GET() {
 
     const { data, error } = await supabase
         .from('produtos')
-        .select('*')
+        .select('*, sis_imagens_produto(url)')
         .order('nome')
 
     if (error) {
