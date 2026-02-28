@@ -26,7 +26,7 @@ async function getProduct(slug: string): Promise<Product | null> {
             return mockProduct || null
         }
 
-        return data as Product
+        return mapProdutoToProduct(data as any)
 
     } catch (error) {
         console.error('Erro ao buscar produto:', error)
@@ -45,23 +45,22 @@ async function getRelatedProducts(category: string, currentId: string): Promise<
             .from('vw_catalogo_produtos')
             .select('*')
             .eq('is_active', true)
-            .eq('category', category)
             .neq('id', currentId)
-            .limit(3)
 
         if (error || !data) {
-            return MOCK_PRODUCTS
-                .filter(p => p.category === category && p.id !== currentId)
-                .slice(0, 3)
+            return MOCK_PRODUCTS.filter(p => p.id !== currentId).slice(0, 6)
         }
 
-        return data as Product[]
+        // Prioriza mesma categoria, depois os demais
+        const mesmaCategoria = data.filter(p => p.category === category)
+        const outrosCategoria = data.filter(p => p.category !== category)
+        const ordenados = [...mesmaCategoria, ...outrosCategoria].slice(0, 6)
+
+        return ordenados.map(mapProdutoToProduct)
 
     } catch (error) {
         console.error('Erro ao buscar produtos relacionados:', error)
-        return MOCK_PRODUCTS
-            .filter(p => p.category === category && p.id !== currentId)
-            .slice(0, 3)
+        return MOCK_PRODUCTS.filter(p => p.id !== currentId).slice(0, 6)
     }
 }
 
@@ -129,8 +128,15 @@ export default async function ProdutoPage({ params }: { params: { slug: string }
                                     {product.subtitle}
                                 </p>
 
-                                <div className="text-4xl font-bold text-mont-gold mb-8">
-                                    {formatCurrency(product.price_cents)}
+                                <div className="mb-8">
+                                    {product.anchor_price_cents && (
+                                        <span className="text-mont-gray line-through text-xl mr-3">
+                                            {formatCurrency(product.anchor_price_cents)}
+                                        </span>
+                                    )}
+                                    <div className="text-4xl font-bold text-mont-gold">
+                                        {formatCurrency(product.price_cents)}
+                                    </div>
                                 </div>
 
                                 {product.description && (

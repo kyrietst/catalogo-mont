@@ -9,7 +9,7 @@ interface ProdutoDatabase {
     codigo: string
     slug: string
     descricao: string | null
-    categoria: 'congelado' | 'refrigerado' // Vem da view
+    category: 'congelado' | 'refrigerado' // Vem da view
     subtitle?: string | null // Vem da view
     price_cents: number // Vem da view
     anchor_price_cents?: number | string | null // Vem da view
@@ -34,7 +34,7 @@ export function mapProdutoToProduct(produto: ProdutoDatabase): Product {
         name: produto.nome,
         slug: produto.slug,
         description: produto.descricao,
-        category: produto.categoria,
+        category: produto.category,
         subtitle: produto.subtitle || null,
         price_cents: produto.price_cents,
         anchor_price_cents: produto.anchor_price_cents
