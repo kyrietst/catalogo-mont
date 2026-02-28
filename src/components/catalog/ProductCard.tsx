@@ -13,7 +13,7 @@ interface ProductCardProps {
     name: string
     slug: string
     category: 'congelado' | 'refrigerado'
-    weight_kg: number
+    subtitle?: string | null
     price_cents: number
     anchor_price_cents?: number | null
     image_url?: string | null
@@ -27,7 +27,7 @@ export function ProductCard({
     name,
     slug,
     category,
-    weight_kg,
+    subtitle,
     price_cents,
     anchor_price_cents,
     image_url,
@@ -68,7 +68,7 @@ export function ProductCard({
             name,
             slug,
             category,
-            weight_kg,
+            subtitle,
             price_cents,
             image_url,
             is_featured
@@ -142,9 +142,11 @@ export function ProductCard({
                     <h3 className="font-display text-sm text-mont-espresso line-clamp-2 leading-snug">
                         {name}
                     </h3>
-                    <p className="text-[10px] text-mont-espresso/50 mt-0.5">
-                        {weight_kg}kg
-                    </p>
+                    {subtitle && (
+                        <p className="text-[10px] text-mont-espresso/50 mt-0.5">
+                            {subtitle}
+                        </p>
+                    )}
                     {anchor_price_cents && (
                         <span className="text-sm text-gray-400 line-through">
                             R$ {(anchor_price_cents / 100).toFixed(2).replace('.', ',')}

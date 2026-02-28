@@ -12,6 +12,7 @@ const updateProductSchema = z.object({
     descricao: z.string().nullable().optional(),
     categoria: z.string().nullable().optional(),
     peso_kg: z.number().nullable().optional(),
+    subtitulo: z.string().nullable().optional(),
     destaque: z.boolean().optional(),
     slug: z.string().nullable().optional()
 })

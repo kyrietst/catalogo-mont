@@ -15,6 +15,7 @@ interface Product {
     categoria: string | null
     descricao: string | null
     peso_kg: number | null
+    subtitulo: string | null
     destaque: boolean
     slug: string | null
     preco_ancoragem?: number | null

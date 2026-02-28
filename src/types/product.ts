@@ -4,7 +4,7 @@ export interface Product {
     slug: string
     description: string | null
     category: 'congelado' | 'refrigerado'
-    weight_kg: number
+    subtitle?: string | null
     price_cents: number
     anchor_price_cents?: number | null
     cost_cents: number | null

@@ -13,6 +13,7 @@ interface Product {
     categoria: string | null
     descricao: string | null
     peso_kg: number | null
+    subtitulo: string | null
     destaque: boolean
     slug: string | null
     anchor_price_cents?: number | null
@@ -30,6 +31,7 @@ export default function ProductEditForm({ product, onClose, onSave }: ProductEdi
         descricao: product.descricao || '',
         categoria: product.categoria || '',
         peso_kg: product.peso_kg || 0,
+        subtitulo: product.subtitulo || '',
         destaque: product.destaque || false,
         slug: product.slug || ''
     })
@@ -135,6 +137,19 @@ export default function ProductEditForm({ product, onClose, onSave }: ProductEdi
                                 className="w-full p-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-mont-gold text-sm"
                             />
                         </div>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-mont-espresso mb-1">
+                            Subtítulo do Card
+                        </label>
+                        <input
+                            type="text"
+                            value={formData.subtitulo || ''}
+                            onChange={e => setFormData({ ...formData, subtitulo: e.target.value })}
+                            placeholder="Ex: Unidades de 20g"
+                            className="w-full p-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-mont-gold text-sm"
+                        />
                     </div>
 
                     <div>

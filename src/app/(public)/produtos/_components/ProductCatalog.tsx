@@ -79,7 +79,7 @@ export default function ProductCatalog({ products }: ProductCatalogProps) {
                             name={product.name}
                             slug={product.slug}
                             category={product.category}
-                            weight_kg={product.weight_kg}
+                            subtitle={product.subtitle}
                             price_cents={product.price_cents}
                             anchor_price_cents={product.anchor_price_cents}
                             is_featured={product.is_featured}

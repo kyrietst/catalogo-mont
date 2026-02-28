@@ -10,7 +10,7 @@ interface ProdutoDatabase {
     slug: string
     descricao: string | null
     categoria: 'congelado' | 'refrigerado' // Vem da view
-    weight_kg: number // Vem da view
+    subtitle?: string | null // Vem da view
     price_cents: number // Vem da view
     anchor_price_cents?: number | string | null // Vem da view
     price_formatted: string // Vem da view
@@ -35,7 +35,7 @@ export function mapProdutoToProduct(produto: ProdutoDatabase): Product {
         slug: produto.slug,
         description: produto.descricao,
         category: produto.categoria,
-        weight_kg: produto.weight_kg,
+        subtitle: produto.subtitle || null,
         price_cents: produto.price_cents,
         anchor_price_cents: produto.anchor_price_cents
             ? Number(produto.anchor_price_cents)
@@ -64,7 +64,7 @@ export const MOCK_PRODUCTS: Product[] = [
         slug: 'chipa-congelada-2kg',
         description: 'Chipa artesanal congelada, pronta para assar. Receita tradicional paraguaia com queijo de primeira qualidade.',
         category: 'congelado',
-        weight_kg: 2.0,
+        subtitle: '2kg',
         price_cents: 6000,
         cost_cents: 3300,
         stock_quantity: 20,
@@ -84,7 +84,7 @@ export const MOCK_PRODUCTS: Product[] = [
         slug: 'palito-queijo-congelado-2kg',
         description: 'Palitos de queijo crocantes, congelados e prontos para fritar. Perfeitos para festas e lanches.',
         category: 'congelado',
-        weight_kg: 2.0,
+        subtitle: '2kg',
         price_cents: 6000,
         cost_cents: 3300,
         stock_quantity: 15,
@@ -104,7 +104,7 @@ export const MOCK_PRODUCTS: Product[] = [
         slug: 'pao-queijo-congelado-1kg',
         description: 'Pão de queijo mineiro tradicional, congelado e pronto para assar. Massa leve e saborosa.',
         category: 'congelado',
-        weight_kg: 1.0,
+        subtitle: '1kg',
         price_cents: 2500,
         cost_cents: 1300,
         stock_quantity: 30,
@@ -124,7 +124,7 @@ export const MOCK_PRODUCTS: Product[] = [
         slug: 'pao-queijo-congelado-2kg',
         description: 'Pão de queijo mineiro tradicional, congelado e pronto para assar. Embalagem econômica.',
         category: 'congelado',
-        weight_kg: 2.0,
+        subtitle: '2kg',
         price_cents: 5000,
         cost_cents: 2600,
         stock_quantity: 25,
@@ -144,7 +144,7 @@ export const MOCK_PRODUCTS: Product[] = [
         slug: 'massa-pao-queijo-1kg',
         description: 'Massa fresca de pão de queijo refrigerada, pronta para modelar e assar.',
         category: 'refrigerado',
-        weight_kg: 1.0,
+        subtitle: '1kg',
         price_cents: 2500,
         cost_cents: 1300,
         stock_quantity: 10,
@@ -164,7 +164,7 @@ export const MOCK_PRODUCTS: Product[] = [
         slug: 'massa-pao-queijo-4kg',
         description: 'Massa fresca de pão de queijo refrigerada em embalagem econômica.',
         category: 'refrigerado',
-        weight_kg: 4.0,
+        subtitle: '4kg',
         price_cents: 6500,
         cost_cents: 4100,
         stock_quantity: 8,

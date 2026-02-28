@@ -15,8 +15,11 @@ interface Product {
     estoque_status?: string
     descricao: string | null
     peso_kg: number | null
+    subtitulo: string | null
     destaque: boolean
     slug: string | null
+    anchor_price_cents?: number | null
+    preco_ancoragem?: number | null
 }
 
 interface ProductCardProps {
