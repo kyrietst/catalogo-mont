@@ -1,7 +1,7 @@
 import { Navbar, Footer } from '@/components/catalog'
 import { createClient } from '@/lib/supabase/server'
 import { mapProdutoToProduct, MOCK_PRODUCTS } from '@/lib/supabase/mappers'
-import { formatCurrency, formatWeight } from '@/lib/utils/format'
+import { formatCurrency } from '@/lib/utils/format'
 import { Badge } from '@/components/ui'
 import type { Product } from '@/types/product'
 import AddToCartSection from './_components/AddToCartSection'
@@ -76,7 +76,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
     return {
         title: `${product.name} | Mont Distribuidora`,
-        description: product.description || `Compre ${product.name} - ${formatWeight(product.weight_kg)} por ${formatCurrency(product.price_cents)}`,
+        description: product.description || `Compre ${product.name} - ${product.subtitle} por ${formatCurrency(product.price_cents)}`,
     }
 }
 
@@ -100,9 +100,9 @@ export default async function ProdutoPage({ params }: { params: { slug: string }
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
                             {/* Imagem */}
                             <div className="aspect-square bg-mont-surface rounded-lg overflow-hidden">
-                                {product.image_url ? (
+                                {product.primary_image_url ? (
                                     <img
-                                        src={product.image_url}
+                                        src={product.primary_image_url}
                                         alt={product.name}
                                         className="w-full h-full object-cover"
                                     />
@@ -126,7 +126,7 @@ export default async function ProdutoPage({ params }: { params: { slug: string }
                                 </h1>
 
                                 <p className="text-mont-gray text-lg mb-6">
-                                    {formatWeight(product.weight_kg)}
+                                    {product.subtitle}
                                 </p>
 
                                 <div className="text-4xl font-bold text-mont-gold mb-8">

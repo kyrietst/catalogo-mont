@@ -12,6 +12,7 @@ export function formatCurrency(cents: number): string {
  * Formata peso em kg com unidade
  */
 export function formatWeight(kg: number): string {
+    if (kg == null || isNaN(kg)) return '—'
     return `${kg.toFixed(2).replace('.', ',')}kg`
 }
 

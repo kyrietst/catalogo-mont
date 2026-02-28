@@ -25,7 +25,7 @@ export default function FeaturedProduct({ product }: FeaturedProductProps) {
         currency: 'BRL',
     }).format(product.price_cents / 100);
 
-    const weightFormatted = `${product.weight_kg}kg`;
+    const weightFormatted = product.subtitle || '';
 
     useEffect(() => {
         const ctx = gsap.context(() => {
