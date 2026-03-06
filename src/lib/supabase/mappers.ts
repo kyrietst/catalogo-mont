@@ -21,6 +21,7 @@ interface ProdutoDatabase {
     stock_status: string // Vem da view
     primary_image_url: string | null // Vem da view
     images: any[] | null // Vem da view (json)
+    instrucoes_preparo?: string | null // Vem da view
     criado_em?: string
     atualizado_em?: string
 }
@@ -51,6 +52,7 @@ export function mapProdutoToProduct(produto: ProdutoDatabase): Product {
         primary_image_url: produto.primary_image_url,
         images: produto.images || [],
         stock_status: produto.stock_status,
+        instrucoes_preparo: produto.instrucoes_preparo || null,
     }
 }
 

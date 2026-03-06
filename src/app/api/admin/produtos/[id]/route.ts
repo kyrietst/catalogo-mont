@@ -14,7 +14,8 @@ const updateProductSchema = z.object({
     peso_kg: z.number().nullable().optional(),
     subtitulo: z.string().nullable().optional(),
     destaque: z.boolean().optional(),
-    slug: z.string().nullable().optional()
+    slug: z.string().nullable().optional(),
+    instrucoes_preparo: z.string().nullable().optional()
 })
 
 export async function PATCH(

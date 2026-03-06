@@ -236,9 +236,9 @@ export default function CarrinhoPage() {
                                     className="bg-mont-white p-4 rounded-lg shadow-sm flex gap-4"
                                 >
                                     <div className="relative w-20 h-20 bg-mont-surface rounded flex-shrink-0 overflow-hidden">
-                                        {item.product.image_url ? (
+                                        {(item.product.primary_image_url || item.product.image_url) ? (
                                             <Image
-                                                src={item.product.image_url}
+                                                src={(item.product.primary_image_url || item.product.image_url)!}
                                                 alt={item.product.name}
                                                 fill
                                                 className="object-cover"

@@ -16,6 +16,7 @@ interface Product {
     subtitulo: string | null
     destaque: boolean
     slug: string | null
+    instrucoes_preparo: string | null
     anchor_price_cents?: number | null
     preco_ancoragem?: number | null
 }
@@ -33,7 +34,8 @@ export default function ProductEditForm({ product, onClose, onSave }: ProductEdi
         peso_kg: product.peso_kg || 0,
         subtitulo: product.subtitulo || '',
         destaque: product.destaque || false,
-        slug: product.slug || ''
+        slug: product.slug || '',
+        instrucoes_preparo: product.instrucoes_preparo || ''
     })
     const [loading, setLoading] = useState(false)
 
@@ -162,6 +164,19 @@ export default function ProductEditForm({ product, onClose, onSave }: ProductEdi
                             onChange={e => setFormData({ ...formData, slug: e.target.value })}
                             className="w-full p-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-mont-gold text-sm font-mono text-xs"
                             placeholder="ex: pao-queijo-1kg"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-mont-espresso mb-1">
+                            Instruções de Preparo
+                        </label>
+                        <textarea
+                            value={formData.instrucoes_preparo}
+                            onChange={e => setFormData({ ...formData, instrucoes_preparo: e.target.value })}
+                            rows={4}
+                            className="w-full p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-mont-gold focus:border-transparent text-sm"
+                            placeholder="Uma instrução por linha"
                         />
                     </div>
 

@@ -71,13 +71,16 @@ export function ProductCard({
             category,
             subtitle,
             price_cents,
-            image_url,
+            primary_image_url: image_url,
             is_featured
         } as any, 1)
     }
 
+    const Wrapper = slug ? Link : 'div'
+    const wrapperProps = slug ? { href: `/produtos/${slug}`, className: 'block' } : { className: 'block' }
+
     return (
-        <Link href={`/produtos/${slug}`} className="block">
+        <Wrapper {...wrapperProps as any}>
             <div
                 ref={cardRef}
                 className={cn(
@@ -163,6 +166,6 @@ export function ProductCard({
                     +
                 </button>
             </div>
-        </Link>
+        </Wrapper>
     )
 }

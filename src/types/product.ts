@@ -19,6 +19,7 @@ export interface Product {
     primary_image_url: string | null
     images: any[] | null
     stock_status: string
+    instrucoes_preparo?: string | null
 }
 
 export interface ProductImage {

@@ -8,17 +8,12 @@ Mont Distribuidora digital catalog - a premium e-commerce platform for frozen/re
 
 ## Commands
 
-### Development
 ```bash
 npm run dev          # Start dev server (localhost:3000)
-npm run build        # Production build
+npm run build        # Production build (standalone output for VPS deploy)
 npm run start        # Run production server
 npm run lint         # Run ESLint
-npm run type-check   # TypeScript type checking
-```
-
-### Database (Supabase)
-```bash
+npm run type-check   # TypeScript type checking (no test framework configured)
 npm run db:push      # Push local migrations to Supabase
 npm run db:pull      # Pull remote schema to local
 ```
@@ -45,6 +40,13 @@ The project uses a **hybrid approach** to protect legacy systems while enabling 
 - `vw_admin_dashboard` - Admin analytics
 
 **Critical: Never directly modify legacy tables from frontend code. Always use views or Service Role API routes.**
+
+### Data Mapper Layer
+
+Database columns are in Portuguese; frontend uses English `Product` type. The mapper in `lib/supabase/mappers.ts` bridges this:
+- `ProdutoDatabase` (DB schema: `nome`, `descricao`, `estoque_atual`, `ativo`) → `Product` (frontend: `name`, `description`, `stock_quantity`, `is_active`)
+- `mapProdutoToProduct()` converts DB rows to frontend types
+- `MOCK_PRODUCTS` array serves as fallback when the database is empty
 
 ### Supabase Client Architecture
 
@@ -121,11 +123,16 @@ const { items, addItem, getTotalPrice } = useCartStore()
 
 **Mont Premium Design Language**
 
-Colors (Tailwind classes):
-- `mont-cream` (#FAF7F2) - Main background
-- `mont-espresso` (#2C1810) - Primary text
-- `mont-gold` (#C8963E) - Accent/CTAs
-- `mont-gold-light` (#E8C876) - Accent hover
+Colors (Tailwind classes under `mont-*`):
+- `cream` (#FAF7F2) - Main background
+- `espresso` (#2C1810) - Primary text
+- `gold` (#C8963E) - Accent/CTAs
+- `gold-light` (#E8C876) - Accent hover
+- `warm-gray` (#8B7E74) - Secondary text
+- `line` (#E5DDD4) - Borders/dividers
+- `surface` (#F5F0E8) - Card backgrounds
+- `white` (#FFFDF9) - Pure white variant
+- `success` / `warning` / `danger` - Status colors
 
 Typography:
 - `font-display` - Playfair Display (headings)
@@ -200,8 +207,14 @@ import { Product } from '@/types/product'
 import { createClient } from '@/lib/supabase/client'
 ```
 
+## Deployment
+
+- **Dev:** Vercel (auto-deploy on push)
+- **Production:** VPS Hostinger (`output: 'standalone'` in next.config.js)
+- Images served from Supabase Storage (remote patterns configured for `*.supabase.co`)
+
 ## Additional Documentation
 
-- [README.md](./README.md) - Full project overview
+- [README.md](./README.md) - Full project overview (Portuguese)
 - [Mont_Distribuidora_PRD_Catalogo.md](./Mont_Distribuidora_PRD_Catalogo.md) - Product requirements
 - Database schema: `supabase/migrations/001_initial_schema.sql`

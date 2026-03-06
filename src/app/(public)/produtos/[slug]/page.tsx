@@ -156,16 +156,15 @@ export default async function ProdutoPage({ params }: { params: { slug: string }
                                     </div>
                                 )}
 
-                                {product.category === 'congelado' && (
+                                {product.instrucoes_preparo && (
                                     <div className="bg-mont-surface p-6 rounded-lg mb-8">
                                         <h3 className="font-display text-xl text-mont-espresso mb-3">
                                             ❄️ Instruções de Preparo
                                         </h3>
                                         <ul className="text-mont-gray space-y-2">
-                                            <li>• Pré-aqueça o forno a 180°C</li>
-                                            <li>• Não é necessário descongelar</li>
-                                            <li>• Asse por 20-25 minutos até dourar</li>
-                                            <li>• Sirva quente</li>
+                                            {product.instrucoes_preparo.split('\n').map((linha, i) => (
+                                                <li key={i}>• {linha}</li>
+                                            ))}
                                         </ul>
                                     </div>
                                 )}
