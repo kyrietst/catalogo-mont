@@ -3,6 +3,11 @@ import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { createServerClient } from '@supabase/ssr'
 import { supabaseAdmin } from '@/lib/supabase/admin'
+import { z } from 'zod'
+
+const deleteImageSchema = z.object({
+    imageUrl: z.string().url('imageUrl deve ser uma URL válida')
+})
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
@@ -41,24 +46,19 @@ export async function DELETE(
         return NextResponse.json({ error: 'Acesso não autorizado' }, { status: 403 })
     }
 
-    // 2. Parse body + validar imageUrl
+    // 2. Parse body + validar imageUrl via Zod
     const body = await request.json()
-    const imageUrl = body?.imageUrl
+    const parsed = deleteImageSchema.safeParse(body)
 
-    if (!imageUrl || typeof imageUrl !== 'string') {
+    if (!parsed.success) {
         return NextResponse.json(
-            { error: 'imageUrl ausente' }, { status: 400 }
+            { error: parsed.error.errors[0].message },
+            { status: 400 }
         )
     }
 
-    let parsedUrl: URL
-    try {
-        parsedUrl = new URL(imageUrl)
-    } catch {
-        return NextResponse.json(
-            { error: 'imageUrl inválida' }, { status: 400 }
-        )
-    }
+    const imageUrl = parsed.data.imageUrl
+    const parsedUrl = new URL(imageUrl)
 
     const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
     if (!parsedUrl.origin.includes(new URL(SUPABASE_URL).hostname)) {

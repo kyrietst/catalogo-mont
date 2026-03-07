@@ -11,10 +11,12 @@ const updateProductSchema = z.object({
     visivel_catalogo: z.boolean().optional(),
     descricao: z.string().nullable().optional(),
     categoria: z.string().nullable().optional(),
-    peso_kg: z.number().nullable().optional(),
+    peso_kg: z.number().min(0, 'Peso não pode ser negativo').nullable().optional(),
     subtitulo: z.string().nullable().optional(),
     destaque: z.boolean().optional(),
-    slug: z.string().nullable().optional(),
+    slug: z.string()
+        .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug deve conter apenas letras minúsculas, números e hífens')
+        .nullable().optional(),
     instrucoes_preparo: z.string().nullable().optional()
 })
 

@@ -5,7 +5,7 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 // Validação do payload — preços NÃO vêm do cliente
 const orderSchema = z.object({
     customer_name: z.string().min(3),
-    customer_phone: z.string().min(10),
+    customer_phone: z.string().regex(/^\(\d{2}\)\s?\d{4,5}-?\d{4}$|^\d{10,11}$/, 'Telefone inválido'),
     customer_address: z.string().optional(),
     delivery_method: z.enum(['entrega', 'retirada']),
     payment_method: z.enum(['pix', 'dinheiro']),
