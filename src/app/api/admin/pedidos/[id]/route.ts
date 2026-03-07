@@ -1,9 +1,9 @@
 
-import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { createServerClient } from '@supabase/ssr'
 import { z } from 'zod'
+import { supabaseAdmin } from '@/lib/supabase/admin'
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
@@ -55,16 +55,11 @@ export async function PATCH(
         return NextResponse.json({ error: 'Status inválido' }, { status: 400 })
     }
 
-    const supabase = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY!
-    )
-
     const patch: Record<string, string> = {}
     if (result.data.status) patch.status = result.data.status
     if (result.data.status_pagamento) patch.status_pagamento = result.data.status_pagamento
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
         .from('cat_pedidos')
         .update(patch)
         .eq('id', params.id)
@@ -76,7 +71,7 @@ export async function PATCH(
     }
 
     // Integração automática: sincroniza com vendas
-    const { data: existingVenda, error: idempotenciaError } = await supabase
+    const { data: existingVenda, error: idempotenciaError } = await supabaseAdmin
         .from('vendas')
         .select('id')
         .eq('cat_pedido_id', params.id)
@@ -106,7 +101,7 @@ export async function PATCH(
             vendaUpdate.valor_pago = 0
         }
 
-        const { error: updateError } = await supabase
+        const { error: updateError } = await supabaseAdmin
             .from('vendas')
             .update(vendaUpdate)
             .eq('cat_pedido_id', params.id)
@@ -118,7 +113,7 @@ export async function PATCH(
         // Get or create contato pelo telefone
         let contatoId: string | null = null
 
-        const { data: contatoExistente, error: contatoError } = await supabase
+        const { data: contatoExistente, error: contatoError } = await supabaseAdmin
             .from('contatos')
             .select('id')
             .eq('telefone', data.telefone_cliente)
@@ -127,7 +122,7 @@ export async function PATCH(
         if (contatoExistente) {
             contatoId = contatoExistente.id
         } else {
-            const { data: novoContato, error: contatoCreateError } = await supabase
+            const { data: novoContato, error: contatoCreateError } = await supabaseAdmin
                 .from('contatos')
                 .insert({
                     nome: data.nome_cliente,
@@ -147,7 +142,7 @@ export async function PATCH(
         }
 
         // Cria registro em vendas (fallback)
-        const { error: vendaError } = await supabase
+        const { error: vendaError } = await supabaseAdmin
             .from('vendas')
             .insert({
                 origem: 'catalogo',
@@ -198,13 +193,8 @@ export async function DELETE(
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const supabase = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY!
-    )
-
     // 1. Buscar venda vinculada
-    const { data: venda } = await supabase
+    const { data: venda } = await supabaseAdmin
         .from('vendas')
         .select('id')
         .eq('cat_pedido_id', params.id)
@@ -213,24 +203,24 @@ export async function DELETE(
     if (venda) {
         // Sequência de deleção em cascata Jarvis:
         // 1. Lancamentos
-        await supabase.from('lancamentos').delete().eq('venda_id', venda.id)
+        await supabaseAdmin.from('lancamentos').delete().eq('venda_id', venda.id)
 
         // 2. Pagamentos
-        await supabase.from('pagamentos_venda').delete().eq('venda_id', venda.id)
+        await supabaseAdmin.from('pagamentos_venda').delete().eq('venda_id', venda.id)
 
         // 3. Itens da Venda
-        await supabase.from('itens_venda').delete().eq('venda_id', venda.id)
+        await supabaseAdmin.from('itens_venda').delete().eq('venda_id', venda.id)
 
         // 4. A própria Venda
-        await supabase.from('vendas').delete().eq('id', venda.id)
+        await supabaseAdmin.from('vendas').delete().eq('id', venda.id)
     }
 
     // Sequência de deleção Catálogo:
     // 5. Itens do Pedido (Catálogo)
-    await supabase.from('cat_itens_pedido').delete().eq('pedido_id', params.id)
+    await supabaseAdmin.from('cat_itens_pedido').delete().eq('pedido_id', params.id)
 
     // 6. O Pedido do Catálogo
-    const { error: deleteOrderError } = await supabase
+    const { error: deleteOrderError } = await supabaseAdmin
         .from('cat_pedidos')
         .delete()
         .eq('id', params.id)

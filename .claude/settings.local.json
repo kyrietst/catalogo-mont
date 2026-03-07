@@ -19,7 +19,8 @@
       "mcp__supabase-distribuidora__get_project_url",
       "Bash(curl:*)",
       "Bash(npx tsc:*)",
-      "Bash(xargs wc:*)"
+      "Bash(xargs wc:*)",
+      "Bash(npm uninstall:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

@@ -1,8 +1,8 @@
 
-import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { createServerClient } from '@supabase/ssr'
+import { supabaseAdmin } from '@/lib/supabase/admin'
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
@@ -50,13 +50,8 @@ export async function DELETE(
     }
 
     // 3. Delete via Service Role
-    const supabase = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY!
-    )
-
     // Remove das tabelas via RPC
-    const { error: rpcError } = await supabase
+    const { error: rpcError } = await supabaseAdmin
         .rpc('delete_image_reference', { p_produto_id: params.id })
 
     if (rpcError) {
@@ -66,7 +61,7 @@ export async function DELETE(
     // Deleta arquivo do bucket
     const fileName = imageUrl.split('/').pop()
     if (fileName) {
-        const { error: storageError } = await supabase
+        const { error: storageError } = await supabaseAdmin
             .storage.from('products').remove([fileName])
         if (storageError) {
             console.warn('[DeleteImage] Storage error:', storageError)

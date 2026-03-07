@@ -1,8 +1,8 @@
 
-import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { createServerClient } from '@supabase/ssr'
+import { supabaseAdmin } from '@/lib/supabase/admin'
 
 export async function GET() {
     const cookieStore = cookies()
@@ -30,12 +30,7 @@ export async function GET() {
     }
 
     // 2. Data Access (Service Role)
-    const supabase = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY!
-    )
-
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
         .from('produtos')
         .select('*')
         .order('nome')
@@ -45,7 +40,7 @@ export async function GET() {
     }
 
     // Buscar imagens separadamente
-    const { data: imagens } = await supabase
+    const { data: imagens } = await supabaseAdmin
         .from('sis_imagens_produto')
         .select('produto_id, url')
 

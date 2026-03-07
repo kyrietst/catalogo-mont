@@ -1,9 +1,9 @@
 
-import { createClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { createServerClient } from '@supabase/ssr'
 import { z } from 'zod'
+import { supabaseAdmin } from '@/lib/supabase/admin'
 
 // Validation Schema
 const updateProductSchema = z.object({
@@ -64,12 +64,7 @@ export async function PATCH(
     }
 
     // 3. Update Data (Service Role)
-    const supabase = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY!
-    )
-
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
         .from('produtos')
         .update(result.data)
         .eq('id', params.id)

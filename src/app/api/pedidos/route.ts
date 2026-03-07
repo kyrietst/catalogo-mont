@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
-import { createClient } from '@supabase/supabase-js'
+import { supabaseAdmin } from '@/lib/supabase/admin'
 
 // Validação do payload — preços NÃO vêm do cliente
 const orderSchema = z.object({
@@ -25,21 +25,10 @@ export async function POST(request: Request) {
         // Valida payload
         const validatedData = orderSchema.parse(body)
 
-        // Cria cliente Supabase com service role (bypass RLS)
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-        const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
-
-        const supabase = createClient(supabaseUrl, supabaseServiceKey, {
-            auth: {
-                autoRefreshToken: false,
-                persistSession: false
-            }
-        })
-
         // --- VERIFICAÇÃO DE PREÇOS SERVER-SIDE ---
         const productIds = validatedData.items.map(i => i.product_id)
 
-        const { data: produtos, error: produtosError } = await supabase
+        const { data: produtos, error: produtosError } = await supabaseAdmin
             .from('produtos')
             .select('id, nome, preco, ativo, visivel_catalogo')
             .in('id', productIds)
@@ -94,7 +83,7 @@ export async function POST(request: Request) {
             console.log('Iniciando inserção do pedido no banco de dados...')
 
             // 1. Inserir em cat_pedidos
-            const { data: pedido, error: pedidoError } = await supabase
+            const { data: pedido, error: pedidoError } = await supabaseAdmin
                 .from('cat_pedidos')
                 .insert({
                     nome_cliente: validatedData.customer_name,
@@ -130,7 +119,7 @@ export async function POST(request: Request) {
                 total_centavos: item.total_centavos,
             }))
 
-            const { error: itensError } = await supabase
+            const { error: itensError } = await supabaseAdmin
                 .from('cat_itens_pedido')
                 .insert(itensPedido)
 
@@ -146,7 +135,7 @@ export async function POST(request: Request) {
                 // 1. Get or create contato pelo telefone
                 let contatoId: string | null = null
 
-                const { data: contatoExistente, error: contatoError } = await supabase
+                const { data: contatoExistente, error: contatoError } = await supabaseAdmin
                     .from('contatos')
                     .select('id')
                     .eq('telefone', validatedData.customer_phone)
@@ -155,7 +144,7 @@ export async function POST(request: Request) {
                 if (contatoExistente) {
                     contatoId = contatoExistente.id
                 } else {
-                    const { data: novoContato, error: contatoCreateError } = await supabase
+                    const { data: novoContato, error: contatoCreateError } = await supabaseAdmin
                         .from('contatos')
                         .insert({
                             nome: validatedData.customer_name,
@@ -175,7 +164,7 @@ export async function POST(request: Request) {
                 }
 
                 // 2. Inserir em vendas
-                const { error: vendaError } = await supabase
+                const { error: vendaError } = await supabaseAdmin
                     .from('vendas')
                     .insert({
                         origem: 'catalogo',
