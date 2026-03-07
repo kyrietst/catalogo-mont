@@ -55,7 +55,7 @@ export default function ProductCard({ product, onToggleActive, onEdit }: Product
                             )}
                         </div>
 
-                        <div className="font-jetbrains text-mont-gold font-bold">
+                        <div className="font-mono text-mont-gold font-bold">
                             R$ {Number(product.preco).toFixed(2).replace('.', ',')}
                         </div>
                     </div>

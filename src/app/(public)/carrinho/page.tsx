@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useCartStore } from '@/lib/cart/store'
+import { useToast } from '@/hooks/useToast'
+import ToastContainer from '@/components/ui/ToastContainer'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Navbar, Footer } from '@/components/catalog'
@@ -27,6 +29,7 @@ export default function CarrinhoPage() {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [phoneValue, setPhoneValue] = useState('')
     const [cepDisplayValue, setCepDisplayValue] = useState('')
+    const { toasts, showToast } = useToast()
 
     const { fetchCep, loading: loadingCep } = useCep()
 
@@ -128,7 +131,7 @@ export default function CarrinhoPage() {
 
         } catch (error) {
             console.error('Erro ao finalizar pedido:', error)
-            alert('Erro ao finalizar pedido. Tente novamente.')
+            showToast('Erro ao finalizar pedido. Tente novamente.')
         } finally {
             setIsSubmitting(false)
         }
@@ -213,6 +216,7 @@ export default function CarrinhoPage() {
             </main>
 
             <Footer />
+            <ToastContainer toasts={toasts} />
         </>
     )
 }

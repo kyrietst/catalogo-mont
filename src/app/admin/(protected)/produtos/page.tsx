@@ -6,12 +6,15 @@ import { Search } from 'lucide-react'
 import ProductCard from '@/components/admin/ProductCard'
 import ProductEditForm from '@/components/admin/ProductEditForm'
 import type { AdminProduct } from '@/types/product'
+import { useToast } from '@/hooks/useToast'
+import ToastContainer from '@/components/ui/ToastContainer'
 
 export default function AdminProductsPage() {
     const [products, setProducts] = useState<AdminProduct[]>([])
     const [loading, setLoading] = useState(true)
     const [searchTerm, setSearchTerm] = useState('')
     const [editingProduct, setEditingProduct] = useState<AdminProduct | null>(null)
+    const { toasts, showToast } = useToast()
 
     useEffect(() => {
         fetchProducts()
@@ -49,7 +52,7 @@ export default function AdminProductsPage() {
                 setProducts(products.map(p =>
                     p.id === id ? { ...p, visivel_catalogo: currentStatus } : p
                 ))
-                alert('Erro ao atualizar status')
+                showToast('Erro ao atualizar status')
             }
         } catch (error) {
             console.error(error)
@@ -57,7 +60,7 @@ export default function AdminProductsPage() {
             setProducts(products.map(p =>
                 p.id === id ? { ...p, visivel_catalogo: currentStatus } : p
             ))
-            alert('Erro de conexão')
+            showToast('Erro de conexão')
         }
     }
 
@@ -74,11 +77,11 @@ export default function AdminProductsPage() {
                 setProducts(products.map(p => p.id === id ? updated : p))
                 setEditingProduct(null)
             } else {
-                alert('Erro ao salvar alterações')
+                showToast('Erro ao salvar alterações')
             }
         } catch (error) {
             console.error(error)
-            alert('Erro ao salvar alterações')
+            showToast('Erro ao salvar alterações')
         }
     }
 
@@ -88,6 +91,7 @@ export default function AdminProductsPage() {
 
     return (
         <div className="space-y-6 pb-20">
+            <ToastContainer toasts={toasts} />
             <div className="flex flex-col gap-4 sticky top-0 bg-mont-cream z-10 pt-2 pb-4">
                 <div>
                     <h2 className="text-2xl font-serif font-bold text-mont-espresso">
@@ -135,6 +139,7 @@ export default function AdminProductsPage() {
                     product={editingProduct}
                     onClose={() => setEditingProduct(null)}
                     onSave={handleUpdateProduct}
+                    showToast={showToast}
                     onImageDeleted={(id) => {
                         setProducts(products.map(p =>
                             p.id === id ? { ...p, sis_imagens_produto: [] } : p

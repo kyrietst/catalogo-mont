@@ -6,7 +6,7 @@ export default function HomeWrapper({ children }: { children: React.ReactNode })
     const mainRef = useRef<HTMLElement>(null)
 
     return (
-        <main ref={mainRef} className="min-h-screen bg-[#FAF7F2]">
+        <main ref={mainRef} className="min-h-screen bg-mont-cream">
             {children}
         </main>
     )

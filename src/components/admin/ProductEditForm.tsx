@@ -11,9 +11,10 @@ interface ProductEditFormProps {
     onClose: () => void
     onSave: (id: string, data: Partial<AdminProduct>) => Promise<void>
     onImageDeleted?: (id: string) => void
+    showToast?: (message: string) => void
 }
 
-export default function ProductEditForm({ product, onClose, onSave, onImageDeleted }: ProductEditFormProps) {
+export default function ProductEditForm({ product, onClose, onSave, onImageDeleted, showToast }: ProductEditFormProps) {
     const [formData, setFormData] = useState({
         descricao: product.descricao || '',
         peso_kg: product.peso_kg || 0,
@@ -62,7 +63,7 @@ export default function ProductEditForm({ product, onClose, onSave, onImageDelet
                     <div className="grid grid-cols-2 gap-4">
                         <div className="bg-gray-50 p-2 rounded border">
                             <span className="block text-[10px] text-gray-500 uppercase">Preço (Sistema)</span>
-                            <span className="font-jetbrains font-bold text-mont-espresso">
+                            <span className="font-mono font-bold text-mont-espresso">
                                 R$ {Number(product.preco).toFixed(2).replace('.', ',')}
                             </span>
                         </div>
@@ -76,7 +77,7 @@ export default function ProductEditForm({ product, onClose, onSave, onImageDelet
                             <p className="block text-[10px] text-gray-500 uppercase tracking-wider mb-[2px]">
                                 Ancoragem (Sistema)
                             </p>
-                            <p className="font-jetbrains font-bold text-mont-espresso/40 line-through">
+                            <p className="font-mono font-bold text-mont-espresso/40 line-through">
                                 {product.preco_ancoragem
                                     ? `R$ ${Number(product.preco_ancoragem).toFixed(2).replace('.', ',')}`
                                     : '—'}
@@ -115,11 +116,11 @@ export default function ProductEditForm({ product, onClose, onSave, onImageDelet
                                                 onImageDeleted?.(product.id)
                                             } else {
                                                 const data = await res.json()
-                                                alert(data.error || 'Erro ao remover imagem')
+                                                showToast?.(data.error || 'Erro ao remover imagem')
                                             }
                                         } catch (err) {
                                             console.error('[DeleteImage] Erro:', err)
-                                            alert('Erro ao remover imagem')
+                                            showToast?.('Erro ao remover imagem')
                                         } finally {
                                             setDeletingImage(false)
                                         }

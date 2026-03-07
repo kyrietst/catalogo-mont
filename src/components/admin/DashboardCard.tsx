@@ -39,7 +39,7 @@ export default function DashboardCard({
                 <Icon className={`${iconColors[color]}`} size={20} />
             </div>
             <div className="flex flex-col">
-                <span className="text-2xl font-jetbrains font-bold text-mont-espresso">
+                <span className="text-2xl font-mono font-bold text-mont-espresso">
                     {value}
                 </span>
                 {description && (

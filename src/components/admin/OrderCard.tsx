@@ -74,7 +74,7 @@ export default function OrderCard({
             >
                 <div className="flex justify-between items-start mb-3">
                     <div className="flex items-center gap-2">
-                        <span className="font-jetbrains font-bold text-mont-espresso">
+                        <span className="font-mono font-bold text-mont-espresso">
                             #{order.numero_pedido}
                         </span>
                         <StatusBadge status={order.status} />
@@ -99,7 +99,7 @@ export default function OrderCard({
                     </div>
 
                     <div className="flex items-center gap-2">
-                        <span className="font-jetbrains font-bold text-lg text-mont-gold">
+                        <span className="font-mono font-bold text-lg text-mont-gold">
                             {formatCurrency(order.total_centavos)}
                         </span>
                         {expanded ? <ChevronUp size={18} className="text-gray-400" /> : <ChevronDown size={18} className="text-gray-400" />}
@@ -173,7 +173,7 @@ export default function OrderCard({
                                         {item.produto?.nome || 'Produto Indefinido'}
                                     </span>
                                 </div>
-                                <div className="font-jetbrains text-gray-600 text-xs">
+                                <div className="font-mono text-gray-600 text-xs">
                                     {formatCurrency(item.total_centavos)}
                                 </div>
                             </div>

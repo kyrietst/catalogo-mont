@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { Filter, Search } from 'lucide-react'
 import StatusBadge from '../../../../components/admin/StatusBadge'
 import OrderCard from '../../../../components/admin/OrderCard'
+import { useToast } from '@/hooks/useToast'
+import ToastContainer from '@/components/ui/ToastContainer'
 
 interface OrderItem {
     id: string
@@ -36,18 +38,11 @@ export default function AdminOrdersPage() {
     const [statusFilter, setStatusFilter] = useState('todos')
     const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null)
     const [confirmDelete, setConfirmDelete] = useState<{ id: string, numero: number } | null>(null)
-    const [toast, setToast] = useState<{ message: string, type: 'success' | 'error' } | null>(null)
+    const { toasts, showToast } = useToast()
 
     useEffect(() => {
         fetchOrders()
     }, [])
-
-    useEffect(() => {
-        if (toast) {
-            const timer = setTimeout(() => setToast(null), 3000)
-            return () => clearTimeout(timer)
-        }
-    }, [toast])
 
     const fetchOrders = async () => {
         try {
@@ -79,11 +74,11 @@ export default function AdminOrdersPage() {
 
             if (!res.ok) {
                 setOrders(originalOrders)
-                alert('Erro ao atualizar status')
+                showToast('Erro ao atualizar status')
             }
         } catch (error) {
             setOrders(originalOrders)
-            alert('Erro de conexão')
+            showToast('Erro de conexão')
         }
     }
 
@@ -103,11 +98,11 @@ export default function AdminOrdersPage() {
 
             if (!res.ok) {
                 setOrders(originalOrders)
-                alert('Erro ao atualizar pagamento')
+                showToast('Erro ao atualizar pagamento')
             }
         } catch (error) {
             setOrders(originalOrders)
-            alert('Erro de conexão')
+            showToast('Erro de conexão')
         }
     }
 
@@ -119,13 +114,13 @@ export default function AdminOrdersPage() {
 
             if (res.ok) {
                 setOrders(orders.filter(o => o.id !== id))
-                setToast({ message: 'Pedido excluído com sucesso', type: 'success' })
+                showToast('Pedido excluído com sucesso', 'success')
             } else {
                 const err = await res.json()
-                setToast({ message: `Erro ao excluir: ${err.error || 'Erro desconhecido'}`, type: 'error' })
+                showToast(`Erro ao excluir: ${err.error || 'Erro desconhecido'}`)
             }
         } catch (error) {
-            setToast({ message: 'Erro de conexão ao excluir', type: 'error' })
+            showToast('Erro de conexão ao excluir')
         } finally {
             setConfirmDelete(null)
         }
@@ -169,12 +164,7 @@ export default function AdminOrdersPage() {
                 </div>
             </div>
 
-            {/* Toast Notification */}
-            {toast && (
-                <div className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg text-white font-bold text-sm transition-opacity duration-300 ${toast.type === 'success' ? 'bg-green-600' : 'bg-red-600'}`}>
-                    {toast.message}
-                </div>
-            )}
+            <ToastContainer toasts={toasts} />
 
             {/* Confirmation Modal */}
             {confirmDelete && (

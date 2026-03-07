@@ -58,7 +58,7 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
     return (
         <section
             ref={sectionRef}
-            className="pt-8 pb-20 md:pt-12 md:pb-32 bg-[#FAF7F2] relative z-10"
+            className="pt-8 pb-20 md:pt-12 md:pb-32 bg-mont-cream relative z-10"
             id="destaques"
             style={{
                 // PRESERVADO: Posicionamento e perspectiva
