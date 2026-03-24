@@ -4,10 +4,11 @@ interface OrderSummaryProps {
     subtotal: number
     frete: number
     total: number
+    deliveryMethod: 'entrega' | 'retirada'
     formatCurrency: (value: number) => string
 }
 
-export default function OrderSummary({ subtotal, frete, total, formatCurrency }: OrderSummaryProps) {
+export default function OrderSummary({ subtotal, frete, total, deliveryMethod, formatCurrency }: OrderSummaryProps) {
     return (
         <div className="border-t border-mont-surface pt-4 space-y-2">
             <div className="flex justify-between text-mont-gray">
@@ -15,10 +16,13 @@ export default function OrderSummary({ subtotal, frete, total, formatCurrency }:
                 <span>{formatCurrency(subtotal)}</span>
             </div>
 
-            {frete > 0 && (
+            {deliveryMethod === 'entrega' && (
                 <div className="flex justify-between text-mont-gray">
                     <span>Entrega</span>
-                    <span>{formatCurrency(frete)}</span>
+                    {frete === 0
+                        ? <span className="text-green-600 font-medium">Grátis</span>
+                        : <span>{formatCurrency(frete)}</span>
+                    }
                 </div>
             )}
 

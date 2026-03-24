@@ -60,8 +60,10 @@ export function generateWhatsAppMessage(
     // Totais
     message += `*Subtotal:* ${formatCurrency(subtotalCents)}\n`
 
-    if (deliveryFeeCents > 0) {
-        message += `*Entrega:* ${formatCurrency(deliveryFeeCents)}\n`
+    if (formData.delivery_method === 'entrega') {
+        message += deliveryFeeCents === 0
+            ? '*Entrega:* Grátis (SBC)\n'
+            : `*Entrega:* ${formatCurrency(deliveryFeeCents)}\n`
     }
 
     message += `*Total:* ${formatCurrency(totalCents)}\n`

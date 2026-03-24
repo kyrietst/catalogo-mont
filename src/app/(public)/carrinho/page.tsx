@@ -11,12 +11,11 @@ import { Button } from '@/components/ui'
 import { formatCurrency, formatPhone, unformatPhone } from '@/lib/utils/format'
 import { generateWhatsAppMessage, generateWhatsAppUrl } from '@/lib/whatsapp/checkout'
 import { useCep } from '@/hooks/useCep'
+import { DELIVERY_CONFIG } from '@/lib/constants/delivery'
 import Link from 'next/link'
 import CartItemList from './_components/CartItemList'
 import CheckoutForm from './_components/CheckoutForm'
 import { checkoutSchema, type CheckoutFormData } from './types'
-
-const DELIVERY_FEE_CENTS = 800 // R$ 8,00
 
 const formatCep = (value: string) => {
     const digits = value.replace(/\D/g, '').slice(0, 8)
@@ -53,7 +52,7 @@ export default function CarrinhoPage() {
     const deliveryMethod = watch('delivery_method')
     const cepValue = watch('cep')
     const subtotalCents = getTotalPrice()
-    const deliveryFeeCents = deliveryMethod === 'entrega' ? DELIVERY_FEE_CENTS : 0
+    const deliveryFeeCents = deliveryMethod === 'entrega' ? DELIVERY_CONFIG.SBC_FEE_CENTS : 0
     const totalCents = subtotalCents + deliveryFeeCents
 
     // Dispara busca ao completar 8 dígitos — mesmo padrão do ContatoFormModal.tsx

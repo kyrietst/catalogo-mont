@@ -75,7 +75,9 @@ export async function POST(request: Request) {
         const subtotal_cents = itemsComPreco.reduce(
             (acc, i) => acc + i.total_centavos, 0
         )
-        const delivery_fee_cents = validatedData.delivery_fee_cents ?? 0
+        // Server-side: força o frete correto — ignora valor enviado pelo cliente
+        // Entrega SBC = grátis; retirada = sem frete
+        const delivery_fee_cents = 0
         const total_cents = subtotal_cents + delivery_fee_cents
 
         // Inserir pedido + itens via RPC (transação atômica)

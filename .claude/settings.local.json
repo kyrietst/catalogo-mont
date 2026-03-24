@@ -21,7 +21,8 @@
       "Bash(npx tsc:*)",
       "Bash(xargs wc:*)",
       "Bash(npm uninstall:*)",
-      "Bash(wc:*)"
+      "Bash(wc:*)",
+      "Bash(npm run:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

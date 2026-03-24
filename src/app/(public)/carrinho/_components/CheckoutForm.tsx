@@ -4,10 +4,9 @@ import { UseFormReturn } from 'react-hook-form'
 import { Loader2 } from 'lucide-react'
 import { Button, Input } from '@/components/ui'
 import { formatCurrency } from '@/lib/utils/format'
+import { DELIVERY_CONFIG } from '@/lib/constants/delivery'
 import OrderSummary from './OrderSummary'
 import type { CheckoutFormData } from '../types'
-
-const DELIVERY_FEE_CENTS = 800
 
 const formatCep = (value: string) => {
     const digits = value.replace(/\D/g, '').slice(0, 8)
@@ -82,7 +81,7 @@ export default function CheckoutForm({
                                 className="text-mont-gold"
                             />
                             <span className="text-mont-espresso">
-                                Entrega (+{formatCurrency(DELIVERY_FEE_CENTS)})
+                                {DELIVERY_CONFIG.SBC_LABEL}
                             </span>
                         </label>
 
@@ -207,6 +206,12 @@ export default function CheckoutForm({
                                 Fale com o suporte
                             </a>
                         </div>
+
+                        <div className="mt-3 rounded-lg bg-[#FAF7F2] border border-[#E8D5B5] px-4 py-3 text-sm text-[#5C3D2E]">
+                            <span className="font-medium text-[#2E7D32]">📍 São Bernardo do Campo: frete grátis</span>
+                            <span className="mx-1">·</span>
+                            <span>Outras regiões: o frete será informado via WhatsApp após o pedido</span>
+                        </div>
                     </div>
                 )}
 
@@ -233,6 +238,7 @@ export default function CheckoutForm({
                     subtotal={subtotalCents}
                     frete={deliveryFeeCents}
                     total={totalCents}
+                    deliveryMethod={deliveryMethod}
                     formatCurrency={formatCurrency}
                 />
 
