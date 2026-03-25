@@ -58,7 +58,7 @@ export default async function ProdutosPage() {
                         <FeaturedProduct product={featuredProduct} />
                     )}
 
-                    <ProductCatalog products={products} />
+                    <ProductCatalog products={products.filter(p => !featuredProduct || p.id !== featuredProduct.id)} />
                 </div>
 
                 <div className="mt-12">
