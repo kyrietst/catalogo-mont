@@ -24,7 +24,17 @@
       "Bash(wc:*)",
       "Bash(npm run:*)",
       "mcp__supabase-distribuidora__list_tables",
-      "Bash(node -e \":*)"
+      "Bash(node -e \":*)",
+      "Bash(grep -r \"direct_sales\\\\|direct_sale_items\" /d/1. LUCCAS/aplicativos ai/catalogo-mont/src --include=*.ts --include=*.tsx)",
+      "Bash(grep -r \"vendas\\\\|from\\(''''v\\\\|\\\\.from\\\\\\(\" /d/1. LUCCAS/aplicativos ai/catalogo-mont/src --include=*.ts --include=*.tsx)",
+      "Bash(xargs grep:*)",
+      "Bash(grep -r \"forma_pagamento\\\\|pago\\\\|brinde\" /d/1. LUCCAS/aplicativos ai/catalogo-mont/src --include=*.tsx --include=*.ts)",
+      "Bash(grep -r pagos*[=:!] --include=*.ts --include=*.tsx src/ lib/ app/)",
+      "Bash(grep -r \"fiado\\\\|a_receber\\\\|pendente\\\\|devendo\\\\|inadimplente\\\\|cobranca\\\\|cobrança\" --include=*.ts --include=*.tsx --include=*.sql src/ lib/ app/ supabase/)",
+      "Bash(grep -r \"brinde\\\\|forma_pagamento\\\\|payment_status\\\\|pago\\\\|fiado\" --include=*.tsx --include=*.ts --include=*.sql .)",
+      "Bash(grep -r \"brinde\\\\|gift\" --include=*.ts --include=*.tsx --include=*.sql .)",
+      "Bash(grep -rn \"pago\\\\|fiado\\\\|parcial\\\\|!pago\\\\|= false\\\\|== false\" --include=*.ts --include=*.tsx src/ lib/ app/)",
+      "Bash(grep -rn \"vw_admin_dashboard\\\\|faturamento\\\\|pendente\" --include=*.ts --include=*.tsx --include=*.sql .)"
     ]
   },
   "enableAllProjectMcpServers": true,
