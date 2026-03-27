@@ -121,15 +121,26 @@ export async function PATCH(
 
         if (contatoExistente) {
             contatoId = contatoExistente.id
+
+            // Atualiza endereço do contato existente com dados do pedido
+            if (data.endereco_entrega) {
+                await supabaseAdmin
+                    .from('contatos')
+                    .update({
+                        endereco: data.endereco_entrega || null,
+                    })
+                    .eq('id', contatoExistente.id)
+            }
         } else {
             const { data: novoContato, error: contatoCreateError } = await supabaseAdmin
                 .from('contatos')
                 .insert({
                     nome: data.nome_cliente,
                     telefone: data.telefone_cliente,
-                    tipo: 'catalogo',
+                    tipo: 'B2C',
                     origem: 'catalogo',
-                    status: 'cliente'
+                    status: 'cliente',
+                    endereco: data.endereco_entrega || null,
                 })
                 .select('id')
                 .single()

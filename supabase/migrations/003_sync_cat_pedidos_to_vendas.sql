@@ -4,6 +4,7 @@
 --            criar automaticamente o registro espelho em vendas + itens_venda + contatos.
 --            Se a sync falhar, o pedido do catálogo é preservado e o erro é registrado
 --            em cat_pedidos_pendentes_vinculacao para retry manual.
+--            Também salva campos de endereço individuais no contato.
 
 CREATE OR REPLACE FUNCTION public.criar_pedido(
   p_nome_cliente text,
@@ -16,7 +17,14 @@ CREATE OR REPLACE FUNCTION public.criar_pedido(
   p_total_centavos integer,
   p_observacoes text DEFAULT NULL::text,
   p_indicado_por text DEFAULT NULL::text,
-  p_itens jsonb DEFAULT '[]'::jsonb
+  p_itens jsonb DEFAULT '[]'::jsonb,
+  p_cep text DEFAULT NULL,
+  p_logradouro text DEFAULT NULL,
+  p_numero text DEFAULT NULL,
+  p_complemento text DEFAULT NULL,
+  p_bairro text DEFAULT NULL,
+  p_cidade text DEFAULT NULL,
+  p_uf text DEFAULT NULL
 )
 RETURNS jsonb
 LANGUAGE plpgsql
@@ -106,9 +114,25 @@ BEGIN
     LIMIT 1;
 
     IF v_contato_id IS NULL THEN
-      INSERT INTO contatos (nome, telefone, tipo, status, origem)
-      VALUES (p_nome_cliente, v_telefone_norm, 'B2C', 'cliente', 'catalogo')
+      -- Criar novo contato COM endereço
+      INSERT INTO contatos (nome, telefone, tipo, status, origem,
+                            endereco, cep, logradouro, numero, complemento, bairro, cidade, uf)
+      VALUES (p_nome_cliente, v_telefone_norm, 'B2C', 'cliente', 'catalogo',
+              p_endereco_entrega, p_cep, p_logradouro, p_numero, p_complemento, p_bairro, p_cidade, p_uf)
       RETURNING id INTO v_contato_id;
+    ELSE
+      -- Atualizar endereço do contato existente (só sobrescreve se novo valor não for null)
+      UPDATE contatos SET
+        endereco = COALESCE(p_endereco_entrega, endereco),
+        cep = COALESCE(p_cep, cep),
+        logradouro = COALESCE(p_logradouro, logradouro),
+        numero = COALESCE(p_numero, numero),
+        complemento = COALESCE(p_complemento, complemento),
+        bairro = COALESCE(p_bairro, bairro),
+        cidade = COALESCE(p_cidade, cidade),
+        uf = COALESCE(p_uf, uf),
+        atualizado_em = now()
+      WHERE id = v_contato_id;
     END IF;
 
     -- Vincular contato ao pedido do catálogo

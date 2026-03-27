@@ -16,6 +16,13 @@ const orderSchema = z.object({
     delivery_fee_cents: z.number().int().nonnegative().optional(),
     referred_by: z.string().optional(),
     notes: z.string().optional(),
+    customer_cep: z.string().nullable().optional(),
+    customer_logradouro: z.string().nullable().optional(),
+    customer_numero: z.string().nullable().optional(),
+    customer_complemento: z.string().nullable().optional(),
+    customer_bairro: z.string().nullable().optional(),
+    customer_cidade: z.string().nullable().optional(),
+    customer_uf: z.string().nullable().optional(),
 })
 
 export async function POST(request: Request) {
@@ -94,6 +101,13 @@ export async function POST(request: Request) {
                 p_observacoes: validatedData.notes || null,
                 p_indicado_por: validatedData.referred_by || null,
                 p_itens: itemsComPreco,
+                p_cep: validatedData.customer_cep || null,
+                p_logradouro: validatedData.customer_logradouro || null,
+                p_numero: validatedData.customer_numero || null,
+                p_complemento: validatedData.customer_complemento || null,
+                p_bairro: validatedData.customer_bairro || null,
+                p_cidade: validatedData.customer_cidade || null,
+                p_uf: validatedData.customer_uf || null,
             })
 
         if (rpcError) {

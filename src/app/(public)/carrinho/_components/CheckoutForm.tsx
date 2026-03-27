@@ -207,11 +207,9 @@ export default function CheckoutForm({
                             </a>
                         </div>
 
-                        <div className="mt-3 rounded-lg bg-[#FAF7F2] border border-[#E8D5B5] px-4 py-3 text-sm text-[#5C3D2E]">
-                            <span className="font-medium text-[#2E7D32]">📍 São Bernardo do Campo: frete grátis</span>
-                            <span className="mx-1">·</span>
-                            <span>Outras regiões: o frete será informado via WhatsApp após o pedido</span>
-                        </div>
+                        <p className="mt-3 text-sm text-[#5C3D2E]">
+                            O frete será informado via WhatsApp após o pedido
+                        </p>
                     </div>
                 )}
 

@@ -102,6 +102,13 @@ export default function CarrinhoPage() {
                 delivery_fee_cents: deliveryFeeCents,
                 referred_by: data.referred_by,
                 notes: data.notes,
+                customer_cep: data.cep || null,
+                customer_logradouro: data.logradouro || null,
+                customer_numero: data.numero || null,
+                customer_complemento: data.complemento || null,
+                customer_bairro: data.bairro || null,
+                customer_cidade: data.cidade || null,
+                customer_uf: data.uf || null,
             }
 
             // Salva pedido no Supabase
